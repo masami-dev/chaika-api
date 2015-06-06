@@ -2,6 +2,7 @@
 
 EXPORTED_SYMBOLS = ["ThreadServerScript"];
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
+Components.utils.import("resource://chaika-modules/Chaika2chApi.js");
 Components.utils.import("resource://chaika-modules/ChaikaServer.js");
 Components.utils.import("resource://chaika-modules/ChaikaBoard.js");
 Components.utils.import("resource://chaika-modules/ChaikaThread.js");
@@ -763,7 +764,8 @@ Thread2ch.prototype = {
         if(aKako){
             this._kakoDatDownload = true;
 
-            if(ChaikaRoninLogin.isLoggedIn()){
+            if(false && ChaikaRoninLogin.isLoggedIn()){
+                // ↑[2ch API] Rokkaサポートコードの無効化("false && " の挿入)
                 //Rokka spec: https://github.com/Cipherwraith/Rokka/blob/master/README.md
                 let KAGI = encodeURIComponent(ChaikaCore.pref.getChar("login.ronin.session_id"));
                 let hostParts = this.thread.plainURL.host.split('.');
@@ -802,9 +804,8 @@ Thread2ch.prototype = {
             this._kakoDatDownload = false;
         }
 
-        this.httpChannel.requestMethod = "GET";
         this.httpChannel.redirectionLimit = 0; // 302 等のリダイレクトを行わない
-        this.httpChannel.loadFlags = this.httpChannel.LOAD_BYPASS_CACHE;
+        this.httpChannel.loadFlags |= this.httpChannel.LOAD_BYPASS_CACHE;
         this._aboneChecked = true;
         this._threadAbone = false;
 
@@ -872,15 +873,6 @@ Thread2ch.prototype = {
         }
         this._aboneChecked = true;
 
-
-        if(this._maruMode && !this._mimizunMode && this._data.length === 0){
-            if(availableData.match(/\n/)){
-                availableData = RegExp.rightContext;
-            }else{
-                return;
-            }
-        }
-
         // NULL 文字を変換
         availableData = availableData.replace(/\x00/g, "*");
 
@@ -944,6 +936,23 @@ Thread2ch.prototype = {
         try{
             this.thread.lastModified = aRequest.getResponseHeader("Last-Modified");
         }catch(ex){}
+
+        // 2ch API のステータスを取得
+        var apiStatus = Chaika2chApi.getApiStatus(aRequest, this._dataBuffer);
+        if(apiStatus){
+            if(apiStatus.text){
+                if(apiStatus.text == "dat_down"){
+                    httpStatus = 302;
+                }else{
+                    this.write(this.converter.getFooter(apiStatus.text));
+                    this.close();
+                    return;
+                }
+            }
+            // 2ch API で Ronin が有効な場合、
+            // 通常の1回のアクセスで現行スレも過去ログも取得できる
+            this._maruMode = apiStatus.kako;
+        }
 
         switch(httpStatus){
             case 200: // 通常GET OK

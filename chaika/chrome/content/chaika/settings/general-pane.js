@@ -76,6 +76,11 @@ var gGeneralPane = {
         return dataDirPref.value;
     },
 
+    open2chApiDialog: function(){
+        ChaikaCore.browser.openWindow("chrome://chaika/content/settings/2chapi-settings.xul",
+                                      "chaika:2chapi");
+    },
+
     openReplacementManager: function(){
         ChaikaCore.browser.openWindow("chrome://chaika/content/settings/replacement-manager.xul");
     }
