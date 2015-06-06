@@ -2,6 +2,7 @@
  * Chaika2chApi.js - 2ch API extension for chaika コアモジュール
  *
  * このファイルのあるべき位置：modules/Chaika2chApi.js
+ * 註：このファイルは chaika 1.8.0 以降専用です。chaika 1.7.3 以前では動作しません。
  *
  * Written by masami ◆U7rHG6DINI
  * 使用条件・ライセンス等については chaika 本体に準じます。
@@ -13,11 +14,12 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/06/07 03:55:03
+ * Last Modified : 2015/06/07 06:24:50
  */
 
 
 EXPORTED_SYMBOLS = ["Chaika2chApi"];
+Components.utils.import("resource://chaika-modules/utils/Logger.js");
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
 Components.utils.import("resource://chaika-modules/ChaikaLogin.js");
 
@@ -162,9 +164,9 @@ var Chaika2chApi = {
         if(aAll){
             ChaikaCore.pref.setChar("2chapi.session_id", "");
             ChaikaCore.pref.setInt("2chapi.last_auth_time", 0);
-            ChaikaCore.logger.debug("Auth: CLEAR_ALL");
+            Logger.debug("Auth: CLEAR_ALL");
         }else{
-            ChaikaCore.logger.debug("Auth: CLEAR");
+            Logger.debug("Auth: CLEAR");
         }
         var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
         os.notifyObservers(null, "Chaika2chApi:Auth", "CLEAR");
@@ -222,7 +224,7 @@ var Chaika2chApi = {
         this.dontRetry = false;
         this.userStatus = null;
 
-        ChaikaCore.logger.debug("Auth: LOAD; authTime: " + new Date(lastAuthTime * 1000));
+        Logger.debug("Auth: LOAD; authTime: " + new Date(lastAuthTime * 1000));
         var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
         os.notifyObservers(null, "Chaika2chApi:Auth", "LOAD");
 
@@ -248,7 +250,7 @@ var Chaika2chApi = {
      */
     _authStart: function Chaika2chApi__authStart(aAuthContext){
         if(!(this.pref.appKey && this.pref.hmKey && this.pref.authURL && this.pref.apiURL)){
-            ChaikaCore.logger.debug("Auth: STOP");
+            Logger.debug("Auth: STOP");
             var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
             os.notifyObservers(null, "Chaika2chApi:Auth", "STOP");
             this._timer.setTimeout(0);  // stop
@@ -263,8 +265,8 @@ var Chaika2chApi = {
         httpChannel = httpChannel.QueryInterface(Ci.nsIUploadChannel);
 
         if(this.pref.ronin.id != "" || this.pref.ronin.password != ""){
-            ChaikaCore.logger.debug("Auth Ronin: id:" + this.pref.ronin.id +
-                                    ", password:" + this.pref.ronin.password);
+            Logger.debug("Auth Ronin: id:" + this.pref.ronin.id +
+                             ", password:" + this.pref.ronin.password);
         }
 
         var wk, CT = this.pref.ctValue || "";        // failsafe for null
@@ -272,7 +274,7 @@ var Chaika2chApi = {
              (CT.search(/Random/i) != -1) ? Math.floor(Math.random() * 1e10) :  // ランダム値
                                             Math.round(Date.now() / 1000);      // UNIX時刻
         CT = ("000000000" + CT).slice(-10);     // 10桁に満たない場合は先頭を0で埋める
-        ChaikaCore.logger.debug("Auth CT: " + CT);
+        Logger.debug("Auth CT: " + CT);
 
         var HB = this._getHMAC(this.pref.hmKey, this.pref.appKey + CT);
 
@@ -299,7 +301,7 @@ var Chaika2chApi = {
             },
             onStopRequest: function authListener2chApi_onStopRequest(aRequest, aContext, aStatus){
                 var data = this._data.join("");
-                ChaikaCore.logger.debug("Auth Response: " + data);
+                Logger.debug("Auth Response: " + data);
                 if(data.search(/^SESSION-ID=Monazilla\/.+?:/i) == -1){
                     Chaika2chApi._apiAuthNG(data, aRequest, aAuthContext);
                     return;
@@ -311,7 +313,7 @@ var Chaika2chApi = {
         };
 
         httpChannel.asyncOpen(authListener2chApi, null);
-        ChaikaCore.logger.debug("Auth: START");
+        Logger.debug("Auth: START");
     },
 
 
@@ -331,7 +333,7 @@ var Chaika2chApi = {
         ChaikaCore.pref.setChar("2chapi.session_id", this.sessionID);
         ChaikaCore.pref.setInt("2chapi.last_auth_time", this.lastAuthTime);
 
-        ChaikaCore.logger.debug("Auth: OK; Time: " + new Date(this.lastAuthTime * 1000));
+        Logger.debug("Auth: OK; Time: " + new Date(this.lastAuthTime * 1000));
 
         this._setAuthTimer();
 
@@ -376,11 +378,11 @@ var Chaika2chApi = {
                                                             [aRequest.URI.spec], 1);
         }
 
-        ChaikaCore.logger.debug("Auth: NG; Time: " + new Date(this.lastAuthTried * 1000));
+        Logger.debug("Auth: NG; Time: " + new Date(this.lastAuthTried * 1000));
 
         this.errorCount += 1;
-        ChaikaCore.logger.debug("Auth Error: " + this.authError);
-        ChaikaCore.logger.debug("Auth Error Count: " + this.errorCount);
+        Logger.debug("Auth Error: " + this.authError);
+        Logger.debug("Auth Error Count: " + this.errorCount);
 
         this._setAuthTimer();
 
@@ -583,7 +585,7 @@ var Chaika2chApi = {
                 if(!postString) throw new Error("empty postString");
                 return decodeURIComponent(postString.match(/sid=(.*?)(?:(?=&)|$)/)[1]);
             }catch(ex){
-                ChaikaCore.logger.error(ex);
+                Logger.error(ex.toString());
                 return self.sessionID;  // failsafe
             }
         };
@@ -674,8 +676,8 @@ var Chaika2chApi = {
         }
 
         // 診断メッセージ
-        var level = (apiStatus.text == "api_unknown_error") ? "warning" : "debug";
-        ChaikaCore.logger[level]("API Status: " + apiStatus.text + ";" +
+        var level = (apiStatus.text == "api_unknown_error") ? "warn" : "debug";
+        Logger[level]("API Status: " + apiStatus.text + ";" +
                 (aResponseText ? " ResponseText:'" + aResponseText + "'" : "") +
                 " httpStatus:" + httpStatus + " UserStatus:" + apiStatus.userStatus +
                 " ThreadStatus:" + apiStatus.threadStatus + " Kako:" + apiStatus.kako +
@@ -900,7 +902,7 @@ Chaika2chApiPref.prototype = {
         if(aTopic == "nsPref:changed" && this._prefTable[aData]){
             var prev = this._loadPref(aData, "change");
             var value = this[this._prefTable[aData].variable];
-            ChaikaCore.logger.debug("Pref Change: " + aData + " = " + value + " <- " + prev);
+            Logger.debug("Pref Change: " + aData + " = " + value + " <- " + prev);
             this._callback(aData, "change", prev);
             this._onPrefChange(aData, "change", prev);
             return;
@@ -977,8 +979,8 @@ Chaika2chApiPref.prototype = {
         var prev = this.ronin;
         this.ronin = aAccount;
 
-        ChaikaCore.logger.debug("Ronin: " + "id:'" + this.ronin.id +
-                                "', password:'" + this.ronin.password + "'");
+        Logger.debug("Ronin: " + "id:'" + this.ronin.id +
+                        "', password:'" + this.ronin.password + "'");
         return prev;
     }
 };
@@ -1016,16 +1018,16 @@ Chaika2chApiTimer.prototype = {
     observe: function Chaika2chApiTimer_observe(aSubject, aTopic, aData){
         switch(aTopic){
             case "timer-callback":
-                ChaikaCore.logger.debug("Timer: EXPIRED");
+                Logger.debug("Timer: EXPIRED");
                 this.delay = this.expire = 0;
                 this.callback(this.context);
                 return;
             case "sleep_notification":
-                ChaikaCore.logger.debug("Timer: SLEEP");
+                Logger.debug("Timer: SLEEP");
                 this.timer.cancel();
                 return;
             case "wake_notification":
-                ChaikaCore.logger.debug("Timer: WAKE");
+                Logger.debug("Timer: WAKE");
                 if(!this.expire) return;
                 var remain = this.expire - Date.now();
                 if(remain <= this._wakeDelay || remain > this.delay){
@@ -1052,7 +1054,7 @@ Chaika2chApiTimer.prototype = {
             var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
             os.removeObserver(this, "sleep_notification");
             os.removeObserver(this, "wake_notification");
-            ChaikaCore.logger.debug("Timer: stop");
+            Logger.debug("Timer: stop");
             return;
         }
 
@@ -1066,7 +1068,7 @@ Chaika2chApiTimer.prototype = {
         this.context = aContext;
         this.delay = aDelay * 1000;
         this.expire = Date.now() + this.delay;
-        ChaikaCore.logger.debug("Timer: delay " + aDelay + "s, expire " + new Date(this.expire));
+        Logger.debug("Timer: delay " + aDelay + "s, expire " + new Date(this.expire));
 
         this.timer.init(this, this.delay, Ci.nsITimer.TYPE_ONE_SHOT);
     }
