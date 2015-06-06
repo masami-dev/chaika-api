@@ -13,21 +13,13 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/05/21 03:10:00
+ * Last Modified : 2015/06/07 03:55:03
  */
 
 
 EXPORTED_SYMBOLS = ["Chaika2chApi"];
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
-
 Components.utils.import("resource://chaika-modules/ChaikaLogin.js");
-if(typeof ChaikaRoninLogin != "undefined"){
-    var PREF_RONIN_ID = "login.ronin.id";   // chaika 1.7.0 以降
-}else{
-    Components.utils.import("resource://chaika-modules/Chaika2chViewer.js");
-    var ChaikaRoninLogin = Chaika2chViewer; // for getLoginInfo()
-    var PREF_RONIN_ID = "maru_id";          // chaika 1.6.3 以前
-}
 
 
 const Ci = Components.interfaces;
@@ -815,6 +807,7 @@ Chaika2chApiPref.prototype = {
     _branch: null,
 
     CHAIKA_BRANCH: "extensions.chaika.",    // from ChaikaCore._startup()
+    PREF_RONIN_ID: "login.ronin.id",        // chaika 1.7.0 以降
 
     /** 設定読み込み用テーブル */
     _prefTable: {
@@ -912,7 +905,7 @@ Chaika2chApiPref.prototype = {
             this._onPrefChange(aData, "change", prev);
             return;
         }
-        if(aTopic == "nsPref:changed" && aData == PREF_RONIN_ID){
+        if(aTopic == "nsPref:changed" && aData == this.PREF_RONIN_ID){
             var prev = this._setRonin(ChaikaRoninLogin.getLoginInfo());
             if(prev != null) this._callback("login.ronin.id_pass*", "change", prev);
             return;
@@ -922,7 +915,7 @@ Chaika2chApiPref.prototype = {
             var roninLogin = Cc["@mozilla.org/login-manager/loginInfo;1"]
                              .createInstance(Ci.nsILoginInfo);
             roninLogin.init("chrome://chaika", null, "2ch Viewer Registration",
-                            ChaikaCore.pref.getChar(PREF_RONIN_ID), "", "", "");
+                            ChaikaCore.pref.getChar(this.PREF_RONIN_ID), "", "", "");
             if(aData == "modifyLogin"){
                 aSubject.QueryInterface(Ci.nsIArray);
                 oldLogin = aSubject.queryElementAt(0, Ci.nsILoginInfo);
@@ -957,12 +950,12 @@ Chaika2chApiPref.prototype = {
             var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
             if(!aPrev){     // OFF -> ON
                 os.addObserver(this, "passwordmgr-storage-changed", false);
-                this._branch.addObserver(PREF_RONIN_ID, this, false);
+                this._branch.addObserver(this.PREF_RONIN_ID, this, false);
                 var prev = this._setRonin(ChaikaRoninLogin.getLoginInfo());
                 if(prev != null) this._callback("login.ronin.id_pass*", aContext, prev);
             }else{          // ON -> OFF
                 os.removeObserver(this, "passwordmgr-storage-changed");
-                this._branch.removeObserver(PREF_RONIN_ID, this);
+                this._branch.removeObserver(this.PREF_RONIN_ID, this);
                 var prev = this._setRonin({ id: "", password: "" });
                 if(prev != null) this._callback("login.ronin.id_pass*", aContext, prev);
             }
