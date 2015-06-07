@@ -1,5 +1,21 @@
+/*
+ * chaika-api-pref.js - 2ch API extension for chaika - 設定初期値定義
+ *
+ * このファイルのあるべき位置：defaults/preferences/chaika-api-pref.js
+ *
+ * Written by masami ◆U7rHG6DINI
+ * 使用条件・ライセンス等については chaika 本体に準じます。
+ *
+ * 註：このファイルは、オリジナルの bbs2chreader/chaika の構成要素ではありません。
+ *     この 2ch API extension for chaika は、オリジナルの bbs2chreader/chaika の
+ *     作成者・開発者とは全く別の人物が開発しているものです。
+ *     license.txtやその他のソースコード・付属文書・公式サイトなどで明記されている
+ *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
+ *     この 2ch API extension for chaika の開発には一切関与しておりません。
+ *
+ * Last Modified : 2015/06/07 21:03:08
+ */
 
-// 2ch API extension
 pref("extensions.chaika.2chapi.enabled", false);
 pref("extensions.chaika.2chapi.auth_url", "https://api.2ch.net/v1/auth/");
 pref("extensions.chaika.2chapi.api_url", "https://api.2ch.net/v1/");
