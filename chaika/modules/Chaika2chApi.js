@@ -162,8 +162,8 @@ var Chaika2chApi = {
         this.userStatus = null;
 
         if(aAll){
-            ChaikaCore.pref.setChar("2chapi.session_id", "");
-            ChaikaCore.pref.setInt("2chapi.last_auth_time", 0);
+            this.pref.setUniChar("2chapi.session_id", "");
+            this.pref.setInt("2chapi.last_auth_time", 0);
             Logger.debug("Auth: CLEAR_ALL");
         }else{
             Logger.debug("Auth: CLEAR");
@@ -208,8 +208,8 @@ var Chaika2chApi = {
 
         if(this.sessionID) return true;
 
-        var sessionID = ChaikaCore.pref.getChar("2chapi.session_id");
-        var lastAuthTime = ChaikaCore.pref.getInt("2chapi.last_auth_time");
+        var sessionID = this.pref.getUniChar("2chapi.session_id");
+        var lastAuthTime = this.pref.getInt("2chapi.last_auth_time");
         if(!sessionID) return false;    // 取得済のsessionIDなし
 
         // 前回のsessionIDが存在する場合は、常にそれを読み込んでおいた上で
@@ -330,8 +330,8 @@ var Chaika2chApi = {
         this.dontRetry = false;
         this.userStatus = null;
 
-        ChaikaCore.pref.setChar("2chapi.session_id", this.sessionID);
-        ChaikaCore.pref.setInt("2chapi.last_auth_time", this.lastAuthTime);
+        this.pref.setUniChar("2chapi.session_id", this.sessionID);
+        this.pref.setInt("2chapi.last_auth_time", this.lastAuthTime);
 
         Logger.debug("Auth: OK; Time: " + new Date(this.lastAuthTime * 1000));
 
@@ -854,10 +854,34 @@ Chaika2chApiPref.prototype = {
         if(aStatus == "unload"){
             this[pref.variable] = (pref.get == "getBool") ? false : null;
         }else{
-            var value = ChaikaCore.pref[pref.get](aName);
+            var value = this[pref.get](aName);
             this[pref.variable] = pref.check ? pref.check(value) : value;
         }
         return prev;
+    },
+
+    /**
+     * 個別の設定値の読み書き
+     */
+    getBool: function Chaika2chApiPref_getBool(aPrefName){
+        return this._branch.getBoolPref(aPrefName);
+    },
+    setBool: function Chaika2chApiPref_setBool(aPrefName, aPrefValue){
+        return this._branch.setBoolPref(aPrefName, aPrefValue);
+    },
+    getInt: function Chaika2chApiPref_getInt(aPrefName){
+        return this._branch.getIntPref(aPrefName);
+    },
+    setInt: function Chaika2chApiPref_setInt(aPrefName, aPrefValue){
+        return this._branch.setIntPref(aPrefName, parseInt(aPrefValue));
+    },
+    getUniChar: function Chaika2chApiPref_getUniChar(aPrefName){
+        return this._branch.getComplexValue(aPrefName, Ci.nsISupportsString).data;
+    },
+    setUniChar: function Chaika2chApiPref_setUniChar(aPrefName, aPrefValue){
+        var sStr = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+        sStr.data = aPrefValue;
+        return this._branch.setComplexValue(aPrefName, Ci.nsISupportsString, sStr);
     },
 
     /** @private */
@@ -917,7 +941,7 @@ Chaika2chApiPref.prototype = {
             var roninLogin = Cc["@mozilla.org/login-manager/loginInfo;1"]
                              .createInstance(Ci.nsILoginInfo);
             roninLogin.init("chrome://chaika", null, "2ch Viewer Registration",
-                            ChaikaCore.pref.getChar(this.PREF_RONIN_ID), "", "", "");
+                            this.getUniChar(this.PREF_RONIN_ID), "", "", "");
             if(aData == "modifyLogin"){
                 aSubject.QueryInterface(Ci.nsIArray);
                 oldLogin = aSubject.queryElementAt(0, Ci.nsILoginInfo);
