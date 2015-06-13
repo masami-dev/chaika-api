@@ -1,0 +1,4 @@
+4a152e87f3c2f656a2a6745ff785ad431ceab0f3 (2015/06/13 22:55:13)
+https://github.com/chaika/chaika/tree/4a152e87f3c2f656a2a6745ff785ad431ceab0f3
+
+ベースとなっているchaika開発版(developブランチ)のコミットハッシュと日時です
