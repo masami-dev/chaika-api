@@ -14,7 +14,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/06/07 06:24:50
+ * Last Modified : 2015/06/17 14:27:00
  */
 
 
@@ -303,6 +303,7 @@ var Chaika2chApi = {
                 var data = this._data.join("");
                 Logger.debug("Auth Response: " + data);
                 if(data.search(/^SESSION-ID=Monazilla\/.+?:/i) == -1){
+                    aRequest.QueryInterface(Ci.nsIHttpChannel);
                     Chaika2chApi._apiAuthNG(data, aRequest, aAuthContext);
                     return;
                 }
