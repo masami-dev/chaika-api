@@ -13,7 +13,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/06/17 14:27:00
+ * Last Modified : 2015/06/26 00:11:00
  */
 
 
@@ -433,7 +433,7 @@ var Chaika2chApi = {
     _onApiResponse: function Chaika2chApi__onApiResponse(aApiStatus){
         if(!this.pref.enabled) return;
 
-        if((aApiStatus.text == "api_invalid_id" || aApiStatus.text == "api_empty_id") &&
+        if((aApiStatus.text === "api_invalid_id" || aApiStatus.text === "api_empty_id") &&
            aApiStatus.sessionID == this.sessionID){
             this._timer.setTimeout(ASYNC_DELAY, "error");       // エラー時自動認証
 
@@ -574,6 +574,7 @@ var Chaika2chApi = {
      * 2ch API datサーバが返すステータスを調べて返す
      * @param {nsIHttpChannel} aHttpChannel
      * @param {String} aResponseText
+     *　　　　　　　   undefined なら User-Status: と Thread-Status: の値のみを返す
      * @return {Object} 2ch API datサーバへの通信でないなら null
      */
     getApiStatus: function Chaika2chApi_getApiStatus(aHttpChannel, aResponseText){
@@ -584,6 +585,23 @@ var Chaika2chApi = {
            aHttpChannel.originalURI.spec.indexOf(this.pref.apiURL) != 0) return null;
 
         var apiStatus = { text: null, userStatus: null, threadStatus: null, kako: false };
+
+        try{
+            // User-Status: 0 (sessionID無効) or 1 (sessionID有効) or
+            //              2 (sessionID有効／https://2chv.tora3.net/futen.cgiで取得したもの)
+            //              3 (sessionID有効／API認証時にRoninアカウントを付けて取得したもの)
+            //              ※ User-Status: が 2,3 の時はdat落ち/過去ログも取れる
+            // ヘッダそのものが無いときは null / 数値として解釈できないときは NaN
+            apiStatus.userStatus = parseInt(aHttpChannel.getResponseHeader("User-Status"));
+        }catch(ex){}
+        try{
+            // Thread-Status: 0 (dat取得不可) or 1 (現行スレ) or 2 (dat落ち) or 3 (過去ログ)
+            // ヘッダそのものが無いときは null / 数値として解釈できないときは NaN
+            apiStatus.threadStatus = parseInt(aHttpChannel.getResponseHeader("Thread-Status"));
+        }catch(ex){}
+
+        // 2ch API 固有レスポンスヘッダの User-Status: と Thread-Status: を調べるのみ
+        if(aResponseText === undefined) return apiStatus;
 
         // 使われたSessionIDを調べる補助関数
         var getSessionID = function(self){
@@ -604,25 +622,6 @@ var Chaika2chApi = {
             apiStatus.text = "network_error";
             return apiStatus;
         }
-        try{
-            // User-Status: 0 (sessionID無効) or 1 (sessionID有効) or
-            //              2 (sessionID有効／https://2chv.tora3.net/futen.cgiで取得したもの)
-            //              3 (sessionID有効／API認証時にRoninアカウントを付けて取得したもの)
-            //              ※ User-Status: が 2,3 の時はdat落ち/過去ログも取れる
-            // ヘッダそのものが無いときは null / 数値として解釈できないときは NaN
-            apiStatus.userStatus = parseInt(aHttpChannel.getResponseHeader("User-Status"));
-            if(this.userStatus !== apiStatus.userStatus && !isNaN(apiStatus.userStatus) &&
-               getSessionID(this) == this.sessionID){
-                this.userStatus = apiStatus.userStatus;
-                var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-                os.notifyObservers(null, "Chaika2chApi:Auth", "STATUS");
-            }
-        }catch(ex){}
-        try{
-            // Thread-Status: 0 (dat取得不可) or 1 (現行スレ) or 2 (dat落ち) or 3 (過去ログ)
-            // ヘッダそのものが無いときは null / 数値として解釈できないときは NaN
-            apiStatus.threadStatus = parseInt(aHttpChannel.getResponseHeader("Thread-Status"));
-        }catch(ex){}
 
         if((apiStatus.threadStatus === 2 || apiStatus.threadStatus === 3) &&
            (httpStatus == 200 || httpStatus == 206 || httpStatus == 304)){
@@ -666,24 +665,25 @@ var Chaika2chApi = {
 
             }else if(responseText == "ng (appkey incorrect length)"){
                 // AppKeyの長さが正しくない
-                apiStatus.sessionID = getSessionID(this);
                 apiStatus.text = "api_invalid_keys";
 
             }else if(responseText.search(/^ng( \([\w\d\s]+\))?$/) != -1){
                 // 上のコードでは認識できないAPI関連エラー
                 apiStatus.text = "api_unknown_error";
             }
+        }
 
-            if(apiStatus.text == "api_invalid_keys" && this.userStatus !== -1 &&
-               apiStatus.sessionID == this.sessionID){
-                this.userStatus = -1;   // Key無効
-                var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-                os.notifyObservers(null, "Chaika2chApi:Auth", "STATUS");
-            }
+        // this.userStatus の更新（User-Statusヘッダの値 or -1:AppKey/HMKey無効）
+        var userStatus = (apiStatus.text === "api_invalid_keys") ? -1 : apiStatus.userStatus;
+        if(this.userStatus !== userStatus && userStatus !== null &&
+           !isNaN(userStatus) && getSessionID(this) == this.sessionID){
+            this.userStatus = userStatus;
+            var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
+            os.notifyObservers(null, "Chaika2chApi:Auth", "STATUS");
         }
 
         // 診断メッセージ
-        var level = (apiStatus.text == "api_unknown_error") ? "warning" : "debug";
+        var level = (apiStatus.text === "api_unknown_error") ? "warning" : "debug";
         ChaikaCore.logger[level]("API Status: " + apiStatus.text + ";" +
                 (aResponseText ? " ResponseText:'" + aResponseText + "'" : "") +
                 " httpStatus:" + httpStatus + " UserStatus:" + apiStatus.userStatus +
