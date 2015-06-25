@@ -13,7 +13,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/06/26 00:11:00
+ * Last Modified : 2015/06/26 01:20:50
  */
 
 
@@ -59,7 +59,7 @@ function makeException(aResult){
  */
 var Chaika2chApi = {
 
-    VERSION: "0.10",
+    VERSION: "0.11pre",
 
 
     /**
@@ -595,7 +595,8 @@ var Chaika2chApi = {
             apiStatus.userStatus = parseInt(aHttpChannel.getResponseHeader("User-Status"));
         }catch(ex){}
         try{
-            // Thread-Status: 0 (dat取得不可) or 1 (現行スレ) or 2 (dat落ち) or 3 (過去ログ)
+            // Thread-Status: 0 (dat取得不可) or 1 (現行スレ) or 2 (dat落ち) or 3 (過去ログ) or
+            //                8 (dat取得不可／Ronin無しでdat落ち/過去ログを取ろうとしたとき)
             // ヘッダそのものが無いときは null / 数値として解釈できないときは NaN
             apiStatus.threadStatus = parseInt(aHttpChannel.getResponseHeader("Thread-Status"));
         }catch(ex){}
@@ -628,16 +629,19 @@ var Chaika2chApi = {
             apiStatus.kako = true;      // 取得対象がdat落ち/過去ログ
         }
 
-        if(httpStatus == 500 && apiStatus.userStatus === 1 && apiStatus.threadStatus === 0){
-            // 通常のsessionIDでdat落ちしているdatを取ろうとした場合
-            //  → httpStatus:500, ResponseText:'NG', User-Status:1, Thread-Status:0
-            // 本当のサーバエラーで500が返ってくる場合もあるので、他のヘッダもチェックする
-            // 注: RoninのsessionIDを使ってもdatを取れなかった場合は
-            //      → httpStatus:404, ResponseText:'404 Not Found', User-Status:2, Thread-Status:0
-            //     この場合はこのままユーザに通知した方が適切なのでここでは敢えて何もしない
-            // 注: Range:ヘッダ付きのリクエストで、本来は 416 Requested Range Not Satisfiable が
-            //     返るべき状況でも、上と全く同じレスポンスが返ってくるようである(2015/04/12確認)。
+        if(apiStatus.threadStatus === 8 && apiStatus.userStatus === 1 &&
+           (httpStatus == 200 || httpStatus == 501)){
+            // 通常のsessionIDでdat落ちしているログを取ろうとした場合(2015/06/18～)
+            // httpStatus:501 になるのはRange付きのリクエストのとき
+            // httpStatus:200 の場合はレスポンスボディにダミーdatが返ってくる
             apiStatus.text = "dat_down";
+
+        }else if(httpStatus == 404 && apiStatus.threadStatus === 0){
+            // Range付きのリクエストで、本来は 416 Requested Range Not Satisfiable
+            // となるべき状況のとき。あるいは、その他の理由でdatが取得できない場合。
+            // 現状では416(あぼーん)とその他のケースの区別が難しいようなので、
+            // 「あぼーん発生」に決め打ちせずに「エラー：404」のままにしている。
+            //apiStatus.text = "abone";
 
         }else if(httpStatus == 401 && apiStatus.userStatus === 0){
             // sessionIDが無効なとき（有効期限が切れている場合など）
