@@ -880,6 +880,11 @@ Thread2ch.prototype = {
         if(!(httpStatus === 200 || httpStatus === 206)) return;
         if(aCount === 0) return;
 
+        // 2ch API 固有ヘッダの User-Status: と Thread-Status: を取得
+        var apiStatus = Chaika2chApi.getApiStatus(aRequest);
+        // dat落ちを通知するダミーdatを破棄(2015/06/18～)
+        if(apiStatus && apiStatus.threadStatus === 8) return;
+
         this._bInputStream.setInputStream(aInputStream);
 
         // 206でもあぼーん発生の場合があるので、
