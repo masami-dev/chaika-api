@@ -5,6 +5,7 @@ Components.utils.import("resource://gre/modules/FormHistory.jsm");
 Components.utils.import("resource://gre/modules/AddonManager.jsm");
 
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
+Components.utils.import("resource://chaika-modules/Chaika2chApi.js");
 Components.utils.import("resource://chaika-modules/ChaikaThread.js");
 Components.utils.import("resource://chaika-modules/ChaikaBoard.js");
 Components.utils.import("resource://chaika-modules/ChaikaDownloader.js");
@@ -659,6 +660,7 @@ var FormPage = {
         relatedAddons.then((addonList) => {
             template += "【ユーザーエージェント】" + userAgent + '\n';
             template += "【使用スキン】" + skinName + '\n';
+            template += "【2ch API 拡張】" + Chaika2chApi.getStatusString("bugReport") + '\n';
             template += "【関連アドオン】\n" + (addonList.join('\n') || '(なし)');
             template += '\n\n';
 
@@ -743,12 +745,15 @@ var FormPage = {
             if(prefName.endsWith('_id')) return;
             if(prefName.endsWith('.id')) return;
             if(prefName.endsWith('password')) return;
+            // IDパスワードじゃないけれど。last_auth_time は"設定"ではないので
+            if(/2chapi\.(.+key|last_auth_time)/.test(prefName)) return;
 
             let prefValue = getPrefValue(prefName);
 
             if(prefName === 'data_dir' ||
                prefName === 'http_proxy_value' ||
-               prefName.startsWith('login.')){
+               prefName.startsWith('login.') ||
+               /^2chapi\.(.+_ua|useragent)/.test(prefName)){  // UAは設定済が判ればOK
                     prefValue = '(changed)';
             }
 

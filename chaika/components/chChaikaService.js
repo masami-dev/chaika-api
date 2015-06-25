@@ -20,6 +20,9 @@ ChaikaService.prototype = {
         Components.utils.import("resource://chaika-modules/ChaikaCore.js");
         ChaikaCore._startup();
 
+        Components.utils.import("resource://chaika-modules/Chaika2chApi.js");
+        Chaika2chApi._startup();
+
         Components.utils.import("resource://chaika-modules/ChaikaServer.js");
         ChaikaServer._startup();
 
@@ -61,6 +64,7 @@ ChaikaService.prototype = {
         ChaikaAboneManager._quit();
         ChaikaHttpController._quit();
         ChaikaServer._quit();
+        Chaika2chApi._quit();
         ChaikaCore._quit();
     },
 

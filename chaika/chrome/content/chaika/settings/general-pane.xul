@@ -89,6 +89,13 @@
     </groupbox>
 
     <groupbox>
+        <caption class="setting-description" label="2ch API" />
+        <vbox align="start">
+            <button label="設定..." oncommand="gGeneralPane.open2chApiDialog()"/>
+        </vbox>
+    </groupbox>
+
+    <groupbox>
         <caption class="setting-description" label="置換" />
         <vbox align="start">
             <button label="置換マネージャ..."
