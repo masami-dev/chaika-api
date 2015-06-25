@@ -84,6 +84,20 @@ var gGeneralPane = {
 			"chrome://chaika/content/settings/maru.xul", "", null);
 	},
 
+	open2chApiDialog: function(){
+		// chaika 1.7.3 の ChaikaCore.browser.openWindow() より
+		var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+				.getService(Components.interfaces.nsIWindowMediator);
+		var apiDialog = wm.getMostRecentWindow("chaika:2chapi");
+		if(apiDialog){
+			apiDialog.focus();
+			return;
+		}
+		var browserWindow = wm.getMostRecentWindow("navigator:browser");
+		browserWindow.openDialog("chrome://chaika/content/settings/2chapi-settings.xul",
+							"_blank", "chrome,toolbar,centerscreen,resizable,minimizable");
+	},
+
 	/**
 	 * ログインマネージャからパスワードを取得してセットする
 	 */
