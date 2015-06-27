@@ -178,7 +178,7 @@
                         <menulist id="auto_auth" preference="extensions.chaika.2chapi.auto_auth">
                             <menupopup>
                                 <menuitem value="0" label="起動時のみ更新(自動更新しない)"/>
-                                <menuitem value="1" label="APIサーバへアクセスしたとき更新"/>
+                                <menuitem value="1" label="APIサーバーへアクセスしたとき更新"/>
                                 <menuitem value="2" label="タイマーを使って一定間隔で更新"/>
                             </menupopup>
                         </menulist>
