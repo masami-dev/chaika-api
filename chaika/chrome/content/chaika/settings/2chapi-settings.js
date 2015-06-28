@@ -13,7 +13,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/05/23 16:50:00
+ * Last Modified : 2015/06/29 00:14:00
  */
 
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
@@ -335,6 +335,10 @@ PreferenceManager.prototype = {
     dropTarget: null,
     preferences: null,
 
+    // オンラインヘルプURL
+    README_URL: "https://github.com/masami-dev/chaika-api/wiki/%E4%BB%98%E5%B1%9E%E6%96%87%E6%9B%B8%28README%29",
+    HELP_URL:   "https://github.com/masami-dev/chaika-api/wiki/%E8%A8%AD%E5%AE%9A%E9%A0%85%E7%9B%AE%E3%81%AE%E8%A7%A3%E8%AA%AC",
+
     /** 設定読み書き用テーブル */
     _prefTable: {
         // ** APIのON/OFF **
@@ -421,6 +425,8 @@ PreferenceManager.prototype = {
                 case "clearKey": this.clearKeys();         break;
                 case "restore":  this.resetPrefs(true);    break;
                 case "reset":    this.resetPrefs(false);   break;
+                case "readme":   this.openURL(this.README_URL); break;
+                case "help":     this.openURL(this.HELP_URL);   break;
                 case "version":  this.showVersion();       break;
             }
             return;
@@ -743,6 +749,15 @@ PreferenceManager.prototype = {
         }, this);
 
         this.prefUpdate();
+    },
+
+    /**
+     * URL を新しいタブで開く
+     * @param {String} aURL 開く URL
+     */
+    openURL: function PreferenceManager_openURL(aURL){
+        var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+        ChaikaCore.browser.openURL(ioService.newURI(aURL, null, null), true);
     },
 
     /**

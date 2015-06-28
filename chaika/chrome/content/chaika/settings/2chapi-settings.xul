@@ -14,7 +14,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/05/23 16:50:00
+ * Last Modified : 2015/06/29 00:14:00
 -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
@@ -68,7 +68,7 @@
         <checkbox id="enabled" preference="extensions.chaika.2chapi.enabled"
                   label="2ch API を使用する"/>
         <spacer flex="1"/>
-        <toolbarbutton type="menu" id="toolMenu" label="ツール"
+        <toolbarbutton type="menu" id="toolMenu" label="ツール/ヘルプ"
                        style="-moz-user-focus:normal;" persist="saveDir loadDir">
             <menupopup position="after_end">
                 <menuitem value="loadFile" label="設定をファイルから読み込み..."/>
@@ -81,6 +81,9 @@
                 <menuitem value="clearKey" label="KeyとUAのみを消去..."/>
                 <menuitem value="restore"  label="すべての設定を元に戻す..."/>
                 <menuitem value="reset"    label="すべての設定を既定値に戻す..."/>
+                <menuseparator/>
+                <menuitem value="readme"   label="付属文書(README)"/>
+                <menuitem value="help"     label="設定項目の解説"/>
                 <menuseparator/>
                 <menuitem value="version"  label="バージョン情報..."/>
             </menupopup>
