@@ -574,7 +574,7 @@ var Chaika2chApi = {
      * 2ch API datサーバが返すステータスを調べて返す
      * @param {nsIHttpChannel} aHttpChannel
      * @param {String} aResponseText
-     *　　　　　　　   undefined なら User-Status: と Thread-Status: の値のみを返す
+     *                 undefined なら User-Status: と Thread-Status: の値のみを返す
      * @return {Object} 2ch API datサーバへの通信でないなら null
      */
     getApiStatus: function Chaika2chApi_getApiStatus(aHttpChannel, aResponseText){
