@@ -335,8 +335,6 @@ PreferenceManager.prototype = {
     dropTarget: null,
     preferences: null,
 
-    API_BRANCH: "extensions.chaika.2chapi.",
-
     /** 設定読み書き用テーブル */
     _prefTable: {
         // ** APIのON/OFF **
@@ -390,7 +388,7 @@ PreferenceManager.prototype = {
         this.preferences = {};
         var prefNodes = document.getElementsByTagName("preference");
         Array.slice(prefNodes).forEach(function(node){
-            var name = node.name.replace(this.API_BRANCH, "");
+            var name = node.name.replace(API_BRANCH, "");
             if(this._prefTable[name]){
                 this.preferences[name] = node.value;
             }
@@ -593,7 +591,7 @@ PreferenceManager.prototype = {
 
         var prefNodes = document.getElementsByTagName("preference");
         Array.slice(prefNodes).forEach(function(node){
-            var name = node.name.replace(this.API_BRANCH, "");
+            var name = node.name.replace(API_BRANCH, "");
             var value = preferences[name];
             if(value !== undefined) node.value = value;
         }, this);
@@ -675,7 +673,7 @@ PreferenceManager.prototype = {
         var index = fileText.length;
         var prefNodes = document.getElementsByTagName("preference");
         Array.slice(prefNodes).forEach(function(node){
-            var name = node.name.replace(this.API_BRANCH, "");
+            var name = node.name.replace(API_BRANCH, "");
             var pref = this._prefTable[name];
             if(!pref) return;   // next
             var value = String(node.value).replace(/^(?:\s.*|.*\s)$/, '"$&"');
@@ -713,7 +711,7 @@ PreferenceManager.prototype = {
 
         var prefNodes = document.getElementsByTagName("preference");
         Array.slice(prefNodes).forEach(function(node){
-            var name = node.name.replace(this.API_BRANCH, "");
+            var name = node.name.replace(API_BRANCH, "");
             var pref = this._prefTable[name];
             if(pref && pref.iskey) node.value = "";
         }, this);
@@ -736,7 +734,7 @@ PreferenceManager.prototype = {
 
         var prefNodes = document.getElementsByTagName("preference");
         Array.slice(prefNodes).forEach(function(node){
-            var name = node.name.replace(this.API_BRANCH, "");
+            var name = node.name.replace(API_BRANCH, "");
             var pref = this._prefTable[name];
             if(pref && (!excludeKey.value || !pref.iskey)){
                 // node.reset() を呼ぶと node.value が undefined になってしまうので
