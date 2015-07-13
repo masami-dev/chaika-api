@@ -1,3 +1,21 @@
+chaika-api
+======
+
+[chaika](https://github.com/chaika/chaika) に 2ch の API を実装する非公式なプロジェクトです。
+
+* [オンラインヘルプ](https://github.com/masami-dev/chaika-api/wiki)
+
+#### ベースとなっている本家のコミット
+* **[a0a9ced](https://github.com/chaika/chaika/commits/a0a9ced3812bf0ce226e03730ebcb77fc2cca2be)** (2015/06/21 20:23:45)
+
+マージされている最新の chaika 開発版 ([develop ブランチ](https://github.com/chaika/chaika/tree/develop)) のコミットハッシュと日時です。
+
+----
+
+**以下、本家 chaika の `README.md`**
+
+----
+
 chaika
 ======
 
