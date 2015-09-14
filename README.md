@@ -6,7 +6,7 @@ chaika-api
 * [オンラインヘルプ](https://github.com/masami-dev/chaika-api/wiki)
 
 #### ベースとなっている本家のコミット
-* **[8b05b8f](https://github.com/chaika/chaika/commits/8b05b8fa47197ca1931dedcbff4b73682dc44e6a)** (2015/09/13 21:21:49)
+* **[66ca1b1](https://github.com/chaika/chaika/commits/66ca1b1e19eca581efd891db923ce2afe80e64c9)** (2015/09/14 23:19:34)
 
 マージされている最新の chaika 開発版 ([develop ブランチ](https://github.com/chaika/chaika/tree/develop)) のコミットハッシュと日時です。
 

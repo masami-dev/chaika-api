@@ -165,7 +165,7 @@
         <h3>NEWS</h3>
         <ul>
             <li class="new">
-                <a href="#">WebExtensions API の発表に伴い，chaika の開発は無期限停止となります</a>
+                <a href="http://jbbs.shitaraba.net/bbs/read.cgi/computer/44179/1435322223/432">WebExtensions API の発表に伴い，chaika の開発は無期限停止となります</a>
             </li>
         </ul>
     </section>
@@ -337,30 +337,6 @@
                 <a href="https://developer.mozilla.org/en-US/Firefox/Multiprocess_Firefox">Electrolysis</a>
                 (e10s, マルチプロセス化 Firefox) が有効な Firefox 上での動作に対応しました．
                 (<a href="https://github.com/chaika/chaika/issues/100">#100</a>)
-            </li>
-            <li class="changed">
-                e10s の制約から，書き込みウィザードを開く chaika://post/[URL] の挙動が大きく変更になりました
-                <aside class="info">
-                    <p>
-                        スキンの機能により書き込みウィザードを開く場合，
-                        今までは必ずポップアップとして開かれていましたが，
-                        今後は以下のような挙動になります．
-                    </p>
-                    <ul class="list">
-                        <li>
-                            <code>browser.link.open_newwindow.restriction</code>
-                            が 1 に設定されている場合: ロケーションバーやサイドバーなどが
-                            表示された状態の書き込みウィザードが，ウィンドウとして開きます
-                        </li>
-                        <li>
-                            上記以外の場合: 新規タブに書き込みウィザードが開きます
-                        </li>
-                    </ul>
-                    <p>
-                        また，一度書き込みウィザードの URL に遷移してから再びスレッド表示に戻るような挙動になるため，
-                        スキンによってはスクロール位置や既読管理などが影響を受ける可能性があります．
-                    </p>
-                </aside>
             </li>
             <li class="changed">
                 e10s の制約から，chaika:// から始まるいくつかの URL が変更されました
