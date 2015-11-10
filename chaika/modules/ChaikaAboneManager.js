@@ -1,7 +1,7 @@
 /* See license.txt for terms of usage */
 
 
-EXPORTED_SYMBOLS = ["ChaikaAboneManager"];
+this.EXPORTED_SYMBOLS = ["ChaikaAboneManager"];
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
@@ -10,7 +10,17 @@ Components.utils.import('resource://chaika-modules/utils/Browser.js');
 const { interfaces: Ci, classes: Cc, results: Cr, utils: Cu } = Components;
 
 
-var ChaikaAboneManager = {
+/**
+ * Polyfill for Firefox 39-
+ */
+if(!String.prototype.includes){
+    String.prototype.includes = function(){'use strict';
+        return String.prototype.indexOf.apply(this, arguments) !== -1;
+    };
+}
+
+
+this.ChaikaAboneManager = {
 
     /** あぼーんの種類を表す定数 */
 
@@ -133,7 +143,7 @@ AboneData.prototype = {
      * @see ChaikaAboneManager.shouldAbone
      */
     shouldAbone: function(aResData){
-        return aResData && this._data.find((ngData) => aResData.contains(ngData));
+        return aResData && this._data.find((ngData) => aResData.includes(ngData));
     },
 
 
@@ -353,10 +363,10 @@ NGExAboneData.prototype = Object.create(AboneData.prototype, {
 
                 switch(aRule.condition){
                     case 'contains':
-                        return target.contains(aRule.query);
+                        return target.includes(aRule.query);
 
                     case 'notContain':
-                        return !target.contains(aRule.query);
+                        return !target.includes(aRule.query);
 
                     case 'equals':
                         return target === aRule.query;

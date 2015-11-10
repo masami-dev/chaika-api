@@ -4,10 +4,20 @@ const { interfaces: Ci, classes: Cc, results: Cr, utils: Cu } = Components;
 
 Cu.import("resource://chaika-modules/ChaikaCore.js");
 
-EXPORTED_SYMBOLS = ["ChaikaBBSMenu"];
+this.EXPORTED_SYMBOLS = ["ChaikaBBSMenu"];
 
 
-let ChaikaBBSMenu = {
+/**
+ * Polyfill for Firefox 39-
+ */
+if(!String.prototype.includes){
+    String.prototype.includes = function(){'use strict';
+        return String.prototype.indexOf.apply(this, arguments) !== -1;
+    };
+}
+
+
+this.ChaikaBBSMenu = {
 
     /**
      * @type {Document}
@@ -63,14 +73,14 @@ let ChaikaBBSMenu = {
     _resolveLocalURL: function(url){
         let fph = Cc["@mozilla.org/network/protocol;1?name=file"].createInstance(Ci.nsIFileProtocolHandler);
 
-        if(url.contains('%%DEFAULTS_DIR%%')){
+        if(url.includes('%%DEFAULTS_DIR%%')){
             let defaultsDir = ChaikaCore.getDefaultsDir();
             let defaultsDirSpec = fph.getURLSpecFromActualFile(defaultsDir);
 
             url = url.replace('%%DEFAULTS_DIR%%', defaultsDirSpec);
         }
 
-        if(url.contains('%%DATA_DIR%%')){
+        if(url.includes('%%DATA_DIR%%')){
             let dataDir = ChaikaCore.getDataDir();
             let dataDirSpec = fph.getURLSpecFromActualFile(dataDir);
 

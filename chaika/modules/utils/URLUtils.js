@@ -11,6 +11,16 @@ let { Range } = Cu.import("resource://chaika-modules/utils/Range.js", {});
 let { ChaikaServer } = Cu.import("resource://chaika-modules/ChaikaServer.js", {});
 
 
+/**
+ * Polyfill for Firefox 39-
+ */
+if(!String.prototype.includes){
+    String.prototype.includes = function(){'use strict';
+        return String.prototype.indexOf.apply(this, arguments) !== -1;
+    };
+}
+
+
 let includes = {
     bbs: [
         // Here we make sure these rules begin with "/^https?:\/\/"
@@ -23,15 +33,16 @@ let includes = {
         /^https?:\/\/\w+\.bbspink.com\//,
         /^https?:\/\/\w+\.machi\.to\//,
         /^https?:\/\/jbbs\.shitaraba\.net\//,
+        /^https?:\/\/jbbs\.livedoor\.net\//,
         /^https?:\/\/\w+\.2ch\.sc\//,
         /^https?:\/\/blogban\.net\//,
-        /^https?:\/\/\w+\.vip2ch\.com\//,
+        /^https?:\/\/ex14\.vip2ch\.com\//,
         /^https?:\/\/\w+\.open2ch\.net\//,
-        /^https?:\/\/\w+\.jikkyo.org\//,
-        /^https?:\/\/\w+\.next2ch.net\//,
+        /^https?:\/\/\w+\.jikkyo\.org\//,
+        /^https?:\/\/next2ch\.net\//,
+        /^https?:\/\/bbs\.nicovideo\.jp\//,
         /^https?:\/\/\w+\.plusvip\.jp\//,
         /^https?:\/\/\w+\.blogbbs\.net\//,
-        /^https?:\/\/bbs\.shingetsu\.info\//,
         /^https?:\/\/\w+\.m-ch\.jp\//,
         /^https?:\/\/uravip.tonkotsu\.jp\//,
         /^https?:\/\/7gon\.jp\//,
@@ -54,7 +65,6 @@ let excludes = {
         /bbsmenu\.html?/i,                  // BBSMENU of most 2ch-compatible BBS.
         /\/cbm\//,                          // CBM Custom BBS Menu provided by jikkyo.org.
         /\.txt$/,
-        /shingetsu\.info\/gateway\.cgi/,
 
         /* Shitaraba */
         /\/subject\.cgi\//,
@@ -79,7 +89,7 @@ let excludes = {
         /c\.2ch\.net/,             // Mobile-version 2ch.net
         /p2\.2ch\.net/,            // Ads of Ronin
         /conbini\.2ch\.net/,       // Ads of Ronin
-        /\/test\/bbs\.cgi/,        // CGI for posting
+        /\.cgi/,                   // CGI
 
         /* bbspink.com */
         /headline\.bbspink\.net/,  // Headline on bbspink.com
@@ -96,7 +106,7 @@ let excludes = {
 /**
  * URL に対し, chaika が絡む処理をまとめる
  */
-let URLUtils = {
+this.URLUtils = {
 
     /**
      * The URL of the local server.
@@ -244,7 +254,7 @@ ThreadFilter.prototype = {
     // 5,10- -> 5,10-
 
     parse(str, upos) {
-        if(str.contains(',') || str.contains('+')){
+        if(str.includes(',') || str.includes('+')){
             return str.split(/,\+/).map((range) => this._parseRange(range, upos));
         }else{
             // A blank filter means a request for all posts from the first.
@@ -262,7 +272,7 @@ ThreadFilter.prototype = {
                 return [Number.parseInt(str, 10)];
             }
 
-            if(str.contains('n')){
+            if(str.includes('n')){
                 return [this._parseRange(str.replace(/n/g, ''))];
             }else{
                 let _range = this._parseRange(str, upos);

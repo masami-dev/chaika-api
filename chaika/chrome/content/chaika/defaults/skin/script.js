@@ -2,6 +2,16 @@
 
 'use strict';
 
+/**
+ * Polyfill for Firefox 39-
+ */
+if(!String.prototype.includes){
+    String.prototype.includes = function(){'use strict';
+        return String.prototype.indexOf.apply(this, arguments) !== -1;
+    };
+}
+
+
 /* *** Utils *** */
 var $ = {
 
@@ -742,7 +752,11 @@ var ThreadCommand = {
      * スレッドに書き込む
      */
     write: function(){
-        location.href = 'chaika://post/' + EXACT_URL;
+        try{
+            location.href = 'chaika://post/' + EXACT_URL;
+        }catch(ex){
+            console.warn(ex.name + ' occurred, but it has been ignored.');
+        }
     },
 
 
@@ -891,7 +905,11 @@ var ResCommand = {
      * @param {Number} resNumber 返信元のレス番号
      */
     replyTo: function(resNumber){
-        location.href = 'chaika://post/' + EXACT_URL + resNumber;
+        try{
+            location.href = 'chaika://post/' + EXACT_URL + resNumber;
+        }catch(ex){
+            console.warn(ex.name + ' occurred, but it has been ignored.');
+        }
     },
 
 
@@ -1225,7 +1243,7 @@ var AboneHandler = {
         let targets = $.klass(className);
 
         targets.forEach((target) => {
-            if(!target.textContent.contains(ngWord)) return;
+            if(!target.textContent.includes(ngWord)) return;
 
             let res = target.closest('.resContainer');
             let header = $.klass('resHeader', res);
@@ -1277,11 +1295,11 @@ var Popup = {
 
 
     mouseover: function(aEvent){
-        var target = aEvent.originalTarget;
+        var target = aEvent.target;
         if(!(target instanceof HTMLElement)) return;
 
         //Beリンク
-        if(target.href && target.href.contains('be.2ch')){
+        if(target.href && target.href.includes('be.2ch')){
             target = target.parentNode;
         }
 
@@ -1319,7 +1337,7 @@ var Popup = {
 
 
     mouseout: function(aEvent){
-        var target = aEvent.originalTarget;
+        var target = aEvent.target;
 
         if(!(target instanceof HTMLElement)) return;
         if(target.className === "") return;
@@ -1455,7 +1473,7 @@ var Popup = {
         }
 
         //消そうとしているポップアップ要素
-        let targetPopup = aEvent.originalTarget;
+        let targetPopup = aEvent.target;
 
         //ポップアップ元要素からポップアップを得る
         if(!targetPopup.classList.contains('popup')){
