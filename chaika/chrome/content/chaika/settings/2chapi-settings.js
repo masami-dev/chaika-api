@@ -13,7 +13,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/06/29 00:14:00
+ * Last Modified : 2015/12/08 18:50:00
  */
 
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
@@ -335,9 +335,9 @@ PreferenceManager.prototype = {
     dropTarget: null,
     preferences: null,
 
-    // オンラインヘルプURL
-    README_URL: "https://github.com/masami-dev/chaika-api/wiki/%E4%BB%98%E5%B1%9E%E6%96%87%E6%9B%B8%28README%29",
-    HELP_URL:   "https://github.com/masami-dev/chaika-api/wiki/%E8%A8%AD%E5%AE%9A%E9%A0%85%E7%9B%AE%E3%81%AE%E8%A7%A3%E8%AA%AC",
+    // 組み込みオフラインヘルプURL
+    README_URL: "chrome://chaika/content/api-readme.html",
+    HELP_URL:   "chrome://chaika/content/api-help.html",
 
     /** 設定読み書き用テーブル */
     _prefTable: {
