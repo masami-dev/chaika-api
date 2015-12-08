@@ -14,7 +14,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/11/10 13:30:00
+ * Last Modified : 2015/12/09 01:30:00
  */
 
 
@@ -53,7 +53,7 @@ function makeException(aResult){
  */
 this.Chaika2chApi = {
 
-    VERSION: "0.11",
+    VERSION: "0.11a",
 
 
     /**
