@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<!--
+ * 2chapi-settings.xul - 2ch API extension for chaika - 設定ダイアログ・UI
+ *
+ * このファイルのあるべき位置：chrome/content/chaika/settings/2chapi-settings.xul
+ *
+ * Written by masami ◆U7rHG6DINI
+ * 使用条件・ライセンス等については chaika 本体に準じます。
+ *
+ * 註：このファイルは、オリジナルの bbs2chreader/chaika の構成要素ではありません。
+ *     この 2ch API extension for chaika は、オリジナルの bbs2chreader/chaika の
+ *     作成者・開発者とは全く別の人物が開発しているものです。
+ *     license.txtやその他のソースコード・付属文書・公式サイトなどで明記されている
+ *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
+ *     この 2ch API extension for chaika の開発には一切関与しておりません。
+ *
+ * Last Modified : 2015/06/29 00:14:00
+-->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://chaika/skin/settings.css" type="text/css"?>
+
+<prefwindow id="2chApiPreferences" title="2ch API の設定 [chaika]" windowtype="chaika:2chapi"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    buttonlabelextra1="適用" buttonaccesskeyextra1="A" ondialogextra1="g2chApiPane.onApply()"
+    onbeforeaccept="return g2chApiPane.onClose(true)" ondialogcancel="return g2chApiPane.onClose(false)"
+    onload="g2chApiPane.startup()" onunload="g2chApiPane.shutdown()">
+
+<prefpane id="pane2chApi">
+
+    <preferences>
+        <preference id="extensions.chaika.2chapi.api_url"
+                  name="extensions.chaika.2chapi.api_url" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.auth_url"
+                  name="extensions.chaika.2chapi.auth_url" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.appkey"
+                  name="extensions.chaika.2chapi.appkey" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.hmkey"
+                  name="extensions.chaika.2chapi.hmkey" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.ct_value"
+                  name="extensions.chaika.2chapi.ct_value" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.use_ronin"
+                  name="extensions.chaika.2chapi.use_ronin" type="bool"/>
+        <preference id="extensions.chaika.2chapi.useragent"
+                  name="extensions.chaika.2chapi.useragent" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.auth_ua"
+                  name="extensions.chaika.2chapi.auth_ua" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.post_ua"
+                  name="extensions.chaika.2chapi.post_ua" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.2ch_ua"
+                  name="extensions.chaika.2chapi.2ch_ua" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.auto_auth"
+                  name="extensions.chaika.2chapi.auto_auth" type="int"
+                  onchange="setContainerDisabledEx(this.id, 'boxInterval', 1, 2);
+                            setContainerDisabledEx(this.id, 'boxWakeDelay', 2)"/>
+        <preference id="extensions.chaika.2chapi.auth_interval"
+                  name="extensions.chaika.2chapi.auth_interval" type="int"/>
+        <preference id="extensions.chaika.2chapi.retry_interval"
+                  name="extensions.chaika.2chapi.retry_interval" type="int"/>
+        <preference id="extensions.chaika.2chapi.wake_delay"
+                  name="extensions.chaika.2chapi.wake_delay" type="int"/>
+        <preference id="extensions.chaika.2chapi.enabled"
+                  name="extensions.chaika.2chapi.enabled" type="bool"
+                  onchange="g2chApiPane.setDisabled2chApi()"/>
+    </preferences>
+
+    <hbox align="center">
+        <checkbox id="enabled" preference="extensions.chaika.2chapi.enabled"
+                  label="2ch API を使用する"/>
+        <spacer flex="1"/>
+        <toolbarbutton type="menu" id="toolMenu" label="ツール/ヘルプ"
+                       style="-moz-user-focus:normal;" persist="saveDir loadDir">
+            <menupopup position="after_end">
+                <menuitem value="loadFile" label="設定をファイルから読み込み..."/>
+                <menuseparator/>
+                <menuitem value="loadClip" label="設定をクリップボードから読み込み"/>
+                <menuseparator value="loadClip"/>
+                <menuitem value="saveAll"  label="すべての設定をファイルへ保存..."/>
+                <menuitem value="saveKey"  label="KeyとUAのみをファイルへ保存..."/>
+                <menuseparator/>
+                <menuitem value="clearKey" label="KeyとUAのみを消去..."/>
+                <menuitem value="restore"  label="すべての設定を元に戻す..."/>
+                <menuitem value="reset"    label="すべての設定を既定値に戻す..."/>
+                <menuseparator/>
+                <menuitem value="readme"   label="付属文書(README)"/>
+                <menuitem value="help"     label="設定項目の解説"/>
+                <menuseparator/>
+                <menuitem value="version"  label="バージョン情報..."/>
+            </menupopup>
+        </toolbarbutton>
+    </hbox>
+    <spacer style="height:6px;"/>
+
+    <tabbox id="box2chApi" persist="selectedIndex">
+        <tabs>
+            <tab id="tabAPI" label="API・認証"/>
+            <tab id="tabUA"  label="User-Agent"/>
+            <tab id="tabUpdate" label="自動更新"/>
+            <tab id="tabStatus" label="状態・テスト"/>
+        </tabs>
+        <tabpanels>
+            <tabpanel orient="vertical">
+                <groupbox>
+                    <caption class="setting-description" label="APIサーバー・認証キー"/>
+                    <grid>
+                        <columns><column/><column flex="1"/></columns>
+                        <rows>
+                            <row align="center">
+                                <label control="api_url" value="API URL" style="text-align:right;"/>
+                                <textbox id="api_url" preference="extensions.chaika.2chapi.api_url"/>
+                            </row>
+                            <row align="center">
+                                <label control="auth_url" value="認証URL" style="text-align:right;"/>
+                                <textbox id="auth_url" preference="extensions.chaika.2chapi.auth_url"/>
+                            </row>
+                            <row align="center">
+                                <label control="appkey" value="AppKey" style="text-align:right;"/>
+                                <textbox id="appkey" preference="extensions.chaika.2chapi.appkey"/>
+                            </row>
+                            <row align="center">
+                                <label control="hmkey" value="HMKey" style="text-align:right;"/>
+                                <textbox id="hmkey" preference="extensions.chaika.2chapi.hmkey"/>
+                            </row>
+                            <row align="center">
+                                <label control="ct_type" value="CT" style="text-align:right;"/>
+                                <hbox align="center">
+                                    <menulist id="ct_type" oncommand="g2chApiPane.syncFromCtType()">
+                                        <menupopup>
+                                            <menuitem value="Time"   label="UNIX時刻"/>
+                                            <menuitem value="Random" label="ランダム値"/>
+                                            <menuitem value="Fixed"  label="固定値"/>
+                                        </menupopup>
+                                    </menulist>
+                                    <textbox id="ct_value" preference="extensions.chaika.2chapi.ct_value"
+                                             onchange="g2chApiPane.syncFromCtType()" maxlength="10"
+                                             flex="1"/>
+                                </hbox>
+                            </row>
+                        </rows>
+                    </grid>
+                </groupbox>
+                <groupbox>
+                    <caption class="setting-description"
+                             label="Roninの使用（アカウントが設定されているとき）"/>
+                    <checkbox label="認証時にRoninのIDとパスワードも送信する"
+                              id="use_ronin" preference="extensions.chaika.2chapi.use_ronin"/>
+                </groupbox>
+            </tabpanel>
+
+            <tabpanel orient="vertical">
+                <groupbox>
+                    <caption class="setting-description" label="各状況で送信される User-Agent"/>
+                    <grid>
+                        <columns><column/><column flex="1"/></columns>
+                        <rows>
+                            <row align="center">
+                                <label control="useragent" value="通常(datUA)" style="text-align:right;"/>
+                                <textbox id="useragent" preference="extensions.chaika.2chapi.useragent"/>
+                            </row>
+                            <row align="center">
+                                <label control="auth_ua" value="認証(authUA)" style="text-align:right;"/>
+                                <textbox id="auth_ua" preference="extensions.chaika.2chapi.auth_ua"/>
+                            </row>
+                            <row align="center">
+                                <label control="post_ua" value="投稿(postUA)" style="text-align:right;"/>
+                                <textbox id="post_ua" preference="extensions.chaika.2chapi.post_ua"/>
+                            </row>
+                            <row align="center">
+                                <label control="2ch_ua" value="X-2ch-UA " style="text-align:right;"/>
+                                <textbox id="2ch_ua" preference="extensions.chaika.2chapi.2ch_ua"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </groupbox>
+            </tabpanel>
+
+            <tabpanel orient="vertical">
+                <groupbox>
+                    <caption class="setting-description" label="セッションIDの自動更新"/>
+                    <hbox align="center">
+                        <menulist id="auto_auth" preference="extensions.chaika.2chapi.auto_auth">
+                            <menupopup>
+                                <menuitem value="0" label="起動時のみ更新(自動更新しない)"/>
+                                <menuitem value="1" label="APIサーバーへアクセスしたとき更新"/>
+                                <menuitem value="2" label="タイマーを使って一定間隔で更新"/>
+                            </menupopup>
+                        </menulist>
+                    </hbox>
+                </groupbox>
+                <groupbox id="boxInterval">
+                    <caption class="setting-description" label="更新間隔"/>
+                    <hbox align="center">
+                        <label control="auth_interval" value="認証に成功したとき"/>
+                        <textbox id="auth_interval" preference="extensions.chaika.2chapi.auth_interval"
+                                 onsyncfrompreference="return g2chApiPane.syncToInterval(this)"
+                                 onsynctopreference="return g2chApiPane.syncFromInterval(this)"
+                                 onchange="g2chApiPane.checkInterval(this)" type="number" size="5"/>
+                        <menulist id="auth_interval_unit" oncommand="g2chApiPane.syncFromUnit(this)">
+                            <menupopup>
+                                <menuitem value="3600" label="時間" selected="true"/>
+                                <menuitem value="60"   label="分"/>
+                                <menuitem value="1"    label="秒"/>
+                            </menupopup>
+                        </menulist>
+                    </hbox>
+                    <hbox align="center">
+                        <label control="retry_interval" value="認証に失敗したとき"/>
+                        <textbox id="retry_interval" preference="extensions.chaika.2chapi.retry_interval"
+                                 onsyncfrompreference="return g2chApiPane.syncToInterval(this)"
+                                 onsynctopreference="return g2chApiPane.syncFromInterval(this)"
+                                 onchange="g2chApiPane.checkInterval(this)" type="number" size="5"/>
+                        <menulist id="retry_interval_unit" oncommand="g2chApiPane.syncFromUnit(this)">
+                            <menupopup>
+                                <menuitem value="3600" label="時間" selected="true"/>
+                                <menuitem value="60"   label="分"/>
+                                <menuitem value="1"    label="秒"/>
+                            </menupopup>
+                        </menulist>
+                    </hbox>
+                </groupbox>
+                <groupbox id="boxWakeDelay">
+                    <caption class="setting-description" label="スリープ解除時の更新"/>
+                    <hbox align="center">
+                        <label control="wake_delay" value="スリープ解除直後の待ち時間(秒)"/>
+                        <textbox id="wake_delay" type="number" min="0" max="999" size="3"
+                                 preference="extensions.chaika.2chapi.wake_delay"/>
+                    </hbox>
+                </groupbox>
+            </tabpanel>
+
+            <tabpanel orient="vertical">
+                <groupbox>
+                    <caption class="setting-description" label="現在のセッションID"/>
+                    <textbox id="session_status" readonly="true"/>
+                </groupbox>
+                <groupbox>
+                    <caption class="setting-description" label="前回の認証"/>
+                    <textbox id="auth_status" readonly="true"/>
+                </groupbox>
+                <groupbox orient="horizontal">
+                    <caption class="setting-description" label="テスト"/>
+                    <button id="btnAuth"  label="セッションID取得"
+                            oncommand="g2chApiPane.apiAuth()"/>
+                    <button id="btnClear" label="セッションID消去"
+                            oncommand="g2chApiPane.apiClear()"/>
+                </groupbox>
+            </tabpanel>
+
+        </tabpanels>
+    </tabbox>
+</prefpane>
+
+<script type="application/x-javascript; version=1.7"
+        src="chrome://chaika/content/settings/2chapi-settings.js"/>
+
+</prefwindow>

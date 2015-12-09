@@ -1,3 +1,23 @@
+chaika-api
+==========
+
+[chaika](https://github.com/chaika/chaika) に 2ch の API を実装する非公式なプロジェクトです。
+
+* [プロジェクトの概要](https://github.com/masami-dev/chaika-api/wiki)
+* [2ch API 拡張部のオンラインヘルプ](https://github.com/masami-dev/chaika-api/wiki/%E4%BB%98%E5%B1%9E%E6%96%87%E6%9B%B8%28README%29)
+
+###オリジナル版 chaika との違い
+
+このバージョンの chaika は、元々の chaika に対し、2ch API 関連機能のみを追加したものです。  
+2ch API に関係しない変更は一切加えられておらず、アドインのIDもオリジナル版から変更されていません。
+
+
+----
+
+**以下、本家 chaika の `README.md`**
+
+----
+
 chaika
 ======
 

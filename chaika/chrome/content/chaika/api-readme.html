@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="Content-Language" content="ja">
+    <meta name="viewport" content="width=1020">
+    <title>付属文書(README) - 2ch API extension for chaika</title>
+
+    <!-- stylesheet delivered from https://github.com/sindresorhus/github-markdown-css -->
+    <link href="./github-markdown.css" media="all" rel="stylesheet">
+    <style>
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 25px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Last Modified : 2015/12/09 01:25:00 -->
+      <div class="markdown-body">
+        <h2>
+<a id="2ch-api-extension-for-chaika" class="anchor" href="#2ch-api-extension-for-chaika" aria-hidden="true"><span class="octicon octicon-link"></span></a>2ch API extension for chaika - 付属文書(README)</h2>
+
+<h3>
+<a id="使用上の留意事項" class="anchor" href="#%E4%BD%BF%E7%94%A8%E4%B8%8A%E3%81%AE%E7%95%99%E6%84%8F%E4%BA%8B%E9%A0%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用上の留意事項</h3>
+
+<ul>
+<li>
+<p><strong>これは非公式（非公認）な 2ch API サポートです</strong></p>
+
+<p>この 2ch API サポートソフトウェアは、2ch運営関係者の承認を受けたものではありません。そのため、2ch API へのアクセスに必要となる「鍵(キー)」が含まれておりません。</p>
+
+<p>このソフトの動作に必要な「鍵(キー)」は、使用者個人個人で入手した上で、以下に説明する設定画面にて入力（初期設定）する必要があります。</p>
+
+<p>このソフトの付属文書にはこの鍵の入手法に関わることは一切書かれていませんし、鍵の入手方法についての問い合わせには回答を致しかねます。</p>
+</li>
+<li>
+<p><strong>2ch API は chaika の正式仕様ではありません</strong></p>
+
+<p>この 2ch API サポートソフトウェアは chaika に元々から含まれていたものではありません。後から付け加えられたものです。</p>
+
+<p>少なくとも現時点においては、chaika では 2ch API はサポートしないという開発方針をとっています。このような状況を受け、これまで bbs2chreader/chaika に関わった開発者とは全く関係のない人物が開発したものです。</p>
+
+<p>chaika の現在の開発者であるnodaguti氏を含め、bbs2chreader/chaika の作成者・開発者・寄付者/貢献者とされる方々は、この 2ch API サポートソフトウェアの開発には一切関与しておりません。</p>
+</li>
+</ul>
+
+<h3>
+<a id="初期設定のしかた" class="anchor" href="#%E5%88%9D%E6%9C%9F%E8%A8%AD%E5%AE%9A%E3%81%AE%E3%81%97%E3%81%8B%E3%81%9F" aria-hidden="true"><span class="octicon octicon-link"></span></a>初期設定のしかた</h3>
+
+<p>上の「使用上の留意事項」で説明したように、このソフトの動作に必要な鍵(キー)は、使用者個人で入手する必要があります。</p>
+
+<p>動作に必要な鍵は <em>AppKey</em> と <em>HMKey</em> の2種類あり、この2つとも必要です。このほか、<em>User-Agent</em> の推奨設定値も鍵と一緒に（鍵ごとに）提示されているはずですので、これも確認しておいてください。</p>
+
+<ol>
+<li>
+<p>2ch API の設定画面を開きます。手順は以下のとおり：</p>
+
+<blockquote>
+<p>（chaikaのメニューから"オプション"を選択するなどして）chaikaの設定を開く → chaika設定ウィンドウ上部の「全般」をクリック → ウィンドウ内の「2ch API」グループにある「設定...」ボタンをクリック</p>
+</blockquote>
+</li>
+<li><p>現れた「2ch API の設定」ウィンドウの上部にある「2ch API を使用する」にチェックを入れたあと、「API・認証」タブを選択します。<br>
+その中にある「AppKey」と「HMKey」の欄に <em>AppKey</em> と <em>HMKey</em> を間違いの無いように入力します。</p></li>
+<li>
+<p>「API・認証」タブの隣にある「User-Agent」タブを選択し、「各状況で送信される User-Agent」の4つの欄に <em>User-Agent</em> の推奨設定値を入力します。<br>
+これらは「Monazilla/1.00 (chaika/1.7.3)」のような短いテキスト（文字列値）で、ソフトウェア名を表すものです。設定の手引きとしては：</p>
+
+<ul>
+<li>「X-2ch-UA」 ‥‥ <em>X-2ch-UA:</em> と示されているものを入力。</li>
+<li>「通常(datUA)」 ‥‥ <em>(dat)User-Agent:</em> あるいは、ただ単に <em>User-Agent:</em> と示されているものを入力。</li>
+<li>「認証(authUA)」 ‥‥ <em>(auth)User-Agent:</em> とか <em>(認証)User-Agent:</em> と示されているものがあればそれを入力。もし無ければ「通常(datUA)」と同じものを入力。場合によってはこの値が (空) とか (無し) とか (no UserAgent) と示されていることもあり、この場合は空欄のままにしておく。</li>
+<li>「投稿(postUA)」 ‥‥ <em>(post)User-Agent:</em> とか <em>(投稿)User-Agent:</em> とか <em>(書込)User-Agent:</em> と示されているものがあればそれを入力。もし無ければ「通常(datUA)」と同じものを入力。<strong>この欄が空欄の状態では 2ch への書き込みができません。</strong>
+</li>
+</ul>
+</li>
+<li>
+<p>以上の設定をすべて済ませたらテストをします。「状態・テスト」タブを選択し、「セッションID取得」ボタンをクリックしてください。</p>
+
+<ul>
+<li>「2ch API の認証に失敗しました」というメッセージが出たら、「セッションID取得」ボタンを数回クリックしてテストに成功するか試してみてください。</li>
+<li>「2ch API の認証は成功しました」というメッセージが出たら、実際に 2ch のスレッドをchaikaで読み込んでみて、スレッドの内容が正常に表示されるか確かめてください。スレッドが正常に表示されれば初期設定は終了です。</li>
+</ul>
+
+<p>「2ch API の設定」のその他の設定項目は、特に必要のない限り変更する必要はありません。これらの詳しい説明については、別文書である <a class="internal present" href="./api-help.html">設定項目の解説</a> を参照してください。</p>
+</li>
+<li>
+<p>何度「セッションID取得」ボタンをクリックしてもテストが成功しない場合は：</p>
+
+<ol>
+<li>ネットワークの接続状態が正常か（2ch以外のサイトや2chスレッドのブラウザ表示がFirefoxで正常に見られるかどうか）を確かめること。</li>
+<li>
+<em>AppKey</em> と <em>HMKey</em> の入力内容に間違いがないか、特に文字数が正しいか、半角英数字以外の文字が混じっていないか確認すること。<em>AppKey</em> と <em>HMKey</em> は両方とも半角の英数字30文字です(2015/05/23現在)。</li>
+<li>「2ch API の設定」ウィンドウの上部にある「ツール/ヘルプ」ボタンをクリック →「すべての設定を既定値に戻す」で、すべての設定を戻した上で、初期設定を最初からやり直してみる。</li>
+</ol>
+</li>
+<li>
+<p>「2ch API の認証は成功しました」と出るが、2ch のスレッドをchaikaで読み込んで見ると「AppKey/HMKey 無効」と出る場合は：</p>
+
+<ol>
+<li>
+<em>AppKey</em> と <em>HMKey</em> の入力内容に間違いがないか、特に文字数が正しいか、半角英数字以外の文字が混じっていないか確認すること。<em>AppKey</em> と <em>HMKey</em> は両方とも半角の英数字30文字です(2015/05/23現在)。</li>
+<li>その <em>AppKey</em> と <em>HMKey</em> 自体が使えない鍵（無効化された鍵）である可能性があるので、<em>AppKey</em> <em>HMKey</em> <em>User-Agent</em> を別のものに変更して試してみる。</li>
+</ol>
+</li>
+</ol>
+
+<h3>
+<a id="公式サイト一次配布元" class="anchor" href="#%E5%85%AC%E5%BC%8F%E3%82%B5%E3%82%A4%E3%83%88%E4%B8%80%E6%AC%A1%E9%85%8D%E5%B8%83%E5%85%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>公式サイト（一次配布元）</h3>
+
+<blockquote>
+<p>chaika-api Wiki<br>
+<a href="https://github.com/masami-dev/chaika-api/wiki">https://github.com/masami-dev/chaika-api/wiki</a></p>
+</blockquote>
+
+<h3>
+<a id="利用条件免責など" class="anchor" href="#%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6%E5%85%8D%E8%B2%AC%E3%81%AA%E3%81%A9" aria-hidden="true"><span class="octicon octicon-link"></span></a>利用条件・免責など</h3>
+
+<p>この 2ch API extension for chaika の使用・再利用の条件やライセンスなどについては chaika 本体に準じるものとします。</p>
+
+<p>このソフトウェアは使用者各自の自己責任の上でご使用ください。このソフトウェアを使用した結果に対しては如何なる責任も負いません。</p>
+
+<p>解析資料などを元にした非公式な実装なので、今後の2chの仕様変更などで動作しなくなる可能性も十分にあります。あしからずご承知置きください。</p>
+
+<h3>
+<a id="更新履歴" class="anchor" href="#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4" aria-hidden="true"><span class="octicon octicon-link"></span></a>更新履歴</h3>
+
+<ul>
+<li>
+<p><strong>2015/12/09 v0.11a</strong></p>
+
+<ul>
+<li><p>chaika-api wiki のオンラインヘルプを静的なHTMLファイルに変換して組み込みオフラインヘルプとし、設定ダイアログのメニューからはこのオフラインヘルプを開くように変更しました。</p></li>
+<li><p>(chaika 1.8.x系のみ) FirefoxのJavascript言語仕様変更に伴う小規模な修正を行いました。</p></li>
+</ul>
+</li>
+<li>
+<p><strong>2015/06/29 v0.11</strong></p>
+
+<ul>
+<li><p>2015/06/18の2chの仕様変更でdat落ちが認識できなくなっていたのを修正しました。</p></li>
+<li><p>設定ダイアログのメニューにオンラインヘルプを開く項目を追加しました。</p></li>
+<li><p>その他、小規模な修正を行いました。</p></li>
+</ul>
+</li>
+<li>
+<p><strong>2015/05/23 v0.10</strong></p>
+
+<ul>
+<li><p>専用の設定ダイアログを実装しました。</p></li>
+<li><p>Ronin（旧2ちゃんねるビューア●）のアカウントを使っての過去ログ取得について、APIの認証時（セッションID取得時）にRoninのIDと秘密鍵も一緒に送信する方式に変更しました。<br>
+こうすることで、過去ログも現行ログも1回のアクセスで取得できるようになり、過去ログ取得時のレスポンスが改善されます。</p></li>
+<li><p>chaikaの「不具合報告テンプレート」と「トラブルシューティング情報」(chaika://support/) に、この 2ch API extension の各種状態が入るようにしました。</p></li>
+</ul>
+</li>
+<li>
+<p><strong>2015/04/14 v0.06</strong></p>
+
+<ul>
+<li><p>Firefox を再起動させなくても、設定状態がすぐに動作に反映されるようにしました。</p></li>
+<li><p>User-Agent の設定項目で、Firefox既定のUser-Agentを指定できるようになりました（上級者向け）。<br>
+User-Agent の各設定項目に @Mozilla と設定すると、使用しているFirefoxが通常のWebアクセスで送信しているUser-Agentに自動的に置き換えられます。この @Mozilla のキーワードは大文字小文字の区別はありませんが、User-Agent 設定値の先頭にある必要があります。</p></li>
+</ul>
+</li>
+<li>
+<p><strong>2015/04/03 v0.05</strong></p>
+
+<ul>
+<li><p>セッションIDの自動更新機能を組み込みました。また、datAPIサーバーから「セッションID 無効」を意味するエラーが返ってきた場合は、自動でセッションIDを再取得するようにしました。</p></li>
+<li><p>2ch API 特有のいくつかのエラーについて、わかりやすいメッセージをステータスメッセージとしてとして表示するようにしました。<br>
+例えば、（旧）「エラー : 401」→（新）「API エラー : セッションID 無効」</p></li>
+<li><p>chaika に Ronin（旧2ちゃんねるビューア●）のアカウントが設定されている時、Ronin のセッションIDを用いての過去ログの取得に対応しました。ただし、過去ログ倉庫側の不備により、一部の板では過去ログの取得ができない場合があります。この場合は「エラー : 404」と表示されます。</p></li>
+</ul>
+</li>
+<li>
+<p><strong>2015/03/17 v0.02aテスト版</strong></p>
+
+<ul>
+<li>書き込み時以外はcookieを送受信しないようにしました。</li>
+</ul>
+</li>
+<li>
+<p><strong>2015/03/16 v0.02α</strong></p>
+
+<ul>
+<li>書き込み投稿時のUser-Agentと認証時のUser-Agentを設定可能にしました。</li>
+</ul>
+</li>
+<li>
+<p><strong>2015/03/13 v0.01α統合版</strong></p>
+
+<ul>
+<li><p><a href="http://bbs2ch.osdn.jp/uploader/upload.php">bbs2chreader/chaika 専用 Uploader</a> に 845.zip/846.zip/847.zip の3つに別れてアップロードされていた内容を一つにまとめました。</p></li>
+<li><p><em>847.zipの小規模アップデートでの変更点</em><br>
+認証やdat取得に毎回必要となる HMAC SHA-256 の計算を、外部モジュールの sha256.js に頼らず Firefox の内部コンポーネントを利用して計算するようにしました。</p></li>
+</ul>
+</li>
+<li>
+<p><strong>2015/03/12 v0.01α</strong></p>
+
+<ul>
+<li>設定画面が未実装だが、とりあえず実用レベルで動くようになったので公開。</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+    
+  </body>
+</html>
