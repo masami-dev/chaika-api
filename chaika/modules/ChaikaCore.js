@@ -806,6 +806,9 @@ ChaikaBrowser.prototype = {
 		if(!aOpenBrowser){
 			threadURL = ioService.newURI("/thread/" + threadURL.spec,
 						null, ChaikaCore.getServerURL());
+		}else if(ChaikaCore.pref.getBool("browser.redirector.enabled")){
+			// スレッドリダイレクタを回避
+			threadURL = ioService.newURI(threadURL.spec + '?chaika_force_browser=1', null, null);
 		}
 
 		return threadURL.QueryInterface(Ci.nsIURL);
