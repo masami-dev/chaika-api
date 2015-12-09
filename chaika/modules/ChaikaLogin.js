@@ -160,16 +160,20 @@ var ChaikaBeLogin = {
 		httpReq.open("POST", this._getLoginURI().spec, true);
 		httpReq.onload = function(aEvent){
 			var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-			this.channel.contentCharset = "euc-jp";
+			var cookieStr = this.getResponseHeader('Set-Cookie');
+			var cookies = ChaikaP2Login._parseCookie(cookieStr.replace(/\n/g, ', '));
 
 			var id = null;
 			var sessionID = null;
-			if((/DMDM=([^;]+)/m).test(this.responseText)){
-				id = RegExp.$1;
-			}
-			if((/MDMD=([^;]+)/m).test(this.responseText)){
-				sessionID = RegExp.$1;
-			}
+			cookies.forEach(function(cookie){
+				if(cookie.options.value !== 'deleted' && cookie.options.domain){
+					if(cookie.name === 'DMDM'){
+						id = cookie.value;
+					}else if(cookie.name === 'MDMD'){
+						sessionID = cookie.value;
+					}
+				}
+			});
 
 			if(id && sessionID){
 				var exp = new Date();
@@ -218,9 +222,18 @@ var ChaikaBeLogin = {
 				+ "; domain=.2ch.net; path=/; expires=" + aExpires.toUTCString();
 		var sessionIDCookie = "MDMD=" + aSessionID
 				+ "; domain=.2ch.net; path=/; expires=" + aExpires.toUTCString();
+		var loginURI = this._getLoginURI();
 
-		cookieService.setCookieString(this._getLoginURI(), null, idCookie, null);
-		cookieService.setCookieString(this._getLoginURI(), null, sessionIDCookie, null);
+		cookieService.setCookieString(loginURI, null, idCookie, null);
+		cookieService.setCookieString(loginURI, null, sessionIDCookie, null);
+
+		// やっつけ仕事なので怒らないで(^_^;
+		idCookie = idCookie.replace(".2ch.net", ".bbspink.com");
+		sessionIDCookie = sessionIDCookie.replace(".2ch.net", ".bbspink.com");
+		loginURI.spec = loginURI.spec.replace(".2ch.net", ".bbspink.com");
+
+		cookieService.setCookieString(loginURI, null, idCookie, null);
+		cookieService.setCookieString(loginURI, null, sessionIDCookie, null);
 	}
 
 };
