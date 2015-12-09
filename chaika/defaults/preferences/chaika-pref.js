@@ -93,6 +93,7 @@ pref("extensions.chaika.historymenu.thread_max", 6);
 
 pref("extensions.chaika.bbsmenu.bbsmenu_html_url", "http://menu.2ch.net/bbsmenu.html");
 pref("extensions.chaika.bbsmenu.bbsmenu_html_charset", "Shift_JIS");
+pref("extensions.chaika.bbsmenu.2ch_compatible_boards", "");
 pref("extensions.chaika.bbsmenu.toggle_open_container", false);
 pref("extensions.chaika.bbsmenu.tree_size", "small");
 pref("extensions.chaika.bbsmenu.open_single_click", true);
