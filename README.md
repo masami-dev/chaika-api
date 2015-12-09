@@ -1,14 +1,23 @@
 chaika-api
-======
+==========
 
 [chaika](https://github.com/chaika/chaika) に 2ch の API を実装する非公式なプロジェクトです。
 
-* [オンラインヘルプ](https://github.com/masami-dev/chaika-api/wiki)
+* [プロジェクトの概要](https://github.com/masami-dev/chaika-api/wiki)
+* [2ch API 拡張部のオンラインヘルプ](https://github.com/masami-dev/chaika-api/wiki/%E4%BB%98%E5%B1%9E%E6%96%87%E6%9B%B8%28README%29)
+
+###オリジナル版 chaika との違い
+
+このバージョンの chaika は、元々の chaika に対し、2ch API 関連機能のみを追加したものです。  
+2ch API に関係しない変更は一切加えられておらず、アドインのIDもオリジナル版から変更されていません。
 
 #### ベースとなっている本家のコミット
+
+これは、chaika 開発版 (developブランチ) に対して 2ch API 機能を追加したものです。  
+このバージョンにマージされている本家developブランチのコミットハッシュと日時は以下のとおりです。
+
 * **[fa56abc](https://github.com/chaika/chaika/commits/fa56abca4e4a3ea43fe384275745b7d955a8fdc4)** (2015/11/22 15:57:02)
 
-マージされている最新の chaika 開発版 ([develop ブランチ](https://github.com/chaika/chaika/tree/develop)) のコミットハッシュと日時です。
 
 ----
 
