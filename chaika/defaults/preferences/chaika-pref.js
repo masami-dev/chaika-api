@@ -106,7 +106,10 @@ pref("extensions.chaika.board.thread_view_limit", 50);
 pref("extensions.chaika.board.tree_size", "small");
 pref("extensions.chaika.board.open_single_click", true);
 pref("extensions.chaika.board.open_new_tab", false);
+pref("extensions.chaika.board.title_strip", true);
+pref("extensions.chaika.board.title_strip_regexp", "\s*\[(\u7121\u65AD)?\u8EE2\u8F09\u7981\u6B62\]\s?|\s*([\u00A9\u30FB\uFFFD]|\(c\)|&(amp;)?(copy|#169|#65533);)(\d+ch\.net|bbspink\.com)\uFF65?|\t");
 
+pref("extensions.chaika.thread_title_strip", true);
 pref("extensions.chaika.thread_skin", "");
 pref("extensions.chaika.thread_font_name", "sans-serif");
 pref("extensions.chaika.thread_font_size", 16);

@@ -16,6 +16,8 @@
 				name="extensions.chaika.board.open_new_tab" type="bool"/>
 		<preference id="extensions.chaika.board.thread_view_limit"
 				name="extensions.chaika.board.thread_view_limit" type="int"/>
+		<preference id="extensions.chaika.board.title_strip"
+				name="extensions.chaika.board.title_strip" type="bool"/>
 	</preferences>
 
 	<groupbox>
@@ -43,6 +45,8 @@
 					preference="extensions.chaika.board.open_single_click"/>
 			<checkbox label="新しいタブで開く"
 					preference="extensions.chaika.board.open_new_tab"/>
+			<checkbox label="タイトルから [転載禁止] ©2ch.net などを除去して表示する"
+					preference="extensions.chaika.board.title_strip"/>
 		</vbox>
 	</groupbox>
 

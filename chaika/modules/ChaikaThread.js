@@ -128,7 +128,21 @@ ChaikaThread.prototype = {
 	 *
 	 * @type String
 	 */
-	title: null,
+	rawTitle: null,		// ReadOnly(getRawTitle)
+	/**
+	 *
+	 * @type String
+	 */
+	get title(){		// getStrippedTitle
+		return this._strippedTitle;
+	},
+	set title(title){	// setRawTitle
+		this.rawTitle = title;
+		if(title && ChaikaCore.pref.getBool("thread_title_strip")){
+			title = title.replace(new RegExp(ChaikaCore.pref.getUniChar("board.title_strip_regexp"),"g"), "");
+		}
+		this._strippedTitle = title;
+	},
 	/**
 	 *
 	 * @type Number
@@ -287,7 +301,7 @@ ChaikaThread.prototype = {
 				statement.bindStringParameter(1, ChaikaBoard.getBoardID(this.boardURL));
 				statement.bindStringParameter(2, this.url.spec);
 				statement.bindStringParameter(3, this.datID);
-				statement.bindStringParameter(4, this.title);
+				statement.bindStringParameter(4, this.rawTitle);	// データベースの互換性維持のため
 				statement.bindStringParameter(5, "");
 				statement.bindInt32Parameter(6, this.lineCount);
 				statement.bindStringParameter(7, this.lastModified);

@@ -287,7 +287,10 @@ var ThreadTree = {
 		try{
 			while(statement.executeStep()){
 				var threadItem = itemsDoc.createElement("threadItem");
-				threadItem.setAttribute("title",      ChaikaCore.io.unescapeHTML(statement.getString(0)));
+				var title = statement.getString(0);
+				if(ChaikaCore.pref.getBool("board.title_strip"))
+					title = title.replace(new RegExp(ChaikaCore.pref.getUniChar("board.title_strip_regexp"),"g"), "");
+				threadItem.setAttribute("title",      ChaikaCore.io.unescapeHTML(title));
 				threadItem.setAttribute("read",       statement.getInt32(1));
 				threadItem.setAttribute("readSort",   statement.getInt32(1) + 10000);
 				threadItem.setAttribute("datID",      statement.getString(2));

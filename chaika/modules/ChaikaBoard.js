@@ -503,6 +503,9 @@ ChaikaBoard.prototype = {
 				var forceSort = force + sortPlace;
 				var createdSort = parseInt(datID) + (sortPlace * 1000000);
 
+				if(ChaikaCore.pref.getBool("board.title_strip"))
+					title = title.replace(new RegExp(ChaikaCore.pref.getUniChar("board.title_strip_regexp"),"g"), "");
+
 				var itemNode = this.itemsDoc.createElement("boarditem");
 				itemNode.setAttribute("status",     status);
 				itemNode.setAttribute("statusSort", statusSort +":"+ numberReverse);

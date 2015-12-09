@@ -26,6 +26,8 @@
 				name="extensions.chaika.thread_chain_abone" type="bool"/>
 		<preference id="extensions.chaika.refController.enabled"
 				name="extensions.chaika.refController.enabled" type="bool"/>
+		<preference id="extensions.chaika.thread_title_strip"
+				name="extensions.chaika.thread_title_strip" type="bool"/>
 	</preferences>
 
 	<script type="application/x-javascript; version=1.7"
@@ -122,6 +124,8 @@
 		<vbox>
 			<checkbox label="スレッド表示のリンクからはリファラを送らない"
 					preference="extensions.chaika.refController.enabled"/>
+			<checkbox label="スレッドタイトルから [転載禁止] ©2ch.net などを除去して表示する"
+					preference="extensions.chaika.thread_title_strip"/>
 		</vbox>
 	</groupbox>
 

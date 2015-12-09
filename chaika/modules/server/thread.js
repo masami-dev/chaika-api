@@ -588,6 +588,7 @@ Thread2ch.prototype = {
 			var title = resArray[4];
 			this.thread.title = UniConverter.fromSJIS(title);
 
+			title = UniConverter.toSJIS(this.thread.title);	// NOTE: See ../ChaikaThread.js 136-145
 			var header = this.converter.getHeader(title);
 			this.write(header);
 			this._handler.response.flush();
@@ -875,7 +876,7 @@ Thread2ch.prototype = {
 			return;
 		}
 
-		var alertStr = statusBundle.formatStringFromName(alertStrID, [this.thread.title], 1);
+		var alertStr = statusBundle.formatStringFromName(alertStrID, [ChaikaCore.io.unescapeHTML(this.thread.title)], 1);
 		try{
 			var alertsService = Cc["@mozilla.org/alerts-service;1"].getService(Ci.nsIAlertsService);
 			alertsService.showAlertNotification("chrome://chaika/content/icon.png", "Chaika", alertStr, false, "", null);
