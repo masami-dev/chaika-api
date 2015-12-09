@@ -246,6 +246,9 @@ var SearchBox = {
 			case "find2ch":
 				this._textbox.emptyText = "2ch 検索";
 				break;
+			case "ff2ch":
+				this._textbox.emptyText = "2ch 検索 (ff2ch.syoboi.jp)";
+				break;
 			case "boardFilter":
 				this._textbox.emptyText = "フィルタ";
 				break;
@@ -262,6 +265,9 @@ var SearchBox = {
 		switch(this.getSearchMode()){
 			case "find2ch":
 				Find2ch.search(aSearchStr);
+				break;
+			case "ff2ch":
+				Ff2ch.search(aSearchStr);
 				break;
 			case "boardFilter":
 				Bbsmenu.filter(aSearchStr);
@@ -714,6 +720,107 @@ var Find2ch = {
 };
 
 
+
+var Ff2ch = {
+
+	_downloader: null,
+	_infoNode: null,
+
+	search: function Ff2ch_search(aSearchStr){
+		const QUERY_URL = 'http://ff2ch.syoboi.jp/?alt=rss&q=';
+		const ENCODE = 'UTF-8';
+		const QUERY = escape(this._convertEncode(aSearchStr, ENCODE));
+
+		var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+		var url = ioService.newURI(QUERY_URL + QUERY, null, null);
+
+		this._downloader = new ChaikaSimpleDownloader();
+		this._downloader.download(url, ENCODE, this);
+
+		Notification.removeAll();
+		this._infoNode = Notification.info("検索中");
+	},
+
+
+	onStop: function Ff2ch_onStop(aDownloader, aResponse, aHttpStatus){
+		if(aResponse){
+			this.initTree(aResponse);
+		}
+
+		Notification.remove(this._infoNode);
+		this._downloader = null;
+		this._infoNode = null;
+	},
+
+
+	onError: function Ff2ch_onError(aDownloader, aErrorCode){
+		Notification.critical("検索に失敗しました", 2500);
+		Notification.remove(this._infoNode);
+		this._downloader = null;
+		this._infoNode = null;
+	},
+
+	initTree: function Ff2ch_initTree(aResponse){
+		var resultDoc = this._convertDocFromHTML(aResponse);
+		Tree.initTree(resultDoc, MODE_FIND2CH);
+	},
+
+	_convertDocFromHTML: function(aResponseStr){
+		var domParser = Cc["@mozilla.org/xmlextras/domparser;1"]
+				.createInstance(Ci.nsIDOMParser);
+		var findDoc = domParser.parseFromString(aResponseStr, "text/html");
+
+		var resultDoc = document.implementation.createDocument(null, '', null);
+		var root = document.createElement('category');
+
+		var resultObj = {};  //key: board name, value: an array of threads
+		Array.slice(findDoc.querySelectorAll('item')).forEach(function(item){
+			var thread = item.querySelector('title');
+			var threadURI = item.querySelector('guid').textContent.replace(/\d+-\d+$/, '');
+			var threadTitle = thread.textContent;
+			var boardTitle = item.querySelector('category').textContent;
+
+			var threadItem = document.createElement('thread');
+			threadItem.setAttribute('url', threadURI);
+			threadItem.setAttribute('title', threadTitle);
+			threadItem.setAttribute('boardName', boardTitle);
+
+			if(!resultObj[boardTitle]){
+				resultObj[boardTitle] = [];
+			}
+			resultObj[boardTitle].push(threadItem);
+		});
+
+		for(let boardTitle in resultObj){
+			var boardItem = document.createElement('board');
+			boardItem.setAttribute('title', boardTitle);
+			boardItem.setAttribute('isContainer', 'true');
+			boardItem.setAttribute('isOpen', 'true');
+
+			resultObj[boardTitle].forEach(function(threadItem){
+				boardItem.appendChild(threadItem);
+			});
+
+			root.appendChild(boardItem);
+		}
+
+		resultDoc.appendChild(root);
+
+		return resultDoc;
+	},
+
+	_convertEncode: function(aStr, aEncode){
+		var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].getService(Ci.nsIScriptableUnicodeConverter);
+
+		try{
+			converter.charset = aEncode;
+			return converter.ConvertFromUnicode(aStr);
+		}catch(e){
+			return aStr;
+		}
+	}
+
+};
 
 
 var Tree = {
