@@ -302,7 +302,8 @@ var SearchBox = {
 
             boardItem.setAttribute('title', boardTitle);
             boardItem.setAttribute('url', board.url || '');
-            boardItem.setAttribute('type', board.type || ChaikaBoard.BOARD_TYPE_PAGE);
+            // ChaikaBoard.BOARD_TYPE_2CH = 0 なので、有効値0とundefinedの区別が必要
+            boardItem.setAttribute('type', (board.type !== undefined) ? board.type : ChaikaBoard.BOARD_TYPE_PAGE);
 
             //板名フィルタの場合、threadsが空になるが、
             //それ以外の時は板はフォルダ扱いになる
