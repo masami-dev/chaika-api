@@ -3,16 +3,24 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
     <Description about="urn:mozilla:install-manifest"
-                 em:name="chaika"
-                 em:version="1.8.0"
-                 em:description="Textboard reader to enhance your BBS browsing experience, especially for 2ch-like services"
-                 em:id="chaika@chaika.xrea.jp"
+                 em:name="chaika-api"
+                 em:version="1.8.0.11"
+                 em:description="Dedicated browser for 2ch.net (with unauthorized 2ch API support)"
+                 em:id="chaika-api@software.2ch.net"
                  em:type="2"
                  em:unpack="true"
-                 em:homepageURL="https://github.com/chaika/chaika"
+                 em:homepageURL="https://github.com/masami-dev/chaika-api/wiki"
                  em:optionsURL="chrome://chaika/content/settings/settings.xul"
                  em:iconURL="chrome://chaika/content/icon.png"
-                 em:creator="chaika.xrea.jp">
+                 em:creator="masami">
+
+        <em:localized>
+            <Description em:locale="ja"
+                         em:name="chaika-api"
+                         em:description="2ch API サポート等を追加したカスタム版 chaika です"
+                         em:homepageURL="https://github.com/masami-dev/chaika-api/wiki"
+                         em:creator="masami"/>
+        </em:localized>
 
         <em:targetApplication>
             <!-- Firefox -->

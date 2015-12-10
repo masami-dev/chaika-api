@@ -64,7 +64,7 @@ ChaikaService.prototype = {
         var scope = {};
         Components.utils.import("resource://gre/modules/AddonManager.jsm", scope);
         Components.utils.import("resource://chaika-modules/ChaikaAddonInfo.js", scope);
-        scope.AddonManager.getAddonByID("chaika@chaika.xrea.jp", function(aAddon){
+        scope.AddonManager.getAddonByID("chaika-api@software.2ch.net", function(aAddon){
             scope.ChaikaAddonInfo._init(aAddon);
         });
     },
