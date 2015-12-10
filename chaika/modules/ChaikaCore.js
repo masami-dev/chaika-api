@@ -436,6 +436,38 @@ var ChaikaCore = {
         return httpChannel;
     },
 
+
+    /**
+     * 指定した URL がユーザー定義の2ch互換外部板かどうか調べる
+     * 2ch型BBSならtrue, 通常ページならfalse, 未指定ならnull を返す
+     * @param {nsIURI|String} aURL 板トップページのURL
+     * @return {Boolean}
+     */
+    is2chTypeBoard: function ChaikaCore_is2chTypeBoard(aURL){
+        if(!(aURL instanceof Ci.nsIURI)){
+            var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+            aURL = ioService.newURI(aURL, null, null);
+        }
+        var boardList = ChaikaCore.pref.getChar("bbsmenu.2ch_compatible_boards").split(",");
+        for(var i=0; i<boardList.length; i++){
+            var board = boardList[i].trim();
+            var isBBS = (board.charAt(0) != "#");       // true or false
+            if(!isBBS) board = board.slice(1).trim();   // omit leading "#"
+            if(board.charAt(0) == "(" && board.slice(-1) == ")"){   // 正規表現指定
+                try{    // 正規表現構文エラーを無視
+                    if((aURL.hostPort+aURL.path).match(board)) return isBBS;
+                }catch(ex){}
+            }else if(board.charAt(0) == "."){   // ドメイン指定
+                if(aURL.hostPort.indexOf(board) != -1) return isBBS;
+            }else if(board.indexOf("/") != -1){ // ホスト＋パス指定
+                if((aURL.hostPort+aURL.path).indexOf(board) == 0) return isBBS;
+            }else{  // ホスト指定
+                if(aURL.hostPort == board) return isBBS;
+            }
+        }
+        return null;    // not determined
+    },
+
 };
 
 

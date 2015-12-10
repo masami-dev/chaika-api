@@ -906,5 +906,8 @@ ChaikaBoard.getBoardType = function ChaikaBoard_getBoardType(aURL){
     if((aURL.fileName == "read.cgi") && (aURL.query.indexOf("key=") != -1))
             return ChaikaBoard.BOARD_TYPE_OLD2CH;
 
+        // ユーザー定義の2ch互換外部板
+    if(ChaikaCore.is2chTypeBoard(aURL)) return ChaikaBoard.BOARD_TYPE_2CH;
+
     return ChaikaBoard.BOARD_TYPE_PAGE;
 }

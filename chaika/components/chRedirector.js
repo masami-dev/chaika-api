@@ -49,7 +49,16 @@ chRedirector.prototype = {
            host.indexOf(".bbspink.com") == -1 &&
            host != "jbbs.livedoor.jp" &&
            host != "jbbs.shitaraba.net"){
-            return Ci.nsIContentPolicy.ACCEPT;
+            // is2chTypeBoard()で調べる必要のないケースをバイパスする
+            if((host == "localhost" || host == "127.0.0.1") &&
+               aContentLocation.path.substring(0, 8) == "/thread/"){
+                return Ci.nsIContentPolicy.ACCEPT;
+            }
+            // URLの末尾にスレッド番号などが残るが支障はないはず
+            var boardURLSpec = aContentLocation.spec.replace("/test/read.cgi/", "/");
+            if(!ChaikaCore.is2chTypeBoard(boardURLSpec)){
+                return Ci.nsIContentPolicy.ACCEPT;
+            }
         }
 
         if(ChaikaCore.pref.getBool("browser.redirector.throw_bookmarks")){
