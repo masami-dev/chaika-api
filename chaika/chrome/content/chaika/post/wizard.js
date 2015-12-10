@@ -668,13 +668,27 @@ var FormPage = {
 
 			var urlSpec = gBoard.url.spec;
 			var lines = ChaikaCore.io.readString(defaultDataFile, "Shift_JIS")
-							.replace(/\r/g, "\n").split(/\n+/);
+									 .split(/[\n\r]+/);
+
 			for(var i=0; i<lines.length; i++){
-				var data = lines[i].split(/\t+/);
-				if(!(/^\s*(?:;|'|#|\/\/)/).test(data[0]) && urlSpec.indexOf(data[0]) != -1){
-					return (data[1]);
+				// タブがない行は単なる空行
+				if(!lines[i].contains('\t')) continue;
+
+				// コメント行
+				if(/^\s*(?:;|'|#|\/\/)/.test(lines[i])) continue;
+
+				var [boardID, defaultData, target] = lines[i].split(/\t+/);
+
+				if(target && ((target === 'thread' && gWizType !== WIZ_TYPE_NEW_THREAD) ||
+							  (target === 'post' && gWizType !== WIZ_TYPE_RES))){
+					continue;
+				}
+
+				if(urlSpec.contains(boardID)){
+					return defaultData;
 				}
 			}
+
 			return null;
 		}
 
