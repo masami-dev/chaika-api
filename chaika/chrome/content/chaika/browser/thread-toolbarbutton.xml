@@ -534,7 +534,8 @@
 
 				try{
 					if(this._isBoard(url)){
-						this.ChaikaCore.browser.openBoard(url, aAddTab);
+						var boardURL  = this._getPlainURL(url);
+						this.ChaikaCore.browser.openBoard(boardURL, aAddTab);
 					}else{
 						var threadURL = this._getPlainURL(url);
 						this.ChaikaCore.browser.openThread(threadURL, aAddTab, disregardOption, false);
