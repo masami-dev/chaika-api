@@ -1211,7 +1211,8 @@ ChaikaIO.prototype = {
 		return aStr.split('&lt;').join('<')
 					.split('&gt;').join('>')
 					.split('&quot;').join('"')
-					.split('&amp;').join('&');
+					.split('&amp;').join('&')
+					.replace(/&copy;|&#169;/g, '\u00A9');
 	}
 };
 
