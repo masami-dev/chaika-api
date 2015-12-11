@@ -78,40 +78,40 @@ let excludes = {
         /^https?:\/\/\w+\.machi\.to\/\w+\/i\//, // Mobile-version
 
         /* 2ch.net */
-        /find\.2ch\.net/,          // 2ch Search
-        /dig\.2ch\.net/,           // 2ch Thread Search
-        /search\.2ch\.net/,        // 2ch Search
-        /info\.2ch\.net/,          // 2ch Wiki
-        /wiki\.2ch\.net/,          // 2ch Wiki
-        /developer\.2ch\.net/,     // Notice of new specs for 2ch dedicated browser developers
-        /notice\.2ch\.net/,        // Notice of new features for 2ch users and developers
-        /headline\.2ch\.net/,      // Headline on 2ch.net
-        /newsnavi\.2ch\.net/,      // 2channel News Navigator (2NN)
-        /api\.2ch\.net/,           // 2ch API entry point
-        /be\.2ch\.net/,            // 2ch Be 2.0
-        /stats\.2ch\.net/,         // 2ch Hot Threads
-        /c\.2ch\.net/,             // Mobile-version 2ch.net
-        /itest\.2ch\.net/,         // Smartphone-version 2ch.net
-        /i\.2ch\.net/,             // Smartphone-version 2ch.net
-        /menu\.2ch\.net/,          // BBSMENU
-        /p2\.2ch\.net/,            // Ads of Ronin
-        /conbini\.2ch\.net/,       // Ads of Ronin
-        /premium\.2ch\.net/,       // Ads of Ronin
-        /irc\.2ch\.net/,           // IRC
+        /^https?:\/\/find\.2ch\.net\//,         // 2ch Search
+        /^https?:\/\/dig\.2ch\.net\//,          // 2ch Thread Search
+        /^https?:\/\/search\.2ch\.net\//,       // 2ch Search
+        /^https?:\/\/info\.2ch\.net\//,         // 2ch Wiki
+        /^https?:\/\/wiki\.2ch\.net\//,         // 2ch Wiki
+        /^https?:\/\/developer\.2ch\.net\//,    // Notice of new specs for 2ch dedicated browser developers
+        /^https?:\/\/notice\.2ch\.net\//,       // Notice of new features for 2ch users and developers
+        /^https?:\/\/headline\.2ch\.net\//,     // Headline on 2ch.net
+        /^https?:\/\/newsnavi\.2ch\.net\//,     // 2channel News Navigator (2NN)
+        /^https?:\/\/api\.2ch\.net\//,          // 2ch API entry point
+        /^https?:\/\/be\.2ch\.net\//,           // 2ch Be 2.0
+        /^https?:\/\/stats\.2ch\.net\//,        // 2ch Hot Threads
+        /^https?:\/\/c\.2ch\.net\//,            // Mobile-version 2ch.net
+        /^https?:\/\/itest\.2ch\.net\//,        // Smartphone-version 2ch.net
+        /^https?:\/\/i\.2ch\.net\//,            // Smartphone-version 2ch.net
+        /^https?:\/\/menu\.2ch\.net\//,         // BBSMENU
+        /^https?:\/\/p2\.2ch\.net\//,           // Ads of Ronin
+        /^https?:\/\/conbini\.2ch\.net\//,      // Ads of Ronin
+        /^https?:\/\/premium\.2ch\.net\//,      // Ads of Ronin
+        /^https?:\/\/irc\.2ch\.net\//,          // IRC
         /\/test\/bbs\.cgi/,        // CGI for posting
         /^https?:\/\/\w+\.2ch\.net\/.*\.cgi[\?#\s]?[^\/\?]*$/, // Other CGI in 2ch (e.g. madakana.cgi)
         /^https?:\/\/\w+\.2ch\.net\/.*\/kako\//, // Thread archives
 
         /* 2ch.sc */
-        /find\.2ch\.sc/,          // 2ch Search
-        /info\.2ch\.sc/,          // 2ch Wiki
-        /be\.2ch\.sc/,            // 2ch Be 2.0
-        /c\.2ch\.sc/,             // Mobile-version 2ch.net
-        /p2\.2ch\.sc/,            // Ads of Ronin
+        /^https?:\/\/find\.2ch\.sc\//,          // 2ch Search
+        /^https?:\/\/info\.2ch\.sc\//,          // 2ch Wiki
+        /^https?:\/\/be\.2ch\.sc\//,            // 2ch Be 2.0
+        /^https?:\/\/c\.2ch\.sc\//,             // Mobile-version 2ch.net
+        /^https?:\/\/p2\.2ch\.sc\//,            // Ads of Ronin
         /^https?:\/\/\w+\.2ch\.sc\/.*\.cgi[\?#\s]?[^\/\?]*$/, // Other CGI in 2ch (e.g. madakana.cgi)
 
         /* bbspink.com */
-        /headline\.bbspink\.net/,  // Headline on bbspink.com
+        /^https?:\/\/headline\.bbspink\.com\//, // Headline on bbspink.com
     ],
 
     thread: [
