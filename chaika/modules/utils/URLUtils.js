@@ -39,6 +39,9 @@ let includes = {
         /^https?:\/\/ex14\.vip2ch\.com\//,
         /^https?:\/\/\w+\.open2ch\.net\//,
         /^https?:\/\/\w+\.jikkyo\.org\//,
+        /^https?:\/\/rikach\.usamimi\.info\/cgi-bin\/lnanusmm\//,   // part of jikkyo.org
+        /^https?:\/\/livech\.sakura\.ne\.jp\/livesalon\//,          // part of jikkyo.org
+        /^https?:\/\/super2ch\.net\//,
         /^https?:\/\/next2ch\.net\//,
         /^https?:\/\/bbs\.nicovideo\.jp\//,
         /^https?:\/\/\w+\.plusvip\.jp\//,
@@ -59,20 +62,26 @@ let includes = {
 let excludes = {
     bbs: [
         /* extentions possibly unrelated to bbs pages */
-        /\.(?:txt|gif|jpe?g|png|svg|bmp|tiff?|json|js|css|md|csv|pdf|xml|mp3|ogg|wmv|mpe?g|mp4|zip|rar)[\?#\s]?[^\/\?]*$/,
+        /\.(?:txt|gif|jpe?g|png|svg|bmp|tiff?|json|js|css|md|csv|pdf|xml|rdf|rss|atom|mp3|ogg|wmv|mpe?g|mp4|zip|rar)[\?#\s]?[^\/\?]*$/,
 
         /* 2ch-compatible */
         /^https?:\/\/[^\/]+\/$/,                            // top page of each BBS.
         /^https?:\/\/[^\/]+\/\w+\.html?[\?#\s]?[^\/\?]*$/,  // anouncement etc.
+        /\/(?:test|bbs)\/(?!read)[^\/]+\.cgi/,              // related CGIs except read.cgi
+        /\/\w+\/kako\//,                                    // thread archives
+        /subback\.html?/i,                                  // live thread list
         /bbs\.html?/i,                                      // BBSMENU of plusvip.jp etc.
         /bbsmenu\.html?/i,                                  // BBSMENU of most 2ch-compatible BBS.
         /bbstable\.html?/i,                                 // Yet another BBSMENU
-        /\/cbm\//,                                          // CBM Custom BBS Menu provided by jikkyo.org.
 
-        /* Shitaraba */
-        /\/subject\.cgi\//,
-        /\/storage\.cgi\//,
-        /\/notice_mail\.cgi\//,
+        /* jikkyo.org */
+        /^https?:\/\/kita\.jikkyo\.org\/cbm\//,                 // CBM Custom BBS Menu
+        /^https?:\/\/free\.jikkyo\.org\/menu2ch\//,
+        /^https?:\/\/captain\.jikkyo\.org\/wiki\//,             // jikkyo.org wiki
+        /^https?:\/\/captain\.jikkyo\.org\/posts\//,            // jikkyo.org statistics
+        /^https?:\/\/free\.jikkyo\.org\/i\//,                   // Mobile-version Top Menu
+        /^https?:\/\/\w+\.jikkyo\.org\/\w+\/i\//,               // Mobile-version
+        /^https?:\/\/omaira\.jikkyo\.org\//,                    // obsolete server
 
         /* Machi */
         /^https?:\/\/\w+\.machi\.to\/\w+\/i\//, // Mobile-version
@@ -98,9 +107,7 @@ let excludes = {
         /^https?:\/\/conbini\.2ch\.net\//,      // Ads of Ronin
         /^https?:\/\/premium\.2ch\.net\//,      // Ads of Ronin
         /^https?:\/\/irc\.2ch\.net\//,          // IRC
-        /\/test\/bbs\.cgi/,        // CGI for posting
         /^https?:\/\/\w+\.2ch\.net\/.*\.cgi[\?#\s]?[^\/\?]*$/, // Other CGI in 2ch (e.g. madakana.cgi)
-        /^https?:\/\/\w+\.2ch\.net\/.*\/kako\//, // Thread archives
 
         /* 2ch.sc */
         /^https?:\/\/find\.2ch\.sc\//,          // 2ch Search
@@ -108,7 +115,16 @@ let excludes = {
         /^https?:\/\/be\.2ch\.sc\//,            // 2ch Be 2.0
         /^https?:\/\/c\.2ch\.sc\//,             // Mobile-version 2ch.net
         /^https?:\/\/p2\.2ch\.sc\//,            // Ads of Ronin
+        /^https?:\/\/\w+\.2ch\.sc\/\w+\/feed\.html?/,   // feed page
         /^https?:\/\/\w+\.2ch\.sc\/.*\.cgi[\?#\s]?[^\/\?]*$/, // Other CGI in 2ch (e.g. madakana.cgi)
+
+        /* open2ch */
+        /^https?:\/\/find\.open2ch\.net\//,     // open2ch Search
+        /^https?:\/\/wiki\.open2ch\.net\//,     // open2ch Wiki
+        /^https?:\/\/\w+\.open2ch\.net\/menu\//,    // Top Menu
+        /^https?:\/\/\w+\.open2ch\.net\/headline\.cgi/, // Headline on open2ch
+        /^https?:\/\/\w+\.open2ch\.net\/\w+\/i\//,      // Mobile-version
+        /^https?:\/\/\w+\.open2ch\.net\/\w+\/gomi\.html?/,  // deleted thread list
 
         /* bbspink.com */
         /^https?:\/\/headline\.bbspink\.com\//, // Headline on bbspink.com
