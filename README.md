@@ -23,6 +23,10 @@ chaika-api
 * 2ch API サポートの追加 (2ch API extension v0.11a)
 * サイドバーのメニューに chaika-api プロジェクトホームへのリンクを追加
 * スレ一覧で一部の2ch実況板の板名が何れも｢実況せんかいｺﾞﾙｧ！｣になる不具合を修正
+* hanabi.2ch.net など特定の名前のサーバにある板が板と認識されない不具合を修正
+* 本来はchaikaで開けないURLに対してリダイレクタが働いてしまう不具合を修正
+* chaikaスレ一覧のURLで、?url= 以降をURLエンコードされていない形式に統一
+* 板TOPのブラウザ表示で「chaikaで開く」を選ぶと、URLに chaika_force_browser=1 が残るのを修正
 
 
 ----
