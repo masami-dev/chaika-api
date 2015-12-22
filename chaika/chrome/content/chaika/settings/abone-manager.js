@@ -142,10 +142,10 @@ function initList(aAboneData, aListBox){
 		aListBox.removeItemAt(0);
 	}
 
-	for(let [i, value] in aAboneData){
-		if(!value) continue;
+	aAboneData.forEach(function(value){
+		if(!value) return;
 		aListBox.appendItem(value, value);
-	}
+	});
 }
 
 
