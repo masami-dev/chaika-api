@@ -685,7 +685,7 @@ var FormPage = {
                 let relatedAddonList = [];
 
                 aAddons.forEach((aAddon) => {
-                    if(relatedAddonReg.test(aAddon.name) && aAddon.name !== 'chaika'){
+                    if(relatedAddonReg.test(aAddon.name) && aAddon.name !== 'chaika-api'){
                         let addonInfo = aAddon.name + ' ' + aAddon.version;
 
                         if(aAddon.userDisabled){
