@@ -10,6 +10,7 @@
 			em:type="2"
 			em:unpack="true"
 			em:homepageURL="https://github.com/masami-dev/chaika-api/wiki"
+			em:updateURL="https://raw.githubusercontent.com/wiki/masami-dev/chaika-api/update/chaika-api-1.6.rdf"
 			em:optionsURL="chrome://chaika/content/settings/settings.xul"
 			em:iconURL="chrome://chaika/content/icon.png"
 			em:creator="masami">
