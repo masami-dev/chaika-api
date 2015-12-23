@@ -139,19 +139,11 @@ Components.utils.import('resource://chaika-modules/ChaikaAboneManager.js', Chaik
 Components.utils.import('resource://chaika-modules/ChaikaAddonInfo.js', ChaikaBrowserOverlay);
 
 
-ChaikaBrowserOverlay.browserMenu = {
+ChaikaBrowserOverlay.browserMenuBase = {
 
     get _root(){
         return document.getElementsByClassName('chaika-browser-menu')[0];
     },
-
-    /**
-     * browserMenu.xml に処理を移譲する
-     */
-    __noSuchMethod__: function(methodName, args){
-        return this._root[methodName].apply(this._root, args);
-    },
-
 
     start: function(){
         Services.obs.addObserver(this, "chaika-skin-changed", false);
@@ -174,6 +166,25 @@ ChaikaBrowserOverlay.browserMenu = {
     }
 
 };
+
+
+ChaikaBrowserOverlay.browserMenu = new Proxy(ChaikaBrowserOverlay.browserMenuBase, {
+
+    has: function(target, name){
+        return true;
+    },
+
+    get: function(target, name, receiver){
+        if(name in target){
+            return target[name];
+        }
+
+        // Forward the method call to browserMenu.xml
+        let root = target._root;
+        return root[name].bind(root);
+    }
+
+});
 
 
 ChaikaBrowserOverlay.contextMenu = {
