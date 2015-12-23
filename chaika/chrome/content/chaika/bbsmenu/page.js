@@ -118,6 +118,14 @@ var Page = {
 	},
 
 
+	openReleaseNotes2: function Page_openReleaseNotes2(){
+		var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+		var releasenotesURL = ioService.newURI("chrome://chaika/content/api-releasenotes.html", null, null);
+
+		ChaikaCore.browser.openURL(releasenotesURL, true);
+	},
+
+
 	openSettings: function Page_openSettings(){
 		var winMediator = Cc["@mozilla.org/appshell/window-mediator;1"]
 			.getService(Ci.nsIWindowMediator);
