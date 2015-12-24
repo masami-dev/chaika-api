@@ -128,6 +128,11 @@ var Page = {
     },
 
 
+    openReleaseNotes2: function(){
+        this._openURL("chrome://chaika/content/api-releasenotes.html");
+    },
+
+
     openOnlineHelp: function(){
         this._openURL("https://github.com/chaika/chaika/wiki");
     },

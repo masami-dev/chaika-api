@@ -72,10 +72,11 @@
                     </menupopup>
                 </menu>
                 <menuseparator />
-                <menuitem label="リリースノート" oncommand="Page.openReleaseNotes()" />
+                <menuitem label="chaika リリースノート" oncommand="Page.openReleaseNotes()" />
                 <menuitem label="トラブルシューティング情報" oncommand="Page.openSupport()" />
-                <menuitem label="オンラインヘルプ" oncommand="Page.openOnlineHelp()" />
-                <menuitem label="公式サイト" oncommand="Page.openHomePage()" />
+                <menuitem label="chaika オンラインヘルプ" oncommand="Page.openOnlineHelp()" />
+                <menuitem label="chaika 公式サイト" oncommand="Page.openHomePage()" />
+                <menuitem label="chaika-api リリースノート" oncommand="Page.openReleaseNotes2()" />
                 <menuseparator />
                 <menuitem label="FoxAge2ch を開く" id="viewFoxAge2chMenu"
                           hidden="true" oncommand="Page.viewFoxAge2ch()" />
