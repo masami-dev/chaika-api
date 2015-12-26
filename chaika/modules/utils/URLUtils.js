@@ -22,7 +22,7 @@ if(!String.prototype.includes){
 
 
 let includes = {
-    bbs: [
+    board: [
         // Here we make sure these rules begin with "/^https?:\/\/"
         // so that they will keep compatible with TLS-version of these websites.
         // There is a decent posibility of switching from normal HTTP to SSL/TLS
@@ -60,7 +60,7 @@ let includes = {
 };
 
 let excludes = {
-    bbs: [
+    board: [
         /* extentions possibly unrelated to bbs pages */
         /\.(?:txt|gif|jpe?g|png|svg|bmp|tiff?|json|js|css|md|csv|pdf|xml|rdf|rss|atom|mp3|ogg|wmv|mpe?g|mp4|zip|rar)[\?#\s]?[^\/\?]*$/,
 
@@ -168,16 +168,7 @@ this.URLUtils = {
      * @return {Bool}
      */
     isBBS: function(aURL){
-        if(this.isChaikafied(aURL)){
-            return true;
-        }
-
-        if(!aURL.startsWith('http')){
-            return false;
-        }
-
-        return includes.bbs.some((regexp) => regexp.test(aURL)) &&
-               !excludes.bbs.some((regexp) => regexp.test(aURL));
+        return this.isThread(aURL) || this.isBoard(aURL);
     },
 
 
@@ -188,7 +179,22 @@ this.URLUtils = {
      * @return {Bool}
      */
     isBoard: function(aURL){
-        return this.isBBS(aURL) && !this.isThread(aURL);
+        if(this.isThread(aURL)){
+            return false;
+        }
+
+        if(this.isChaikafied(aURL)){
+            return true;
+        }
+
+        if(!aURL.startsWith('http')){
+            return false;
+        }
+
+        let url = aURL.replace(/[\?#].*$/, '');
+
+        return includes.board.some((regexp) => regexp.test(url)) &&
+               !excludes.board.some((regexp) => regexp.test(url));
     },
 
 
