@@ -262,11 +262,6 @@
         },
 
 
-        openHomePage2: function(){
-            this._openURL("https://github.com/masami-dev/chaika-api/wiki");
-        },
-
-
         openSettings: function(){
             this._openDialog("chrome://chaika/content/settings/settings.xul", "chaika:settings");
         },
