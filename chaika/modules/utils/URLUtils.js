@@ -189,7 +189,19 @@ this.URLUtils = {
      * @return {Bool}
      */
     isBBS: function(aURL){
-        return this.isThread(aURL) || this.isBoard(aURL);
+        if(this.isChaikafied(aURL)){
+            return true;
+        }
+
+        if(!aURL.startsWith('http')){
+            return false;
+        }
+
+        let url = aURL.replace(/[\?#].*$/, '')
+                      .replace(/\/(?:test|bbs)\/read\.cgi\/(.+?)\/\d{9,}.*$/, '/$1/');
+
+        return includes.board.some((regexp) => regexp.test(url)) &&
+               !excludes.board.some((regexp) => regexp.test(url));
     },
 
 
@@ -200,22 +212,7 @@ this.URLUtils = {
      * @return {Bool}
      */
     isBoard: function(aURL){
-        if(this.isThread(aURL)){
-            return false;
-        }
-
-        if(this.isChaikafied(aURL)){
-            return true;
-        }
-
-        if(!aURL.startsWith('http')){
-            return false;
-        }
-
-        let url = aURL.replace(/[\?#].*$/, '');
-
-        return includes.board.some((regexp) => regexp.test(url)) &&
-               !excludes.board.some((regexp) => regexp.test(url));
+        return this.isBBS(aURL) && !this.isThread(aURL);
     },
 
 
