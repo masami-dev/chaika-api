@@ -51,7 +51,7 @@ let includes = {
         /^https?:\/\/mch\.qp\.land\.to\/2ch\/$/,            // part of m-ch.jp bbs
         /^https?:\/\/7gon\.net\/\w+\/$/,
         /^https?:\/\/uravip\.tonkotsu\.jp\/\w+\/$/,         // alias of 7gon.net
-        /^https?:\/\/septagon\.s602\.xrea\.com\/\w+\/$/,	// part of 7gon.net bbs
+        /^https?:\/\/septagon\.s602\.xrea\.com\/\w+\/$/,    // part of 7gon.net bbs
         /^https?:\/\/saradabird\.com\/\w+\/$/,
         /^https?:\/\/\w+\.mmobbs\.com\/\w+\/$/,
         /^https?:\/\/free2\.ch\/(?:original\/)?\w+\/$/,
