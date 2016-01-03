@@ -147,11 +147,6 @@ let excludes = {
     ],
 
     thread: [
-        /* 2ch.net */
-        /^https?:\/\/itest\.2ch\.net\//,        // Smartphone-version 2ch.net
-        /^https?:\/\/iand2ch\.net\//,           // Smartphone-version 2ch.net
-        /* 2ch.sc */
-        /^https?:\/\/sp\.2ch\.sc\//,            // Smartphone-version 2ch.sc
     ]
 }
 
