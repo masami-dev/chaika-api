@@ -292,7 +292,7 @@
             }
 
             this._buildVisibleNodes();
-            this._treeBoxObject.rowCountChanged(1, this.rowCount - lastRowCount);
+            this._treeBoxObject.rowCountChanged(index + 1, this.rowCount - lastRowCount);
             this._treeBoxObject.invalidate();
 
             this._treeBoxObject.ensureRowIsVisible(this._visibleNodes.indexOf(folder));
