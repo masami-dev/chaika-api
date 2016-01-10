@@ -26,6 +26,7 @@
 
             this._createMenu(engineMenu);
             this.setSearchEngine(ChaikaCore.pref.getChar('bbsmenu.search.default_engine_name'));
+            this._initEvent(searchBox);
         },
 
         /**
@@ -48,6 +49,17 @@
                 });
 
                 root.appendChild(menuitem);
+            });
+        },
+
+        /**
+         * サーチボックスで上下矢印キーを押すと検索メニューが出るようにする
+         * @param {Element} searchBox
+         */
+        _initEvent: function(searchBox){
+            searchBox.addEventListener('keydown', (event) => {
+                if(event.key != 'ArrowUp' && event.key != 'ArrowDown') return;
+                this._engineMenu.openPopup(event.target, 'after_start', 0, 0, false, false);
             });
         },
 
