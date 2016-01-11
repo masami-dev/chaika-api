@@ -46,6 +46,10 @@
 
                 menuitem.addEventListener('command', (event) => {
                     this.setSearchEngine(event.target.getAttribute('value'));
+                    // サーチボックスに何か入力されていれば検索する
+                    if(this._searchBox.value){
+                        this._searchBox.doCommand();
+                    }
                 });
 
                 root.appendChild(menuitem);
