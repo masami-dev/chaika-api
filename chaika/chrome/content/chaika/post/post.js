@@ -162,19 +162,18 @@ Post.prototype = {
         preview["vlinkColor"] = getSetting("BBS_VLINK_COLOR");
 
 
-        var name = convertEntity(this.name || getSetting("BBS_NONAME_NAME") || "");
-        name = name.replace("◆", "◇", "g");
-
+        var name = this.name || getSetting("BBS_NONAME_NAME") || "";
 
         // トリップ変換
-        var tripPos = name.indexOf("#");
+        var nameKey = name.match(/^(.*?)(#.*)?$/);
+        var tripKey = nameKey[2];
+        name = convertEntity(nameKey[1]).replace(/◆/g, "◇");
 
-        if(tripPos !== -1){
-            let tripKey = name.substring(tripPos);
+        if(tripKey){
             let trip = Trip.getTrip(tripKey);
 
             name = [
-                name.substring(0, tripPos),
+                name,
                 " <span class='resSystem'>",
                 "◆",
                 trip,
