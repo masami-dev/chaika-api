@@ -672,7 +672,7 @@ var FormPage = {
 
 			for(var i=0; i<lines.length; i++){
 				// タブがない行は単なる空行
-				if(!lines[i].contains('\t')) continue;
+				if(lines[i].indexOf('\t') == -1) continue;
 
 				// コメント行
 				if(/^\s*(?:;|'|#|\/\/)/.test(lines[i])) continue;
@@ -684,7 +684,7 @@ var FormPage = {
 					continue;
 				}
 
-				if(urlSpec.contains(boardID)){
+				if(urlSpec.indexOf(boardID) != -1){
 					return defaultData;
 				}
 			}
