@@ -4,7 +4,6 @@
 this.EXPORTED_SYMBOLS = ["ChaikaBoard"];
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
 Components.utils.import("resource://chaika-modules/ChaikaContentReplacer.js");
-Components.utils.import("resource://chaika-modules/utils/URLUtils.js");
 
 
 const Ci = Components.interfaces;
@@ -918,9 +917,6 @@ ChaikaBoard.getBoardType = function ChaikaBoard_getBoardType(aURL){
     if(aURL.directory.indexOf("/test/read.cgi/") != -1) return ChaikaBoard.BOARD_TYPE_2CH;
     if((aURL.fileName == "read.cgi") && (aURL.query.indexOf("key=") != -1))
             return ChaikaBoard.BOARD_TYPE_OLD2CH;
-
-        // その他の2ch互換外部板
-    if(URLUtils.isBBS(aURL.spec)) return ChaikaBoard.BOARD_TYPE_2CH;
 
     return ChaikaBoard.BOARD_TYPE_PAGE;
 }

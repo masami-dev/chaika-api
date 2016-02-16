@@ -6,6 +6,7 @@ Components.utils.import("resource://chaika-modules/ChaikaCore.js");
 Components.utils.import("resource://chaika-modules/ChaikaBoard.js");
 Components.utils.import("resource://chaika-modules/ChaikaThread.js");
 Components.utils.import("resource://chaika-modules/ChaikaBBSMenu.js");
+Components.utils.import("resource://chaika-modules/utils/URLUtils.js");
 
 
 const Ci = Components.interfaces;
@@ -28,13 +29,10 @@ function startup(){
 
     ThreadUpdateObserver.startup();
 
-    ChaikaBBSMenu.getXML().then((xml) => {
-        BBSData.init(xml);
-    }).catch((ex) => {
-        ChaikaCore.logger.error(ex);
-    }).then(() => {
-        BoardTree.initTree();
-    });
+    ChaikaBBSMenu.getXML()
+        .then((xml) => BBSData.init(xml))
+        .catch((ex) => ChaikaCore.logger.error(ex))
+        .then(() => BoardTree.initTree());
 }
 
 
@@ -98,22 +96,18 @@ var BBSData = {
     _bbsData: {},
 
     init: function BBSData_init(aXml){
-        let ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-
         Array.from(aXml.getElementsByTagName("board")).forEach((node) => {
             let title = node.getAttribute("title");
-            let url = ioService.newURI(node.getAttribute("url"), null, null);
-            let type = ChaikaBoard.getBoardType(url);
-            if(type != ChaikaBoard.BOARD_TYPE_PAGE){
-                let id = ChaikaBoard.getBoardID(url);
-                this._bbsData[id] = { title: title, url: url.spec, type: type };
+            let url = node.getAttribute("url");
+            if(URLUtils.isBBS(url)){
+                let id = ChaikaBoard.getBoardID(Services.io.newURI(url, null, null));
+                this._bbsData[id] = { title: title, url: url };
             }
         });
     },
 
     lookup: function BBSData_lookup(aBoardID){
-        return this._bbsData[aBoardID] ||
-                { title: aBoardID, url: "", type: ChaikaBoard.BOARD_TYPE_2CH };
+        return this._bbsData[aBoardID] || { title: aBoardID, url: "" };
     }
 
 };
@@ -156,7 +150,7 @@ var BoardTree = {
                 boardItem.setAttribute("title", board.title);
                 boardItem.setAttribute("id",    statement.getString(0));
                 boardItem.setAttribute("url",   board.url);
-                boardItem.setAttribute("type",  board.type);
+                boardItem.setAttribute("type",  "0");
                 if(!boardItem.getAttribute("url")){
                     var threadURL = ioService.newURI(statement.getString(1), null, null);
                     var boardURL =  ChaikaThread.getBoardURL(threadURL);
@@ -294,7 +288,7 @@ var ThreadTree = {
                 threadItem.setAttribute("readSort",   statement.getInt32(1) + 10000);
                 threadItem.setAttribute("datID",      statement.getString(2));
                 threadItem.setAttribute("boardID",    statement.getString(3));
-                threadItem.setAttribute("type",       board.type);
+                threadItem.setAttribute("type",       "0");
                 threadItem.setAttribute("boardTitle", board.title);
                 threadItem.setAttribute("url",        statement.getString(4));
                 threadItem.setAttribute("created",    statement.getString(5));
