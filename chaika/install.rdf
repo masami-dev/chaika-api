@@ -9,6 +9,7 @@
                  em:id="chaika-api@software.2ch.net"
                  em:type="2"
                  em:unpack="true"
+                 em:multiprocessCompatible="true"
                  em:homepageURL="https://github.com/masami-dev/chaika-api/wiki"
                  em:updateURL="https://raw.githubusercontent.com/wiki/masami-dev/chaika-api/update/chaika-api-1.8.rdf"
                  em:optionsURL="chrome://chaika/content/settings/settings.xul"
