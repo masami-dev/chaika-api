@@ -827,6 +827,12 @@ Thread2ch.prototype = {
             this.httpChannel.setRequestHeader("If-Modified-Since", this.thread.lastModified, false);
         }
 
+        if(!aDisableRange && !this._maruMode && !this._mimizunMode){
+            let urls = ChaikaCore.pref.getChar("thread_no_range_request_urls").trim();
+            let threadURL = this.thread.plainURL.spec;
+            aDisableRange = !!urls && urls.split(/\s+/).some((url) => threadURL.includes(url));
+        }
+
         if(!aDisableRange && this.thread.datFile.exists()){
             // 差分 GET
             // あぼーんされたか調べるために1byte余計に取得する
