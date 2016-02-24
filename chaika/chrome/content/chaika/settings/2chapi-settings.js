@@ -2,6 +2,7 @@
  * 2chapi-settings.js - 2ch API extension for chaika - 設定ダイアログ・コード
  *
  * このファイルのあるべき位置：chrome/content/chaika/settings/2chapi-settings.js
+ * 註：このファイルは chaika 1.8.0 以降専用です。chaika 1.7.3 以前では動作しません。
  *
  * Written by masami ◆U7rHG6DINI
  * 使用条件・ライセンス等については chaika 本体に準じます。
@@ -58,7 +59,7 @@ var g2chApiPane = {
 
             var onPrefChange = function(){ applyButton.disabled = false; };
             var prefNodes = document.getElementsByTagName("preference");
-            Array.slice(prefNodes).forEach(function(node){
+            Array.from(prefNodes).forEach(function(node){
                 node.addEventListener("change", onPrefChange, false);
             });
         }
@@ -385,7 +386,7 @@ PreferenceManager.prototype = {
         // 現在の設定を this.preferences へ保存
         this.preferences = {};
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             if(this._prefTable[name]){
                 this.preferences[name] = node.value;
@@ -538,7 +539,7 @@ PreferenceManager.prototype = {
         }
 
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             var value = preferences[name];
             if(value !== undefined) node.value = value;
@@ -620,7 +621,7 @@ PreferenceManager.prototype = {
                         "[chaika2chApi]"];
         var index = fileText.length;
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             var pref = this._prefTable[name];
             if(!pref) return;   // next
@@ -658,7 +659,7 @@ PreferenceManager.prototype = {
         if(!result) return;
 
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             var pref = this._prefTable[name];
             if(pref && pref.iskey) node.value = "";
@@ -681,7 +682,7 @@ PreferenceManager.prototype = {
         if(!result) return;
 
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             var pref = this._prefTable[name];
             if(pref && (!excludeKey.value || !pref.iskey)){
@@ -730,7 +731,7 @@ function setContainerDisabledEx(aPref, aContainerID, ...aEnabledValues){
     container.disabled = disabled;
 
     var childNodes = container.getElementsByTagName("*");
-    Array.slice(childNodes).forEach(function(node){
+    Array.from(childNodes).forEach(function(node){
         node.disabled = disabled;
     });
 
