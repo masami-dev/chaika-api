@@ -56,11 +56,10 @@ var g2chApiPane = {
             var cancelButton = prefWindow.getButton("cancel");
             cancelButton.parentNode.insertBefore(applyButton, cancelButton.nextSibling);
 
+            var onPrefChange = function(){ applyButton.disabled = false; };
             var prefNodes = document.getElementsByTagName("preference");
             Array.slice(prefNodes).forEach(function(node){
-                node.addEventListener("change", function(){
-                    applyButton.disabled = false;
-                });
+                node.addEventListener("change", onPrefChange, false);
             });
         }
 
@@ -126,13 +125,11 @@ var g2chApiPane = {
         if(!getPrefValue("enabled")) return true;
 
         // 必須設定項目のチェック
-        var emptyPrefs = [];
-        ["api_url", "auth_url", "appkey", "hmkey"].forEach(function(name){
+        var emptyPrefs = ["api_url", "auth_url", "appkey", "hmkey"].filter(function(name){
             var value = getPrefValue(name);
-            if(value == null || !value.trim()){
-                var label = document.getElementsByAttribute("control", name).item(0);
-                emptyPrefs.push(label.value);
-            }
+            return value == null || !value.trim();
+        }).map(function(name){
+            return document.getElementsByAttribute("control", name).item(0).value;
         });
         if(emptyPrefs.length != 0){
             this.selectTab("tabAPI");
@@ -457,11 +454,12 @@ PreferenceManager.prototype = {
         if(aEvent.type == "dragenter" || aEvent.type == "dragover" || aEvent.type == "drop"){
             var dt = aEvent.dataTransfer;
             if(dt.mozItemCount > 1) return;
-            var type = null;
-            ["application/x-moz-file", "text/plain"].some(function(value){
-                return dt.types.contains(value) ? (type = value, true) : false;
-            });
-            if(type == null) return;
+
+            var type = ["application/x-moz-file", "text/plain"].filter(function(value){
+                return dt.types.contains(value);
+            })[0];
+            if(type === undefined) return;
+
             // textbox への Drag&Drop はデフォルト動作のままとする
             if(type == "text/plain" && aEvent.target.tagName == "textbox") return;
 
@@ -777,20 +775,16 @@ PreferenceManager.prototype = {
  * settings.js にある setContainerDisabled の機能強化版
  * aEnabledValue を複数指定できるようにしたもの
  */
-function setContainerDisabledEx(aPref, aContainerID, aEnabledValue){
+function setContainerDisabledEx(aPref, aContainerID, ...aEnabledValues){
     var prefValue = document.getElementById(aPref).value;
     var container = document.getElementById(aContainerID);
-    var disabled;
 
-    if(arguments.length > 3){
-        disabled = Array.slice(arguments,2).every(function(arg){
-            return (prefValue !== arg);
-        });
-    }else{
-        disabled = (prefValue !== aEnabledValue);
-    }
+    var disabled = aEnabledValues.every(function(value){
+        return prefValue !== value;
+    });
 
     container.disabled = disabled;
+
     var childNodes = container.getElementsByTagName("*");
     Array.slice(childNodes).forEach(function(node){
         node.disabled = disabled;
