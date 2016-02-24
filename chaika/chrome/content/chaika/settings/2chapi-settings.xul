@@ -73,8 +73,6 @@
             <menupopup position="after_end">
                 <menuitem value="loadFile" label="設定をファイルから読み込み..."/>
                 <menuseparator/>
-                <menuitem value="loadClip" label="設定をクリップボードから読み込み"/>
-                <menuseparator value="loadClip"/>
                 <menuitem value="saveAll"  label="すべての設定をファイルへ保存..."/>
                 <menuitem value="saveKey"  label="KeyとUAのみをファイルへ保存..."/>
                 <menuseparator/>
