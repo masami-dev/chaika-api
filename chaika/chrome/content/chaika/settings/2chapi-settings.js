@@ -378,9 +378,6 @@ PreferenceManager.prototype = {
         this.menuButton = document.getElementById(aMenuButtonID);
         this.dropTarget = document.getElementById(aDropTargetID);
         this.menuButton.addEventListener("command", this, false);
-        this.menuButton.addEventListener("keydown", this, false);
-        this.menuButton.addEventListener("mousedown", this, false);
-        this.menuButton.addEventListener("popupshowing", this, false);
         this.dropTarget.addEventListener("dragenter", this, false);
         this.dropTarget.addEventListener("dragover", this, false);
         this.dropTarget.addEventListener("drop", this, false);
@@ -401,9 +398,6 @@ PreferenceManager.prototype = {
      */
     shutdown: function PreferenceManager_shutdown(){
         this.menuButton.removeEventListener("command", this, false);
-        this.menuButton.removeEventListener("keydown", this, false);
-        this.menuButton.removeEventListener("mousedown", this, false);
-        this.menuButton.removeEventListener("popupshowing", this, false);
         this.dropTarget.removeEventListener("dragenter", this, false);
         this.dropTarget.removeEventListener("dragover", this, false);
         this.dropTarget.removeEventListener("drop", this, false);
@@ -416,7 +410,6 @@ PreferenceManager.prototype = {
         if(aEvent.type == "command"){
             switch(aEvent.target.value){
                 case "loadFile": this.loadFromFile(null);  break;
-                case "loadClip": this.loadFromClipboard(); break;
                 case "saveAll":  this.saveToFile(false);   break;
                 case "saveKey":  this.saveToFile(true);    break;
                 case "clearKey": this.clearKeys();         break;
@@ -427,27 +420,6 @@ PreferenceManager.prototype = {
                 case "version":  this.showVersion();       break;
             }
             return;
-        }
-
-        if(aEvent.type == "keydown" || aEvent.type == "mousedown"){
-            // 本来は popupshowing の方でやるべきことだが、
-            // そちらでは shiftKey の状態が得られないので
-            if(aEvent.target != this.menuButton) return;
-            if(aEvent.type == "keydown" && aEvent.keyCode != aEvent.DOM_VK_F4 ||
-               aEvent.type == "mousedown" && aEvent.button != 0) return;
-            var menuNodes = aEvent.target.getElementsByAttribute("value", "loadClip");
-            Array.slice(menuNodes).forEach(function(node){
-                node.hidden = !aEvent.shiftKey;
-            });
-            return;
-        }
-        if(aEvent.type == "popupshowing"){
-            if(aEvent.target.parentNode != this.menuButton) return;
-            var loadClip = aEvent.target.getElementsByAttribute("value", "loadClip").item(0);
-            if(loadClip.hidden) return;
-            var clip = Cc["@mozilla.org/widget/clipboard;1"].getService(Ci.nsIClipboard);
-            loadClip.disabled =
-                !clip.hasDataMatchingFlavors(["text/unicode"], 1, clip.kGlobalClipboard);
         }
 
         // ファイル/テキストの Drag&Drop
@@ -478,34 +450,6 @@ PreferenceManager.prototype = {
             }
             return;
         }
-    },
-
-    /**
-     * 設定をクリップボードから読み込む
-     */
-    loadFromClipboard: function PreferenceManager_loadFromClipboard(){
-        var trans = Cc["@mozilla.org/widget/transferable;1"]
-                    .createInstance(Ci.nsITransferable);
-        trans.init(null);
-        trans.addDataFlavor("text/unicode");
-
-        var clip = Cc["@mozilla.org/widget/clipboard;1"].getService(Ci.nsIClipboard);
-        clip.getData(trans, clip.kGlobalClipboard);
-
-        var text = { value: null };
-        try{
-            trans.getTransferData("text/unicode", text, {});
-        }catch(ex){}
-
-        if(!(text.value instanceof Ci.nsISupportsString)){
-            var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-                          .getService(Ci.nsIPromptService);
-            prompts.alert(window, "設定をクリップボードから読み込み",
-                                  "クリップボードにテキストデータがありません");
-            return;
-        }
-
-        this.loadFromText(text.value.data, false);
     },
 
     /**
