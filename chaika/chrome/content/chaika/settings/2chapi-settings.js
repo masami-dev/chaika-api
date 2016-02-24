@@ -33,6 +33,18 @@ const AUTH_INTERVAL_MAX = 86400;    // 認証間隔の最大値(秒)
 const WAKE_DELAY_MAX    = 999;      // スリープ解除時待ち時間の最大値(秒)
 
 
+/**
+ * Polyfill for future changes
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=1222547
+ */
+if(!Array.slice){
+    Array.slice = function(){'use strict';
+        var method = Array.prototype.slice;
+        return method.call.apply(method, arguments);
+    };
+}
+
+
 var g2chApiPane = {
 
     /**
