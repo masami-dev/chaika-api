@@ -62,6 +62,10 @@
 	  font-weight: bold;
 	}
 
+	td.sid {
+	  word-break: break-all;
+	}
+
 ]]></style>
 
 <script type="application/javascript"><![CDATA[
@@ -239,6 +243,9 @@
 			tr.appendChild(name);
 
 			var value = document.createElement('td');
+			if(aElement.indexOf('session_id') != -1){
+				value.classList.add('sid');
+			}
 			value.textContent = getPrefValue(aElement);
 			tr.appendChild(value);
 
