@@ -471,9 +471,9 @@ var Chaika2chApi = {
         cryptoHMAC.update(dataArray, dataArray.length);
         var binHMAC = cryptoHMAC.finish(false);
 
-        var hexHMAC = [];
+        var hexHMAC = new Array(binHMAC.length);
         for(var i=0; i<binHMAC.length; i++){
-            hexHMAC.push(("0" + binHMAC.charCodeAt(i).toString(16)).slice(-2));
+            hexHMAC[i] = (0x100 + binHMAC.charCodeAt(i)).toString(16).slice(-2);
         }
         return hexHMAC.join("");
     },
