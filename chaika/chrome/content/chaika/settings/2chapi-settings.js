@@ -6,6 +6,7 @@
  *
  * Written by masami ◆U7rHG6DINI
  * 使用条件・ライセンス等については chaika 本体に準じます。
+ * MPL 1.1/GPL 2.0/LGPL 2.1 のいずれかのライセンスが定める条件に従ってください。
  *
  * 註：このファイルは、オリジナルの bbs2chreader/chaika の構成要素ではありません。
  *     この 2ch API extension for chaika は、オリジナルの bbs2chreader/chaika の
@@ -14,7 +15,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/12/08 18:50:00
+ * Last Modified : 2016/02/26 20:50:00
  */
 
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
