@@ -259,7 +259,7 @@ var BoardTree = {
     initTree: function BoardTree_initTree(aNoFocus){
         this.tree = document.getElementById("boardTree");
 
-        this.changeTreeSize();
+        this.tree.classList.add('tree-text-' + ChaikaCore.pref.getChar("board.tree_size"));
         setPageTitle();
 
         if(this.firstInitBoardTree){
@@ -370,7 +370,7 @@ var BoardTree = {
     changeTreeSize: function BoardTree_changeTreeSize(){
         this.tree.collapsed = true;
 
-        this.tree.className = this.tree.className.replace(/tree-text-\W+/g, '');
+        this.tree.className = this.tree.className.replace(/tree-text-\w+/g, '');
         this.tree.classList.add('tree-text-' + ChaikaCore.pref.getChar("board.tree_size"));
 
         setTimeout(() => this.tree.collapsed = false, 0);

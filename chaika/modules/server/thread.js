@@ -827,6 +827,12 @@ Thread2ch.prototype = {
             this.httpChannel.setRequestHeader("If-Modified-Since", this.thread.lastModified, false);
         }
 
+        if(!aDisableRange && !this._maruMode && !this._mimizunMode){
+            let urls = ChaikaCore.pref.getChar("thread_no_range_request_urls").trim();
+            let threadURL = this.thread.plainURL.spec;
+            aDisableRange = !!urls && urls.split(/\s+/).some((url) => threadURL.includes(url));
+        }
+
         if(!aDisableRange && this.thread.datFile.exists()){
             // 差分 GET
             // あぼーんされたか調べるために1byte余計に取得する
@@ -1404,11 +1410,8 @@ Id2Color.prototype = {
         var cache = (aIsBackground) ? this._bgcache : this._cache;
 
         if(!(aID in cache)){
-            var newint = 0;
-            for each(var s in aID){
-                newint <<= 3;
-                newint |= this._char64To8[s];
-            }
+            var newint = Array.from(aID).reduce((p, c) => (p << 3) | this._char64To8[c], 0);
+
             // hsl(0-360,0-100%,0-100%);
             var h = newint%360;
             newint = Math.floor(newint/360);

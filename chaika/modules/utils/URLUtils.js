@@ -49,8 +49,8 @@ let includes = {
         /^https?:\/\/\w+\.plusvip\.jp\/\w+\/$/,
         /^https?:\/\/\w+\.m-ch\.jp\/\w+\/$/,
         /^https?:\/\/mch\.qp\.land\.to\/2ch\/$/,            // part of m-ch.jp bbs
-        /^https?:\/\/7gon\.net\/\w+\/$/,
         /^https?:\/\/uravip\.tonkotsu\.jp\/\w+\/$/,         // alias of 7gon.net
+        /^https?:\/\/7gon\.net\/\w+\/$/,
         /^https?:\/\/septagon\.s602\.xrea\.com\/\w+\/$/,    // part of 7gon.net bbs
         /^https?:\/\/saradabird\.com\/\w+\/$/,
         /^https?:\/\/\w+\.mmobbs\.com\/\w+\/$/,
@@ -125,6 +125,8 @@ let excludes = {
         /^https?:\/\/kita\.jikkyo\.org\/cbm\//,         // CBM Custom BBS Menu
         /^https?:\/\/free\.jikkyo\.org\/menu2ch\//,     // jikkyo board data
         /^https?:\/\/free\.jikkyo\.org\/i\//,           // Mobile-version Top Page
+        /^https?:\/\/free\.jikkyo\.org\/j\//,           // jikkyo.org jump service
+        /^https?:\/\/captain\.jikkyo\.org\/j\//,        // jikkyo.org jump service
         /^https?:\/\/captain\.jikkyo\.org\/wiki\//,     // jikkyo.org wiki
         /^https?:\/\/captain\.jikkyo\.org\/posts\//,    // jikkyo.org statistics
         /^https?:\/\/captain\.jikkyo\.org\/cat\//,      // JLAB uploader
@@ -230,7 +232,7 @@ this.URLUtils = {
     unchaikafy: function(aURL){
         return aURL.replace(this.serverURL + 'thread/', '')
                    .replace(/^chaika:\/\/[a-z]*\/?/, '')
-                   .replace(/^chrome:\/\/chaika\/content\/board\/page\.xul\?(?:.*&)?url=([^&]*).*$/, '$1');
+                   .replace(/^chrome:\/\/chaika\/content\/board\/page\.xul\?(?:.*&)?url=([^&#]*).*$/, '$1');
     },
 
 

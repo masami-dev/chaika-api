@@ -131,6 +131,7 @@ pref("extensions.chaika.thread_get_log_from_mimizun", false);
 pref("extensions.chaika.thread_alert_got_log", true);
 pref("extensions.chaika.dat.self-repair.enabled", false);
 pref("extensions.chaika.warn_when_delete_log", true);
+pref("extensions.chaika.thread_no_range_request_urls", "");
 
 // abone
 pref('extensions.chaika.abone.warn_when_delete', true);
