@@ -49,8 +49,8 @@ let includes = {
         /^https?:\/\/\w+\.plusvip\.jp\/\w+\/$/,
         /^https?:\/\/\w+\.m-ch\.jp\/\w+\/$/,
         /^https?:\/\/mch\.qp\.land\.to\/2ch\/$/,            // part of m-ch.jp bbs
-        /^https?:\/\/7gon\.net\/\w+\/$/,
         /^https?:\/\/uravip\.tonkotsu\.jp\/\w+\/$/,         // alias of 7gon.net
+        /^https?:\/\/7gon\.net\/\w+\/$/,
         /^https?:\/\/septagon\.s602\.xrea\.com\/\w+\/$/,    // part of 7gon.net bbs
         /^https?:\/\/saradabird\.com\/\w+\/$/,
         /^https?:\/\/\w+\.mmobbs\.com\/\w+\/$/,
@@ -232,7 +232,7 @@ this.URLUtils = {
     unchaikafy: function(aURL){
         return aURL.replace(this.serverURL + 'thread/', '')
                    .replace(/^chaika:\/\/[a-z]*\/?/, '')
-                   .replace(/^chrome:\/\/chaika\/content\/board\/page\.xul\?(?:.*&)?url=([^&]*).*$/, '$1');
+                   .replace(/^chrome:\/\/chaika\/content\/board\/page\.xul\?(?:.*&)?url=([^&#]*).*$/, '$1');
     },
 
 

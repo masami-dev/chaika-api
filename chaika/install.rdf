@@ -4,7 +4,7 @@
 
     <Description about="urn:mozilla:install-manifest"
                  em:name="chaika-api"
-                 em:version="1.8.0.11.6"
+                 em:version="1.8.1.12pre"
                  em:description="Dedicated browser for 2ch.net (with unauthorized 2ch API support)"
                  em:id="chaika-api@software.2ch.net"
                  em:type="2"
@@ -28,7 +28,7 @@
             <!-- Firefox -->
             <Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                          em:minVersion="38.0"
-                         em:maxVersion="42.*"/>
+                         em:maxVersion="44.*"/>
         </em:targetApplication>
     </Description>
 </RDF>
