@@ -2,9 +2,11 @@
  * 2chapi-settings.js - 2ch API extension for chaika - 設定ダイアログ・コード
  *
  * このファイルのあるべき位置：chrome/content/chaika/settings/2chapi-settings.js
+ * 註：このファイルは chaika 1.8.0 以降専用です。chaika 1.7.3 以前では動作しません。
  *
  * Written by masami ◆U7rHG6DINI
  * 使用条件・ライセンス等については chaika 本体に準じます。
+ * MPL 1.1/GPL 2.0/LGPL 2.1 のいずれかのライセンスが定める条件に従ってください。
  *
  * 註：このファイルは、オリジナルの bbs2chreader/chaika の構成要素ではありません。
  *     この 2ch API extension for chaika は、オリジナルの bbs2chreader/chaika の
@@ -13,7 +15,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2015/12/08 18:50:00
+ * Last Modified : 2016/02/26 20:50:00
  */
 
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
@@ -56,11 +58,10 @@ var g2chApiPane = {
             var cancelButton = prefWindow.getButton("cancel");
             cancelButton.parentNode.insertBefore(applyButton, cancelButton.nextSibling);
 
+            var onPrefChange = function(){ applyButton.disabled = false; };
             var prefNodes = document.getElementsByTagName("preference");
-            Array.slice(prefNodes).forEach(function(node){
-                node.addEventListener("change", function(){
-                    applyButton.disabled = false;
-                });
+            Array.from(prefNodes).forEach(function(node){
+                node.addEventListener("change", onPrefChange, false);
             });
         }
 
@@ -126,13 +127,11 @@ var g2chApiPane = {
         if(!getPrefValue("enabled")) return true;
 
         // 必須設定項目のチェック
-        var emptyPrefs = [];
-        ["api_url", "auth_url", "appkey", "hmkey"].forEach(function(name){
+        var emptyPrefs = ["api_url", "auth_url", "appkey", "hmkey"].filter(function(name){
             var value = getPrefValue(name);
-            if(value == null || !value.trim()){
-                var label = document.getElementsByAttribute("control", name).item(0);
-                emptyPrefs.push(label.value);
-            }
+            return value == null || !value.trim();
+        }).map(function(name){
+            return document.getElementsByAttribute("control", name).item(0).value;
         });
         if(emptyPrefs.length != 0){
             this.selectTab("tabAPI");
@@ -381,9 +380,6 @@ PreferenceManager.prototype = {
         this.menuButton = document.getElementById(aMenuButtonID);
         this.dropTarget = document.getElementById(aDropTargetID);
         this.menuButton.addEventListener("command", this, false);
-        this.menuButton.addEventListener("keydown", this, false);
-        this.menuButton.addEventListener("mousedown", this, false);
-        this.menuButton.addEventListener("popupshowing", this, false);
         this.dropTarget.addEventListener("dragenter", this, false);
         this.dropTarget.addEventListener("dragover", this, false);
         this.dropTarget.addEventListener("drop", this, false);
@@ -391,7 +387,7 @@ PreferenceManager.prototype = {
         // 現在の設定を this.preferences へ保存
         this.preferences = {};
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             if(this._prefTable[name]){
                 this.preferences[name] = node.value;
@@ -404,9 +400,6 @@ PreferenceManager.prototype = {
      */
     shutdown: function PreferenceManager_shutdown(){
         this.menuButton.removeEventListener("command", this, false);
-        this.menuButton.removeEventListener("keydown", this, false);
-        this.menuButton.removeEventListener("mousedown", this, false);
-        this.menuButton.removeEventListener("popupshowing", this, false);
         this.dropTarget.removeEventListener("dragenter", this, false);
         this.dropTarget.removeEventListener("dragover", this, false);
         this.dropTarget.removeEventListener("drop", this, false);
@@ -419,7 +412,6 @@ PreferenceManager.prototype = {
         if(aEvent.type == "command"){
             switch(aEvent.target.value){
                 case "loadFile": this.loadFromFile(null);  break;
-                case "loadClip": this.loadFromClipboard(); break;
                 case "saveAll":  this.saveToFile(false);   break;
                 case "saveKey":  this.saveToFile(true);    break;
                 case "clearKey": this.clearKeys();         break;
@@ -432,36 +424,16 @@ PreferenceManager.prototype = {
             return;
         }
 
-        if(aEvent.type == "keydown" || aEvent.type == "mousedown"){
-            // 本来は popupshowing の方でやるべきことだが、
-            // そちらでは shiftKey の状態が得られないので
-            if(aEvent.target != this.menuButton) return;
-            if(aEvent.type == "keydown" && aEvent.keyCode != aEvent.DOM_VK_F4 ||
-               aEvent.type == "mousedown" && aEvent.button != 0) return;
-            var menuNodes = aEvent.target.getElementsByAttribute("value", "loadClip");
-            Array.slice(menuNodes).forEach(function(node){
-                node.hidden = !aEvent.shiftKey;
-            });
-            return;
-        }
-        if(aEvent.type == "popupshowing"){
-            if(aEvent.target.parentNode != this.menuButton) return;
-            var loadClip = aEvent.target.getElementsByAttribute("value", "loadClip").item(0);
-            if(loadClip.hidden) return;
-            var clip = Cc["@mozilla.org/widget/clipboard;1"].getService(Ci.nsIClipboard);
-            loadClip.disabled =
-                !clip.hasDataMatchingFlavors(["text/unicode"], 1, clip.kGlobalClipboard);
-        }
-
         // ファイル/テキストの Drag&Drop
         if(aEvent.type == "dragenter" || aEvent.type == "dragover" || aEvent.type == "drop"){
             var dt = aEvent.dataTransfer;
             if(dt.mozItemCount > 1) return;
-            var type = null;
-            ["application/x-moz-file", "text/plain"].some(function(value){
-                return dt.types.contains(value) ? (type = value, true) : false;
+
+            var type = ["application/x-moz-file", "text/plain"].find(function(value){
+                return dt.types.contains(value);
             });
-            if(type == null) return;
+            if(type === undefined) return;
+
             // textbox への Drag&Drop はデフォルト動作のままとする
             if(type == "text/plain" && aEvent.target.tagName == "textbox") return;
 
@@ -480,34 +452,6 @@ PreferenceManager.prototype = {
             }
             return;
         }
-    },
-
-    /**
-     * 設定をクリップボードから読み込む
-     */
-    loadFromClipboard: function PreferenceManager_loadFromClipboard(){
-        var trans = Cc["@mozilla.org/widget/transferable;1"]
-                    .createInstance(Ci.nsITransferable);
-        trans.init(null);
-        trans.addDataFlavor("text/unicode");
-
-        var clip = Cc["@mozilla.org/widget/clipboard;1"].getService(Ci.nsIClipboard);
-        clip.getData(trans, clip.kGlobalClipboard);
-
-        var text = { value: null };
-        try{
-            trans.getTransferData("text/unicode", text, {});
-        }catch(ex){}
-
-        if(!(text.value instanceof Ci.nsISupportsString)){
-            var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-                          .getService(Ci.nsIPromptService);
-            prompts.alert(window, "設定をクリップボードから読み込み",
-                                  "クリップボードにテキストデータがありません");
-            return;
-        }
-
-        this.loadFromText(text.value.data, false);
     },
 
     /**
@@ -596,7 +540,7 @@ PreferenceManager.prototype = {
         }
 
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             var value = preferences[name];
             if(value !== undefined) node.value = value;
@@ -678,7 +622,7 @@ PreferenceManager.prototype = {
                         "[chaika2chApi]"];
         var index = fileText.length;
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             var pref = this._prefTable[name];
             if(!pref) return;   // next
@@ -716,7 +660,7 @@ PreferenceManager.prototype = {
         if(!result) return;
 
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             var pref = this._prefTable[name];
             if(pref && pref.iskey) node.value = "";
@@ -739,7 +683,7 @@ PreferenceManager.prototype = {
         if(!result) return;
 
         var prefNodes = document.getElementsByTagName("preference");
-        Array.slice(prefNodes).forEach(function(node){
+        Array.from(prefNodes).forEach(function(node){
             var name = node.name.replace(API_BRANCH, "");
             var pref = this._prefTable[name];
             if(pref && (!excludeKey.value || !pref.iskey)){
@@ -777,22 +721,18 @@ PreferenceManager.prototype = {
  * settings.js にある setContainerDisabled の機能強化版
  * aEnabledValue を複数指定できるようにしたもの
  */
-function setContainerDisabledEx(aPref, aContainerID, aEnabledValue){
+function setContainerDisabledEx(aPref, aContainerID, ...aEnabledValues){
     var prefValue = document.getElementById(aPref).value;
     var container = document.getElementById(aContainerID);
-    var disabled;
 
-    if(arguments.length > 3){
-        disabled = Array.slice(arguments,2).every(function(arg){
-            return (prefValue !== arg);
-        });
-    }else{
-        disabled = (prefValue !== aEnabledValue);
-    }
+    var disabled = aEnabledValues.every(function(value){
+        return prefValue !== value;
+    });
 
     container.disabled = disabled;
+
     var childNodes = container.getElementsByTagName("*");
-    Array.slice(childNodes).forEach(function(node){
+    Array.from(childNodes).forEach(function(node){
         node.disabled = disabled;
     });
 

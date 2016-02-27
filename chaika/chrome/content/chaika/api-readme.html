@@ -2,7 +2,6 @@
 <html lang="ja">
   <head>
     <meta charset='utf-8'>
-    <meta http-equiv="Content-Language" content="ja">
     <meta name="viewport" content="width=1020">
     <title>付属文書(README) - 2ch API extension for chaika</title>
 
@@ -20,7 +19,7 @@
   </head>
 
   <body>
-    <!-- Last Modified : 2015/12/09 01:25:00 -->
+    <!-- Last Modified : 2016/02/26 20:20:00 -->
       <div class="markdown-body">
         <h2>
 <a id="2ch-api-extension-for-chaika" class="anchor" href="#2ch-api-extension-for-chaika" aria-hidden="true"><span class="octicon octicon-link"></span></a>2ch API extension for chaika - 付属文書(README)</h2>
@@ -120,7 +119,7 @@
 <h3>
 <a id="利用条件免責など" class="anchor" href="#%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6%E5%85%8D%E8%B2%AC%E3%81%AA%E3%81%A9" aria-hidden="true"><span class="octicon octicon-link"></span></a>利用条件・免責など</h3>
 
-<p>この 2ch API extension for chaika の使用・再利用の条件やライセンスなどについては chaika 本体に準じるものとします。</p>
+<p>この 2ch API extension for chaika の使用・再利用の条件などについては chaika 本体に準じるものとします。MPL 1.1/GPL 2.0/LGPL 2.1 のいずれかのライセンスが定める条件に従ってください。</p>
 
 <p>このソフトウェアは使用者各自の自己責任の上でご使用ください。このソフトウェアを使用した結果に対しては如何なる責任も負いません。</p>
 
@@ -130,6 +129,16 @@
 <a id="更新履歴" class="anchor" href="#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4" aria-hidden="true"><span class="octicon octicon-link"></span></a>更新履歴</h3>
 
 <ul>
+<li>
+<p><strong>2016/02/26 v0.12</strong></p>
+
+<ul>
+<li><p>設定画面の非公開機能「設定をクリップボードから読み込み」を削除しました。<br>
+設定画面の「ツール/ヘルプ」ボタンを Shift キーを押しながら開くと現れるこの項目は、「設定をファイルから読み込み」で読み込める形式のテキストをクリップボードから読み込んで復元するもので、鍵の有効性をチェックしたい場合などに設定値をまとめて簡単に入力するためのものでしたが、必要とされる状況はほとんどありませんでした。</p></li>
+<li><p>chaika トラブルシューティング情報の設定値一覧で、表の横幅が広がらないように session_id を折り返して表示するように変更しました。</p></li>
+<li><p>将来的に廃止予定とされていて、今後新たな不具合の原因となりうる Javascript の要素（メソッドなど）について、前もって対策を行いました。そのほか、小規模な修正を行いました。</p></li>
+</ul>
+</li>
 <li>
 <p><strong>2015/12/09 v0.11a</strong></p>
 
