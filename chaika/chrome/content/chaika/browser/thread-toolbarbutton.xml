@@ -242,7 +242,7 @@
 				this.hidden = false;
 
 				var menupopup = document.getAnonymousElementByAttribute(this, "anonid", "menupopup");
-				Array.slice(menupopup.childNodes).forEach(function(item, i, a){
+				Array.prototype.forEach.call(menupopup.childNodes, function(item, i, a){
 					item.hidden = false;
 				});
 

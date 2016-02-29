@@ -179,7 +179,7 @@ var $ = {
 	 * @return {String} ’uŠ·Œã‚Ì•¶š—ñ
 	 */
 	template: function(){
-		var args = Array.slice(arguments);
+		var args = Array.prototype.slice.call(arguments);
 		var template = args.shift();
 		var count = 0;
 
@@ -528,7 +528,7 @@ Popup.ID = {
 
 		var resNumber = $.attrs(this, 'resNumber');
 
-		var sameIDReses = Array.slice($.selectorAll("dl[resID='" + resID + "']"));
+		var sameIDReses = Array.prototype.slice.call($.selectorAll("dl[resID='" + resID + "']"));
 		var popupContent;
 
 		//©•ª©g‚ğœ‚­

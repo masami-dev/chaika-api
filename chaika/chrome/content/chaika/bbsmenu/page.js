@@ -675,7 +675,7 @@ var Find2ch = {
 		var resultObj = {};  //key: board name, value: an array of threads
 
 		//最後のdtは広告
-		Array.slice(findDoc.querySelectorAll('.content_pane dt:not(:last-child)')).forEach(function(item){
+		Array.prototype.forEach.call(findDoc.querySelectorAll('.content_pane dt:not(:last-child)'), function(item){
 			var links = item.getElementsByTagName('a');
 
 			var thread = links[0];
@@ -782,7 +782,7 @@ var Ff2ch = {
 		var root = document.createElement('category');
 
 		var resultObj = {};  //key: board name, value: an array of threads
-		Array.slice(findDoc.querySelectorAll('item')).forEach(function(item){
+		Array.prototype.forEach.call(findDoc.querySelectorAll('item'), function(item){
 			var thread = item.querySelector('title');
 			var threadURI = item.querySelector('guid').textContent.replace(/\d+-\d+$/, '');
 			var threadTitle = thread.textContent;
