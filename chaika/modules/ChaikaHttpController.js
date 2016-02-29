@@ -268,12 +268,12 @@ ChaikaImageViewURLReplace.prototype = {
         config.userAgent = data[5];
 
         if(data[3]){
-            if(data[3].contains('$COOKIE')){
+            if(data[3].indexOf('$COOKIE') > -1){
                 config.cookie.shouldGet = true;
                 config.cookie.referrer = data[3].split('=')[1] || '';
             }
 
-            if(data[3].contains('$EXTRACT') && data[4]){
+            if(data[3].indexOf('$EXTRACT') > -1 && data[4]){
                 config.extract.pattern = data[4];
                 config.extract.referrer = data[3].split('=')[1] || '';
                 config.cookie.shouldGet = true;

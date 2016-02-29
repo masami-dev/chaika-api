@@ -194,7 +194,7 @@
                 let spec = aURI instanceof Components.interfaces.nsIURI ? aURI.spec : aURI;
 
                 // Google リダイレクタ対策
-                if(spec.contains('google') && spec.contains('/url?')){
+                if(spec.indexOf('google') > -1 && spec.indexOf('/url?') > -1){
                     spec = decodeURIComponent(spec.match(/url=([^&]*)/i)[1]);
                 }
 

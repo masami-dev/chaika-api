@@ -132,7 +132,7 @@ AboneData.prototype = {
      * @see ChaikaAboneManager.shouldAbone
      */
     shouldAbone: function(aResData){
-        return aResData && this._data.find((ngData) => aResData.contains(ngData));
+        return aResData && this._data.find((ngData) => aResData.indexOf(ngData) > -1);
     },
 
 
@@ -348,10 +348,10 @@ NGExAboneData.prototype = Object.create(AboneData.prototype, {
 
                 switch(aRule.condition){
                     case 'contains':
-                        return target.contains(aRule.query);
+                        return target.indexOf(aRule.query) > -1;
 
                     case 'notContain':
-                        return !target.contains(aRule.query);
+                        return target.indexOf(aRule.query) == -1;
 
                     case 'equals':
                         return target === aRule.query;

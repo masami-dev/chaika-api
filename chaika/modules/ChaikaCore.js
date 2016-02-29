@@ -331,7 +331,7 @@ var ChaikaCore = {
      * @return {String}
      */
     getUserAgent: function ChaikaCore_getUserAgent(){
-        if(!this._userAgent || this._userAgent.contains('chaika/1;')){
+        if(!this._userAgent || this._userAgent.indexOf('chaika/1;') > -1){
             let appInfo = Cc["@mozilla.org/xre/app-info;1"].getService(Ci.nsIXULAppInfo);
             let httpProtocolHandler = Cc["@mozilla.org/network/protocol;1?name=http"]
                                         .getService(Ci.nsIHttpProtocolHandler);
@@ -1033,7 +1033,7 @@ ChaikaIO.prototype = {
         var fileString = this.readString(file, encoding);
 
         //U+FFFD = REPLACEMENT CHARACTER
-        if(fileString.contains('\uFFFD')){
+        if(fileString.indexOf('\uFFFD') > -1){
             if(suspects.length > 0){
                 fileString = this.readUnknownEncodingString(file, overrideOrigFile, suspects);
             }else{

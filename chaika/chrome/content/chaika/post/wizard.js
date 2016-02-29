@@ -592,7 +592,7 @@ var FormPage = {
         //チェックボックスをそれに合わせて defaultmail.txt ではない時の値を覚えておく
         if(init && this._getDefaultData('defaultmail.txt') !== null){
             this._sageCheck.setAttribute('originalSageChecked', this._sageCheck.checked.toString());
-            this._sageCheck.checked = this._mailForm.value.contains('sage');
+            this._sageCheck.checked = this._mailForm.value.indexOf('sage') > -1;
         }
 
         //emptyTextの設定
@@ -781,7 +781,7 @@ var FormPage = {
 
         for(let i=0; i<lines.length; i++){
             // タブがない行は単なる空行
-            if(!lines[i].contains('\t')) continue;
+            if(lines[i].indexOf('\t') == -1) continue;
 
             // コメント行
             if(/^\s*(?:;|'|#|\/\/)/.test(lines[i])) continue;
@@ -794,7 +794,7 @@ var FormPage = {
                 continue;
             }
 
-            if(boardURL.contains(boardID)){
+            if(boardURL.indexOf(boardID) > -1){
                 return defaultData;
             }
         }

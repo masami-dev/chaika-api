@@ -798,7 +798,7 @@ var AboneHandler = {
         let aboneCandidates = $.klass(className);
 
         for(let i=0, l=aboneCandidates.length; i<l; i++){
-            if(aboneCandidates[i].textContent.contains(ngWord)){
+            if(aboneCandidates[i].textContent.indexOf(ngWord) > -1){
                 let aboneRes = $.parentByClass('resContainer', aboneCandidates[i]);
                 let aboneResHeader = $.klass('resHeaderAboneContent', aboneRes);
 
@@ -842,7 +842,7 @@ var Popup = {
         if(!(target instanceof HTMLElement)) return;
 
         //Beリンク
-        if(target.href && target.href.contains('be.2ch')){
+        if(target.href && target.href.indexOf('be.2ch') > -1){
             target = target.parentNode;
         }
 

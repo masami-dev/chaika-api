@@ -526,8 +526,8 @@ PostP2.prototype = Object.create(Post.prototype, {
 
             var bbs, host;
 
-            if(this._board.url.host.contains('jbbs.livedoor.jp') ||
-               this._board.url.host.contains('jbbs.shitaraba.net')){
+            if(this._board.url.host.indexOf('jbbs.livedoor.jp') > -1 ||
+               this._board.url.host.indexOf('jbbs.shitaraba.net') > -1){
                 bbs = this._board.url.directory.match(/\/([^\/]+)\/?$/)[1];
                 host = this._board.url.host + '%2F' + this._board.url.directory.match(/\/([^\/]+)\/?/)[1];
             }else{

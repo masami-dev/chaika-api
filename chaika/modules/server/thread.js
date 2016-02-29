@@ -16,6 +16,17 @@ const Cc = Components.classes;
 const Cr = Components.results;
 
 
+/**
+ * Polyfill for future changes
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=1103588
+ */
+if(!String.prototype.contains){
+    String.prototype.contains = function(){'use strict';
+        return String.prototype.indexOf.apply(this, arguments) !== -1;
+    };
+}
+
+
 //Polyfill for Firefox 24
 //Copied from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
 if (!Array.prototype.find) {

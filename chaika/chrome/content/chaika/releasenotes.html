@@ -9,7 +9,7 @@
     <title>リリースノート [chaika]</title>
     <script>
         window.addEventListener('DOMContentLoaded', function(){
-            if(location.search.contains('updated=1')){
+            if(location.search.indexOf('updated=1') > -1){
                 document.body.classList.add('updated');
             }
 

@@ -44,7 +44,7 @@ var ChaikaSearch = {
 
             let updateURL = plugin.updateURL;
 
-            if(updateURL.contains('%%ChaikaDefaultsDir%%')){
+            if(updateURL.indexOf('%%ChaikaDefaultsDir%%') > -1){
                 let defaultsDir = ChaikaCore.getDefaultsDir();
                 let defaultsDirSpec = fph.getURLSpecFromActualFile(defaultsDir);
 
