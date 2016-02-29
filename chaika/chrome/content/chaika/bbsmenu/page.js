@@ -402,7 +402,7 @@ var Bbsmenu = {
 			while(node = xpathResult.iterateNext()){
 				if(node.nodeType == Ci.nsIDOMNode.TEXT_NODE){
 					var title = node.nodeValue;
-					currentCategoryPath = "/2ch/" + title.replace("/", "_", "g") + "/";
+					currentCategoryPath = "/2ch/" + title.replace(/\//g, "_") + "/";
 					categoryInsertStatement.bindStringParameter(0, title);
 					categoryInsertStatement.bindStringParameter(1, currentCategoryPath);
 					categoryInsertStatement.execute();
@@ -421,7 +421,7 @@ var Bbsmenu = {
 						ChaikaCore.logger.error(urlSpec +" : "+ ex);
 					}
 
-					var path = currentCategoryPath + title.replace("/", "_", "g") + "/";
+					var path = currentCategoryPath + title.replace(/\//g, "_") + "/";
 					bosrdInsertStatement.bindStringParameter(0, title);
 					bosrdInsertStatement.bindStringParameter(1, urlSpec);
 					bosrdInsertStatement.bindStringParameter(2, path);

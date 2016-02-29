@@ -377,7 +377,7 @@ Thread2ch.prototype = {
 	 */
 	sanitizeHTML: function(aStr){
 		//実体参照を保護する
-		aStr = aStr.replace("&#", "_&#_", "g")	// &#169; など
+		aStr = aStr.replace(/&#/g, "_&#_")	// &#169; など
 				   .replace(/&([a-zA-Z0-9]+?);/g, '_&_$1;');  // &copy; など
 
 		//sanitize
@@ -386,10 +386,10 @@ Thread2ch.prototype = {
 		var sanitizedStr = this._serializer.serializeToString(fragment);
 
 		//serializeで余計に挿入されるxmlns属性を削除
-		sanitizedStr = sanitizedStr.replace(' xmlns="http://www.w3.org/1999/xhtml"', '', 'g')
+		sanitizedStr = sanitizedStr.replace(/ xmlns="http:\/\/www\.w3\.org\/1999\/xhtml"/g, '');
 
 		//実体参照を元に戻す
-		sanitizedStr = sanitizedStr.replace("_&amp;#_", "&#", "g")
+		sanitizedStr = sanitizedStr.replace(/_&amp;#_/g, "&#")
 								   .replace(/_&amp;_([a-zA-Z0-9]+?);/g, '&$1;');
 
 		return sanitizedStr;
@@ -418,8 +418,8 @@ Thread2ch.prototype = {
 
 
 		//特殊な名前欄の置換
-		resName = resName.replace("</b>", '<span class="resSystem">', "g")
-							.replace("<b>", "</span>", "g");
+		resName = resName.replace(/<\/b>/g, '<span class="resSystem">')
+							.replace(/<b>/g, "</span>");
 
 		//日付中のHTMLを除去
 		if(resDate.indexOf("<") != -1){
@@ -1353,7 +1353,7 @@ b2rThreadConverter.prototype = {
 			//置換文字列で特殊な意味を持つ$をエスケープする
 			for(let i=0, l=arguments.length; i<l; i++){
 				if(typeof arguments[i] === 'string'){
-					arguments[i] = arguments[i].replace('$', '&#36;', 'g');
+					arguments[i] = arguments[i].replace(/\$/g, '&#36;');
 				}
 			}
 

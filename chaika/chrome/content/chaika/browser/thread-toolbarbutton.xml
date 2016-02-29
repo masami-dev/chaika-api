@@ -657,10 +657,10 @@
 
 				var url = (this._getCurrentThreadURL() || getBrowser().currentURI).spec;
 
-				text = text.replace("%TITLE%", content.document.title, "g")
-							.replace("%URL%", url, "g")
-							.replace("%SEL%", content.getSelection().toString(), "g")
-							.replace("%NEWLINE%", NEWLINE, "g");
+				text = text.replace(/%TITLE%/g, content.document.title)
+							.replace(/%URL%/g, url)
+							.replace(/%SEL%/g, content.getSelection().toString())
+							.replace(/%NEWLINE%/g, NEWLINE);
 
 				var clipboard = Cc["@mozilla.org/widget/clipboardhelper;1"]
 									.getService(Ci.nsIClipboardHelper);
