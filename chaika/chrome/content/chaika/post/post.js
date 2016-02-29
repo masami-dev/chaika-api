@@ -91,7 +91,7 @@ Post.prototype = {
         if(ChaikaCore.pref.getBool('post.warn_fusianasan')){
             var name = this.name || this._board.getSetting("BBS_NONAME_NAME") || "";
             if(name){
-                name = name.replace("&r", "", "g");
+                name = name.replace(/&r/g, "");
                 if(name.indexOf("fusianasan") != -1){
                     result.push("fusianasan トラップ (リモートホストが表示されます)");
                 }
@@ -143,15 +143,15 @@ Post.prototype = {
         }
 
         function convertEntity(aStr){
-            return aStr.replace("&", "&amp;", "g")
-                        .replace("<", "&lt;", "g")
-                        .replace(">", "&gt;", "g");
+            return aStr.replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;");
         }
 
         preview["title"]   = convertEntity(this.getThreadTitle());
 
         preview["mail"]    = convertEntity(this.mail);
-        preview["message"] = convertEntity(this.message).replace("\n", "<br>", "g");
+        preview["message"] = convertEntity(this.message).replace(/\n/g, "<br>");
 
         preview["bgColor"]   = getSetting("BBS_THREAD_COLOR") || "#EFEFEF";
         preview["color"]     = getSetting("BBS_TEXT_COLOR") || "#000000";

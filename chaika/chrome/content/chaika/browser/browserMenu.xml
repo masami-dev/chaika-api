@@ -621,10 +621,10 @@
                     uri = Services.io.newURI("./", null, uri);
                 }
 
-                var text = template.replace("%TITLE%", title, "g")
-                                   .replace("%URL%", uri.spec, "g")
-                                   .replace("%SEL%", content.getSelection().toString(), "g")
-                                   .replace("%NEWLINE%", NEWLINE, "g");
+                var text = template.replace(/%TITLE%/g, title)
+                                   .replace(/%URL%/g, uri.spec)
+                                   .replace(/%SEL%/g, content.getSelection().toString())
+                                   .replace(/%NEWLINE%/g, NEWLINE);
 
                 var clipboard = Cc["@mozilla.org/widget/clipboardhelper;1"].getService(Ci.nsIClipboardHelper);
 

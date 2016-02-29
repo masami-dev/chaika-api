@@ -132,17 +132,19 @@ var ChaikaContentReplacer = {
 
 
                 // もともと置換対象に含まれている $ が特殊文字に変換されないようにする
-                aResData[target] = aResData[target].replace('$', '&#36;', 'g');
+                aResData[target] = aResData[target].replace(/\$/g, '&#36;');
 
 
                 // 置換
-                if(rule.regexp){
-                    let regexp = new RegExp(rule.searchText, replaceFlag);
+                let pattern = rule.searchText;
 
-                    aResData[target] = aResData[target].replace(regexp, rule.replaceText);
-                }else{
-                    aResData[target] = aResData[target].replace(rule.searchText, rule.replaceText, replaceFlag);
+                if(!rule.regexp){
+                    pattern = pattern.replace(/[.*+?|^$(){}[\]\\]/g, '\\$&');
                 }
+
+                let regexp = new RegExp(pattern, replaceFlag);
+
+                aResData[target] = aResData[target].replace(regexp, rule.replaceText);
 
                 replaced = true;
             }
