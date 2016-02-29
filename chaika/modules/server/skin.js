@@ -121,9 +121,9 @@ SkinServerScript.prototype = {
 			skinFile.appendRelativePath("skin");
 		}
 
-		for(var [i, value] in Iterator(aFilePath.split("/"))){
+		aFilePath.split('/').forEach(function(value){
 			skinFile.appendRelativePath(value);
-		}
+		});
 
 		return skinFile;
 	}
