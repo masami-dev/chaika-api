@@ -665,7 +665,7 @@ var Tree = {
         var xpath = "descendant::*[not(ancestor::*[@isContainer='true']/@isOpen='false')]";
         this._visibleNodes = this._xpathEvaluate(xpath);
 
-        for each(var node in this._visibleNodes){
+        this._visibleNodes.forEach((node) => {
             node._title = node.getAttribute("title");
 
             node._isContainer = (node.getAttribute("isContainer") == "true");
@@ -677,7 +677,7 @@ var Tree = {
                 XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotLength;
 
             node._parentIndex = this._visibleNodes.indexOf(node.parentNode);
-        }
+        });
         this.rowCount = this._visibleNodes.length;
     },
 
@@ -857,13 +857,13 @@ var Tree = {
             if(this._mode == MODE_BBSMENU && ChaikaCore.pref.getBool("bbsmenu.toggle_open_container")){
                 var cNodeName = this._containerNodeName;
                 var containers = this._xpathEvaluate("descendant::*[@isContainer='true']");
-                for each(var container in containers){
+                containers.forEach((container) => {
                     container.setAttribute("isOpen", "false");
-                }
+                });
                 var ancestors = this._xpathEvaluate("ancestor::*[@isContainer='true']", node);
-                for each(var ancestor in ancestors){
+                ancestors.forEach((ancestor) => {
                     ancestor.setAttribute("isOpen", "true");
-                }
+                });
             }
             node.setAttribute("isOpen", "true");
         }
