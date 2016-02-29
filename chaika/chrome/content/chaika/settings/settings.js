@@ -79,7 +79,7 @@ function setContainerDisabled(aPref, aContainerID, aEnabledValue){
 
     var childNodes = container.getElementsByTagName("*");
 
-    Array.slice(childNodes).forEach((node) => {
+    Array.prototype.forEach.call(childNodes, (node) => {
         node.disabled = (prefValue !== aEnabledValue);
     });
 }

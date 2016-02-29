@@ -162,8 +162,7 @@ var gReplacementManager = {
         }
 
         if(rv){
-            Array.slice(items)
-                 .map((node) => JSON.parse(node.value))
+            Array.prototype.map.call(items, (node) => JSON.parse(node.value))
                  .forEach((item) => ChaikaContentReplacer.remove(item));
         }
     },

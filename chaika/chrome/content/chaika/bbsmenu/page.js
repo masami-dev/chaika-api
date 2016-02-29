@@ -550,7 +550,7 @@ var Bbsmenu = {
         let importOutsideDoc = function(file){
             let doc = this.getOutsideDoc(file);
 
-            Array.slice(doc.documentElement.childNodes).forEach((node) => {
+            Array.prototype.forEach.call(doc.documentElement.childNodes, (node) => {
                 let bbsmenuNode = bbsmenuDoc.importNode(node, true);
                 bbsmenuDoc.documentElement.appendChild(bbsmenuNode);
             });
@@ -626,7 +626,7 @@ var Bbsmenu = {
         let outsideXMLString = ChaikaCore.io.readString(file, 'UTF-8');
         let outsideDoc = this._DOMParser.parseFromString(outsideXMLString, 'text/xml');
 
-        Array.slice(outsideDoc.getElementsByTagName('category')).forEach((category) => {
+        Array.prototype.forEach.call(outsideDoc.getElementsByTagName('category'), (category) => {
             category.setAttribute('isContainer', 'true');
             category.setAttribute('isOpen', 'false');
         });

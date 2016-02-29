@@ -132,7 +132,7 @@
                     // For Firefox 31- (much slower)
                     function _query(query, parent){
                         let queries = query.replace(/:scope >/g, '').split('>');
-                        let children = Array.slice(parent.querySelectorAll(queries.shift()));
+                        let children = Array.prototype.slice.call(parent.querySelectorAll(queries.shift()));
 
                         children = children.filter((node) => node.parentNode === parent);
 
@@ -255,7 +255,7 @@
                     let match = groupNode.querySelector('caption > .match').selectedItem.label;
                     let rules = this._querySelectorAllForChildren(':scope > .rules > :-moz-any(.rule, .group)', groupNode);
 
-                    groupLabel = Array.slice(rules).map((node) => {
+                    groupLabel = Array.prototype.map.call(rules, (node) => {
                         if(node.classList.contains('rule')){
                             let target = node.querySelector('.rule-target').selectedItem.label;
                             let query = node.querySelector('.rule-query').value;
@@ -296,7 +296,7 @@
 
                     let rules = this._querySelectorAllForChildren(':scope > .rules > :-moz-any(.rule, .group)', groupNode);
 
-                    groupData.rules = Array.slice(rules).map((node) => {
+                    groupData.rules = Array.prototype.map.call(rules, (node) => {
                         if(node.classList.contains('rule')){
                             return {
                                 target: node.querySelector('.rule-target').value,

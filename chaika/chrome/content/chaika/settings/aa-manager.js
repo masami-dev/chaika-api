@@ -183,7 +183,8 @@ AATreeView.prototype = {
     },
 
     _buildVisibleNodes: function(){
-        this._visibleNodes = Array.slice(this._xml.querySelectorAll(':root > folder, folder[opened] > :-moz-any(folder, aa)'));
+        this._visibleNodes = Array.prototype.slice.call(
+            this._xml.querySelectorAll(':root > folder, folder[opened] > :-moz-any(folder, aa)'));
 
         this._visibleNodes = this._visibleNodes.filter((node) => {
             if(!node) return false;
@@ -349,8 +350,8 @@ AATreeView.prototype = {
                    parentNode.querySelectorAll(':scope > ' + sourceNode.nodeName).length;
         }catch(ex){
             // For Firefox 31- (slower)
-            return Array.slice(parentNode.childNodes)
-                        .every((node) => node.nodeName === sourceNode.nodeName);
+            return Array.prototype.every.call(parentNode.childNodes,
+                                              (node) => node.nodeName === sourceNode.nodeName);
         }
     },
 

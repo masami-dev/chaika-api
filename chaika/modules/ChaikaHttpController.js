@@ -630,7 +630,7 @@ ChaikaNGFiles.prototype = {
                     return ("0" + charCode.toString(16)).slice(-2);
                 };
 
-                return Array.slice(hash).map((c) => toHexString(c.charCodeAt(0))).join("");
+                return Array.prototype.map.call(hash, (c) => toHexString(c.charCodeAt(0))).join("");
             }
         }catch(ex){
             ChaikaCore.logger.error(ex);
@@ -667,7 +667,7 @@ ChaikaNGFiles.prototype = {
 
 
         //2文字ごとに16進数とみなして数値に変換する
-        md5 = Array.slice(md5.match(/../g));
+        md5 = md5.match(/../g);
         for(let i=0, l=md5.length; i<l; i++){
             md5[i] = parseInt(md5[i], 16);
         }

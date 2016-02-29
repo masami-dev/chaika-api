@@ -42,7 +42,7 @@ var AAPanel = {
         let level = dirTree.view.getLevel(dirTree.currentIndex);
 
         let folders = this._doc.querySelectorAll('folder[title="' + folderTitle + '"]');
-        let folder = Array.slice(folders).filter((folder) => {
+        let folder = Array.prototype.filter.call(folders, (folder) => {
             return level === calculateNodeLevel(folder);
         });
 

@@ -371,7 +371,7 @@ Post.prototype = {
 
         unicodeConverter.charset = aCharset;
 
-        var result = Array.map(aStr, function(aElement, aIndex, aArray){
+        var result = Array.prototype.map.call(aStr, function(aElement, aIndex, aArray){
             var convertCharsetChar = unicodeConverter.ConvertFromUnicode(aElement);
             var redecodeCharsetChar = unicodeConverter.ConvertToUnicode(convertCharsetChar);
 

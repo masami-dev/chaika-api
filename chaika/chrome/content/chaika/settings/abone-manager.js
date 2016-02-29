@@ -235,8 +235,7 @@ AboneManagerView.prototype = {
         }
 
         if(rv){
-            Array.slice(items)
-                 .map((node) => node.value)
+            Array.prototype.map.call(items, (node) => node.value)
                  .forEach((item) => ChaikaAboneManager[this._type].remove(item));
         }
     }

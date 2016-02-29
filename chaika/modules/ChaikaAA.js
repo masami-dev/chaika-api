@@ -61,7 +61,7 @@ var ChaikaAA = {
 
                     let AAs = aaXML.getElementsByTagName('aa');
 
-                    Array.slice(AAs).forEach((AA) => {
+                    Array.prototype.forEach.call(AAs, (AA) => {
                         let aaNode = this._doc.createElement('aa');
                         aaNode.setAttribute('title', AA.getAttribute('title'));
 
