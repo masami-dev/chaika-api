@@ -10,6 +10,16 @@ Cu.import("resource://chaika-modules/ChaikaServer.js");
 
 
 /**
+ * Polyfill for Firefox 39-
+ */
+if(!String.prototype.includes){
+    String.prototype.includes = function(){'use strict';
+        return String.prototype.indexOf.apply(this, arguments) !== -1;
+    };
+}
+
+
+/**
  * chaika のスレッド表示における HTTP 通信を制御するクラス
  * @class
  */
@@ -256,12 +266,12 @@ ChaikaImageViewURLReplace.prototype = {
         config.userAgent = data[5];
 
         if(data[3]){
-            if(data[3].contains('$COOKIE')){
+            if(data[3].includes('$COOKIE')){
                 config.cookie.shouldGet = true;
                 config.cookie.referrer = data[3].split('=')[1] || '';
             }
 
-            if(data[3].contains('$EXTRACT') && data[4]){
+            if(data[3].includes('$EXTRACT') && data[4]){
                 config.extract.pattern = data[4];
                 config.extract.referrer = data[3].split('=')[1] || '';
                 config.cookie.shouldGet = true;

@@ -126,6 +126,15 @@
             Components.utils.import("resource://chaika-modules/utils/URLUtils.js", this);
             Components.utils.import("resource://chaika-modules/ChaikaAboneManager.js", this);
 
+            /**
+             * Polyfill for Firefox 39-
+             */
+            if(!String.prototype.includes){
+                String.prototype.includes = function(){'use strict';
+                    return String.prototype.indexOf.apply(this, arguments) !== -1;
+                };
+            }
+
             this.classList.add('chaika-browser-menu');
             this.classList.add('popup-internal-box');
 
