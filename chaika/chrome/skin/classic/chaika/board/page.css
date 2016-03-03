@@ -43,6 +43,11 @@
 
 /* ---- Tree Styling ------------------------------ */
 
+#boardTree.single-click treechildren::-moz-tree-cell,
+#boardTree.single-click treechildren::-moz-tree-cell-text{
+    cursor: pointer;
+}
+
 #boardTreeCol-number,
 #boardTreeCol-count,
 #boardTreeCol-read,

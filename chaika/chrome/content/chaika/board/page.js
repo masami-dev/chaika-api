@@ -244,7 +244,11 @@ var PrefObserver = {
         if(aTopic != "nsPref:changed") return;
 
         if(aData == "tree_size"){
+            BoardTree.invalidate();
             BoardTree.changeTreeSize();
+        }else if(aData == "open_single_click"){
+            BoardTree.invalidate();
+            BoardTree.changeSingleClick();
         }
 
     }
@@ -259,7 +263,8 @@ var BoardTree = {
     initTree: function BoardTree_initTree(aNoFocus){
         this.tree = document.getElementById("boardTree");
 
-        this.tree.classList.add('tree-text-' + ChaikaCore.pref.getChar("board.tree_size"));
+        this.changeTreeSize();
+        this.changeSingleClick();
         setPageTitle();
 
         if(this.firstInitBoardTree){
@@ -368,11 +373,20 @@ var BoardTree = {
     },
 
     changeTreeSize: function BoardTree_changeTreeSize(){
-        this.tree.collapsed = true;
-
         this.tree.className = this.tree.className.replace(/tree-text-\w+/g, '');
         this.tree.classList.add('tree-text-' + ChaikaCore.pref.getChar("board.tree_size"));
+    },
 
+    changeSingleClick: function BoardTree_changeSingleClick(){
+        if(ChaikaCore.pref.getBool("board.open_single_click")){
+            this.tree.classList.add('single-click');
+        }else{
+            this.tree.classList.remove('single-click');
+        }
+    },
+
+    invalidate: function BoardTree_invalidate(){
+        this.tree.collapsed = true;
         setTimeout(() => this.tree.collapsed = false, 0);
     },
 
