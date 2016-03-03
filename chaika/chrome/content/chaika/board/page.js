@@ -377,6 +377,12 @@ var BoardTree = {
     },
 
     click: function BoardTree_click(aEvent){
+        if(aEvent.originalTarget.localName == "tree"){
+            // tree のボーダーをクリックしたときの ContextMenu を抑制する
+            // see this.showContext
+            aEvent.preventDefault();
+            return;
+        }
         if(aEvent.originalTarget.localName != "treechildren") return;
         if(this.getClickItemIndex(aEvent) == -1) return;
         if(aEvent.ctrlKey || aEvent.shiftKey) return;
@@ -458,8 +464,15 @@ var BoardTree = {
     },
 
     showContext: function BoardTree_showContext(aEvent){
-            // ツリーのアイテム以外をクリック
-        if(this.getClickItemIndex(aEvent) == -1) return false;
+            // ツリーのアイテムをクリックしたかチェックする
+            // NOTE: キーボード操作でコンテキストメニューが開かれる場合、
+            // <tree>以下の要素へのスタイル適用状態（特に border,padding など）
+            // によって座標計算が正しくなくなり、aEvent.clientX/Y の示す位置が
+            // ツリーアイテムから外れてしまう場合がある（Firefix 38,44 にて確認）。
+            // キーボードのときはフォーカスのある tree が triggerNode となるので、
+            // この場合は座標位置によるチェックをバイパスする。
+        if(aEvent.originalTarget.triggerNode.localName != "tree" &&
+           this.getClickItemIndex(aEvent) == -1) return false;
 
         var currentIndex = this.tree.currentIndex;
         var selectionIndices = this.getSelectionIndices();
