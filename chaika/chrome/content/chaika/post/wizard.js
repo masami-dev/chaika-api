@@ -630,6 +630,12 @@ var FormPage = {
 
     _focus: function FormPage__focus(){
         setTimeout(function(){
+            // 別の書き込みウィザードがアクティブになった場合はフォーカスを取り返さない
+            var wm = Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator);
+            var win = wm.getMostRecentWindow(null);
+            if(win.document.documentElement.getAttribute("windowtype") == "chaika:postWizard" &&
+               win != window) return;
+
             Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager).activeWindow = window;
         }, 0);
     },
