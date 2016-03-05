@@ -95,6 +95,7 @@
       flex="1"
       openedCategories=""
       persist="openedCategories"
+      onkeydown="Tree.keydown(event)"
       context="treeContextMenu">
 
     <treecols>
