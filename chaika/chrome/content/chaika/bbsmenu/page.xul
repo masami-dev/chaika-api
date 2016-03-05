@@ -88,6 +88,8 @@
       class="sidebar-placesTree"
       hidecolumnpicker="true"
       flex="1"
+      seltype="single"
+      onkeydown="Page._treeView.handleKeydown(event)"
       context="treeContextMenu">
 
     <treecols>

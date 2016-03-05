@@ -26,6 +26,7 @@
 
             this._createMenu(engineMenu);
             this.setSearchEngine(ChaikaCore.pref.getChar('bbsmenu.search.default_engine_name'));
+            this._initEvent(searchBox);
         },
 
         /**
@@ -45,9 +46,41 @@
 
                 menuitem.addEventListener('command', (event) => {
                     this.setSearchEngine(event.target.getAttribute('value'));
+                    // サーチボックスに何か入力されていれば検索する
+                    if(this._searchBox.value){
+                        this._searchBox.doCommand();
+                    }
                 });
 
                 root.appendChild(menuitem);
+            });
+        },
+
+        /**
+         * キーボード操作で検索エンジンを変更できるようにする
+         * @param {Element} searchBox
+         */
+        _initEvent: function(searchBox){
+            const macOSX = Services.appinfo.OS == 'Darwin';
+
+            searchBox.addEventListener('keydown', (event) => {
+                if(event.altKey && (event.key == 'ArrowUp' || event.key == 'ArrowDown') ||
+                   event.key == 'F4' && !macOSX){
+                    this._engineMenu.openPopup(event.target, 'after_start', 0, 0, false, false);
+
+                }else if((macOSX ? event.metaKey : event.ctrlKey) &&
+                         (event.key == 'ArrowUp' || event.key == 'ArrowDown')){
+                    let node = this._engineMenu.querySelector('menuitem[value="' + this._engine + '"]');
+
+                    // メニューがまだ一度も表示されてないときは checked が自動では消えないようだ
+                    node.removeAttribute('checked');
+
+                    node = (event.key == 'ArrowDown') ?
+                            node.nextSibling || node.parentNode.firstChild :
+                            node.previousSibling || node.parentNode.lastChild ;
+
+                    this.setSearchEngine(node.getAttribute('value'));
+                }
             });
         },
 

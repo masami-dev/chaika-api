@@ -75,7 +75,8 @@
             this._tree.className = this._tree.className.replace(/tree-text-\w+/g, '');
             this._tree.classList.add('tree-text-' + ChaikaCore.pref.getChar("bbsmenu.tree_size"));
 
-            setTimeout(() => this._tree.collapsed = false, 0);
+            // 時間間隔が20ms以下だと効果が無い場合があるようです
+            setTimeout(() => this._tree.collapsed = false, 50);
         },
 
 

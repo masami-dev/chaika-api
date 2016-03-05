@@ -185,8 +185,10 @@ var BoardTree = {
 
 
     showContext: function BoardTree_showContext(aEvent){
-        // ツリーのアイテム以外をクリック
-        if(this.getClickItemIndex(aEvent) == -1) return false;
+        // ツリーのアイテムをクリックしたかチェックする
+        // see BoardTree.showContext in ./page.js
+        if(aEvent.originalTarget.triggerNode.localName != "tree" &&
+           this.getClickItemIndex(aEvent) == -1) return false;
 
         var currentIndex = this.tree.currentIndex;
         if(currentIndex == 0) return false;
@@ -319,16 +321,22 @@ var ThreadTree = {
 
 
     showContext: function ThreadTree_showContext(aEvent){
-        // ツリーのアイテム以外をクリック
-        if(this.getClickItemIndex(aEvent) == -1) return false;
+        // ツリーのアイテムをクリックしたかチェックする
+        // see BoardTree.showContext in ./page.js
+        if(aEvent.originalTarget.triggerNode.localName != "tree" &&
+           this.getClickItemIndex(aEvent) == -1) return false;
 
         var currentIndex = this.tree.currentIndex;
         var selectionIndices = this.getSelectionIndices();
 
-        selectionIndices = selectionIndices.filter(function(aElement, aIndex, aArray){
-            return (aElement != currentIndex);
-        });
-        selectionIndices.unshift(currentIndex);
+        var currentInSelection = selectionIndices.indexOf(currentIndex);
+
+        // 選択アイテムの中でフォーカスが当たっているものがあれば先頭へ移動
+        // フォーカスが常に選択アイテムの上にあるとは限らない
+        if(currentInSelection >= 1){
+            selectionIndices.splice(currentInSelection, 1);
+            selectionIndices.unshift(currentIndex);
+        }
 
         var items = selectionIndices.map(function(aElement, aIndex, aArray){
             return ThreadTree._getItem(aElement);

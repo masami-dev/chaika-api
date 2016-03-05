@@ -244,7 +244,11 @@ var PrefObserver = {
         if(aTopic != "nsPref:changed") return;
 
         if(aData == "tree_size"){
+            BoardTree.invalidate();
             BoardTree.changeTreeSize();
+        }else if(aData == "open_single_click"){
+            BoardTree.invalidate();
+            BoardTree.changeSingleClick();
         }
 
     }
@@ -259,7 +263,8 @@ var BoardTree = {
     initTree: function BoardTree_initTree(aNoFocus){
         this.tree = document.getElementById("boardTree");
 
-        this.tree.classList.add('tree-text-' + ChaikaCore.pref.getChar("board.tree_size"));
+        this.changeTreeSize();
+        this.changeSingleClick();
         setPageTitle();
 
         if(this.firstInitBoardTree){
@@ -368,15 +373,31 @@ var BoardTree = {
     },
 
     changeTreeSize: function BoardTree_changeTreeSize(){
-        this.tree.collapsed = true;
-
         this.tree.className = this.tree.className.replace(/tree-text-\w+/g, '');
         this.tree.classList.add('tree-text-' + ChaikaCore.pref.getChar("board.tree_size"));
+    },
 
-        setTimeout(() => this.tree.collapsed = false, 0);
+    changeSingleClick: function BoardTree_changeSingleClick(){
+        if(ChaikaCore.pref.getBool("board.open_single_click")){
+            this.tree.classList.add('single-click');
+        }else{
+            this.tree.classList.remove('single-click');
+        }
+    },
+
+    invalidate: function BoardTree_invalidate(){
+        this.tree.collapsed = true;
+        // 時間間隔が20ms以下だと効果が無い場合があるようです
+        setTimeout(() => this.tree.collapsed = false, 50);
     },
 
     click: function BoardTree_click(aEvent){
+        if(aEvent.originalTarget.localName == "tree"){
+            // tree のボーダーをクリックしたときの ContextMenu を抑制する
+            // see this.showContext
+            aEvent.preventDefault();
+            return;
+        }
         if(aEvent.originalTarget.localName != "treechildren") return;
         if(this.getClickItemIndex(aEvent) == -1) return;
         if(aEvent.ctrlKey || aEvent.shiftKey) return;
@@ -458,16 +479,27 @@ var BoardTree = {
     },
 
     showContext: function BoardTree_showContext(aEvent){
-            // ツリーのアイテム以外をクリック
-        if(this.getClickItemIndex(aEvent) == -1) return false;
+            // ツリーのアイテムをクリックしたかチェックする
+            // NOTE: キーボード操作でコンテキストメニューが開かれる場合、
+            // <tree>以下の要素へのスタイル適用状態（特に border,padding など）
+            // によって座標計算が正しくなくなり、aEvent.clientX/Y の示す位置が
+            // ツリーアイテムから外れてしまう場合がある（Firefix 38,44 にて確認）。
+            // キーボードのときはフォーカスのある tree が triggerNode となるので、
+            // この場合は座標位置によるチェックをバイパスする。
+        if(aEvent.originalTarget.triggerNode.localName != "tree" &&
+           this.getClickItemIndex(aEvent) == -1) return false;
 
         var currentIndex = this.tree.currentIndex;
         var selectionIndices = this.getSelectionIndices();
 
-        selectionIndices = selectionIndices.filter(function(aElement, aIndex, aArray){
-            return (aElement != currentIndex);
-        });
-        selectionIndices.unshift(currentIndex);
+        var currentInSelection = selectionIndices.indexOf(currentIndex);
+
+        // 選択アイテムの中でフォーカスが当たっているものがあれば先頭へ移動
+        // フォーカスが常に選択アイテムの上にあるとは限らない
+        if(currentInSelection >= 1){
+            selectionIndices.splice(currentInSelection, 1);
+            selectionIndices.unshift(currentIndex);
+        }
 
         var items = selectionIndices.map(function(aElement, aIndex, aArray){
             var title = BoardTree.getItemTitle(aElement);

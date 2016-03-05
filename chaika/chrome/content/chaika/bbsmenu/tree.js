@@ -157,6 +157,20 @@
             }
         },
 
+        handleKeydown: function(event){
+            if(event.key != 'Enter' || event.repeat) return;
+
+            let index = this.selection.currentIndex;
+            if (index < 0 || index >= this.rowCount) return;
+
+            let node = this._visibleNodes[index];
+            let inNewTab = ChaikaCore.pref.getBool('bbsmenu.open_new_tab') ? !event.ctrlKey : event.ctrlKey;
+
+            if(node.hasAttribute('url')){
+                this._openURL(node.getAttribute('url'), inNewTab);
+            }
+        },
+
         _openURL: function(url, inNewTab){
             let uri = Services.io.newURI(url, null, null);
 
@@ -292,7 +306,7 @@
             }
 
             this._buildVisibleNodes();
-            this._treeBoxObject.rowCountChanged(1, this.rowCount - lastRowCount);
+            this._treeBoxObject.rowCountChanged(index + 1, this.rowCount - lastRowCount);
             this._treeBoxObject.invalidate();
 
             this._treeBoxObject.ensureRowIsVisible(this._visibleNodes.indexOf(folder));
