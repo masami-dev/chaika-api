@@ -361,7 +361,8 @@ var BoardTree = {
 
     invalidate: function BoardTree_invalidate(){
         this.tree.collapsed = true;
-        setTimeout(function(){ BoardTree.tree.collapsed = false }, 0);
+        // 時間間隔が20ms以下だと効果が無い場合があるようです
+        setTimeout(function(){ BoardTree.tree.collapsed = false }, 50);
     },
 
     click: function BoardTree_click(aEvent){
