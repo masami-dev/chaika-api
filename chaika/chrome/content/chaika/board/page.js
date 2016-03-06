@@ -224,7 +224,11 @@ var PrefObserver = {
         if(aTopic != "nsPref:changed") return;
 
         if(aData == "tree_size"){
+            BoardTree.invalidate();
             BoardTree.changeTreeSize();
+        }else if(aData == "open_single_click"){
+            BoardTree.invalidate();
+            BoardTree.changeSingleClick();
         }
 
     }
@@ -238,7 +242,8 @@ var BoardTree = {
 
     initTree: function BoardTree_initTree(aNoFocus){
         this.tree = document.getElementById("boardTree");
-        this.tree.setAttribute("treesize", ChaikaCore.pref.getChar("board.tree_size"));
+        this.changeTreeSize();
+        this.changeSingleClick();
 
         setPageTitle();
         if(this.firstInitBoardTree){
@@ -347,8 +352,15 @@ var BoardTree = {
     },
 
     changeTreeSize: function BoardTree_changeTreeSize(){
-        this.tree.collapsed = true;
         this.tree.setAttribute("treesize", ChaikaCore.pref.getChar("board.tree_size"));
+    },
+
+    changeSingleClick: function BoardTree_changeSingleClick(){
+        this.tree.setAttribute("singleclick", ChaikaCore.pref.getBool("board.open_single_click"));
+    },
+
+    invalidate: function BoardTree_invalidate(){
+        this.tree.collapsed = true;
         setTimeout(function(){ BoardTree.tree.collapsed = false }, 0);
     },
 
