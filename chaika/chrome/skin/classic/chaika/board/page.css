@@ -44,6 +44,12 @@
 }
 
 
+#boardTree[singleclick="true"] treechildren::-moz-tree-cell,
+#boardTree[singleclick="true"] treechildren::-moz-tree-cell-text {
+  cursor: pointer;
+}
+
+
 #boardTree treechildren::-moz-tree-image(status){
   margin-left: 2px;
   list-style-image: url("chrome://chaika/skin/board/status-icon.png") !important;
