@@ -923,7 +923,8 @@ var Tree = {
 	changeTreeSize: function Tree_changeTreeSize(){
 		this._tree.collapsed = true;
 		this._tree.setAttribute("treesize", ChaikaCore.pref.getChar("bbsmenu.tree_size"));
-		setTimeout(function(){ Tree._tree.collapsed = false }, 0);
+		// 時間間隔が20ms以下だと効果が無い場合があるようです
+		setTimeout(function(){ Tree._tree.collapsed = false }, 50);
 	},
 
 
