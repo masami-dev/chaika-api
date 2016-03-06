@@ -184,8 +184,10 @@ var BoardTree = {
 
 
 	showContext: function BoardTree_showContext(aEvent){
-		// ツリーのアイテム以外をクリック
-		if(this.getClickItemIndex(aEvent) == -1) return false;
+		// ツリーのアイテムをクリックしたかチェックする
+		// see BoardTree.showContext in ./page.js
+		if(aEvent.originalTarget.triggerNode.localName != "tree" &&
+		   this.getClickItemIndex(aEvent) == -1) return false;
 
 		var currentIndex = this.tree.currentIndex;
 		if(currentIndex == 0) return false;
@@ -326,8 +328,10 @@ var ThreadTree = {
 
 
 	showContext: function ThreadTree_showContext(aEvent){
-		// ツリーのアイテム以外をクリック
-		if(this.getClickItemIndex(aEvent) == -1) return false;
+		// ツリーのアイテムをクリックしたかチェックする
+		// see BoardTree.showContext in ./page.js
+		if(aEvent.originalTarget.triggerNode.localName != "tree" &&
+		   this.getClickItemIndex(aEvent) == -1) return false;
 
 		var currentIndex = this.tree.currentIndex;
 		var selectionIndices = this.getSelectionIndices();

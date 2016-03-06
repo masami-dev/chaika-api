@@ -353,8 +353,15 @@ var BoardTree = {
 	},
 
 	showContext: function BoardTree_showContext(aEvent){
-			// ツリーのアイテム以外をクリック
-		if(this.getClickItemIndex(aEvent) == -1) return false;
+			// ツリーのアイテムをクリックしたかチェックする
+			// NOTE: キーボード操作でコンテキストメニューが開かれる場合、
+			// getClickItemIndex(aEvent) が currentIndex よりも１つ下のセルを
+			// 指すケースがあり、currentIndex が一番下のセルを指しているときは
+			// コンテキストメニューが開かなくなってしまう（Firefix 24 にて確認）。
+			// キーボードのときはフォーカスのある tree が triggerNode となるので、
+			// この場合は座標位置によるチェックをバイパスする。
+		if(aEvent.originalTarget.triggerNode.localName != "tree" &&
+		   this.getClickItemIndex(aEvent) == -1) return false;
 
 		var currentIndex = this.tree.currentIndex;
 		var selectionIndices = this.getSelectionIndices();
