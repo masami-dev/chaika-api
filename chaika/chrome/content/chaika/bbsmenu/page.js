@@ -960,6 +960,28 @@ var Tree = {
 	},
 
 
+	keydown: function Tree_keydown(aEvent){
+		if(aEvent.originalTarget.localName != "tree") return;
+
+		// aEvent.repeat は Firefox 27 以前には存在しないが支障はない
+		if(aEvent.keyCode != aEvent.DOM_VK_RETURN || aEvent.repeat) return;
+
+		var index = this.selection.currentIndex;
+		if(index < 0 || index >= this.rowCount) return;
+
+		if(this.isContainer(index)) return;
+
+		var openNewTab = ChaikaCore.pref.getBool("bbsmenu.open_new_tab");
+		var item = this.getURLItem(index);
+
+		if(aEvent.ctrlKey){
+			item.open(!openNewTab);
+		}else{
+			item.open(openNewTab);
+		}
+	},
+
+
 	showContext: function Tree_showContext(aEvent){
 		var row = {}
 		var subElement = {};
