@@ -301,10 +301,14 @@ var ThreadTree = {
         var currentIndex = this.tree.currentIndex;
         var selectionIndices = this.getSelectionIndices();
 
-        selectionIndices = selectionIndices.filter(function(aElement, aIndex, aArray){
-            return (aElement != currentIndex);
-        });
-        selectionIndices.unshift(currentIndex);
+        var currentInSelection = selectionIndices.indexOf(currentIndex);
+
+        // 選択アイテムの中でフォーカスが当たっているものがあれば先頭へ移動
+        // フォーカスが常に選択アイテムの上にあるとは限らない
+        if(currentInSelection >= 1){
+            selectionIndices.splice(currentInSelection, 1);
+            selectionIndices.unshift(currentIndex);
+        }
 
         var items = selectionIndices.map(function(aElement, aIndex, aArray){
             return ThreadTree._getItem(aElement);
