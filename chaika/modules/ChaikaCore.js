@@ -421,7 +421,9 @@ var ChaikaCore_ = {
         }
 
         if(!httpChannel){
-            httpChannel = ioService.newChannelFromURI(aURL).QueryInterface(Ci.nsIHttpChannel);
+            let ssm = Cc["@mozilla.org/scriptsecuritymanager;1"].getService(Ci.nsIScriptSecurityManager);
+            httpChannel = ioService.newChannelFromURI2(aURL, null, ssm.getSystemPrincipal(), null,
+                Ci.nsILoadInfo.SEC_NORMAL, Ci.nsIContentPolicy.TYPE_OTHER).QueryInterface(Ci.nsIHttpChannel);
         }
 
         httpChannel.setRequestHeader("User-Agent", this.getUserAgent(), false);
