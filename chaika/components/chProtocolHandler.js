@@ -15,10 +15,13 @@ function chProtocolHandler(){
 
 chProtocolHandler.prototype = {
 
-    _getRedirectChannel: function chProtocolHandler__getRedirectChannel(aURISpec){
+    _getRedirectChannel: function chProtocolHandler__getRedirectChannel(aURISpec, aLoadinfo){
         var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
         var channelURI = ioService.newURI(aURISpec, null, null);
-        return ioService.newChannelFromURI(channelURI);
+
+        return (ioService.newChannelFromURIWithLoadInfo) ?  // Firefox 37+
+                ioService.newChannelFromURIWithLoadInfo(channelURI, aLoadinfo) :
+               (!aLoadinfo) ? ioService.newChannelFromURI(channelURI) : Cr.NS_ERROR_NO_CONTENT;
     },
 
 
@@ -66,40 +69,46 @@ chProtocolHandler.prototype = {
 
 
     newChannel: function chProtocolHandler_newChannel(aURI){
+        return this.newChannel2(aURI, null);
+    },
+
+
+    newChannel2: function chProtocolHandler_newChannel2(aURI, aLoadinfo){
         var channel;
 
         switch(aURI.host){
 
             case "bbsmenu":
-                channel = this._getRedirectChannel("chrome://chaika/content/bbsmenu/page.xul");
+                channel = this._getRedirectChannel("chrome://chaika/content/bbsmenu/page.xul", aLoadinfo);
                 break;
 
             case "board":
-                channel = this._getRedirectChannel("chrome://chaika/content/board/page.xul");
+                channel = this._getRedirectChannel("chrome://chaika/content/board/page.xul", aLoadinfo);
                 break;
 
             case "log-manager":
-                channel = this._getRedirectChannel("chrome://chaika/content/board/log-manager.xul");
+                channel = this._getRedirectChannel("chrome://chaika/content/board/log-manager.xul", aLoadinfo);
                 break;
 
             case "support":
-                channel = this._getRedirectChannel("chrome://chaika/content/support.xhtml");
+                channel = this._getRedirectChannel("chrome://chaika/content/support.xhtml", aLoadinfo);
                 break;
 
             case "releasenotes":
-                channel = this._getRedirectChannel("chrome://chaika/content/releasenotes.html");
+                channel = this._getRedirectChannel("chrome://chaika/content/releasenotes.html", aLoadinfo);
                 break;
 
             case 'ivur':
-                channel = this._getRedirectChannel(ChaikaHttpController.ivur.getRedirectURI(aURI));
+                channel = this._getRedirectChannel(ChaikaHttpController.ivur.getRedirectURI(aURI), aLoadinfo);
                 break;
 
             default:
-                channel = this._getCommandChannel(aURI);
+                channel = (!aLoadinfo) ? this._getCommandChannel(aURI) : Cr.NS_ERROR_NO_CONTENT;
                 break;
         }
 
-        channel.originalURI = aURI;
+        if(channel instanceof Ci.nsIChannel) channel.originalURI = aURI;
+
         return channel;
     },
 

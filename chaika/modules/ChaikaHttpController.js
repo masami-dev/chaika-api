@@ -603,7 +603,13 @@ ChaikaNGFiles.prototype = {
     _getMD5: function ChaikaNGFiles__getMD5(uri){
         try{
             var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-            var channel = ioService.newChannelFromURI(uri);
+            if(ioService.newChannelFromURI2){   // Firefox 36+
+                var ssm = Cc["@mozilla.org/scriptsecuritymanager;1"].getService(Ci.nsIScriptSecurityManager);
+                var channel = ioService.newChannelFromURI2(uri, null, ssm.getSystemPrincipal(), null,
+                                Ci.nsILoadInfo.SEC_NORMAL, Ci.nsIContentPolicy.TYPE_OTHER);
+            }else{
+                var channel = ioService.newChannelFromURI(uri);
+            }
 
             var stream = channel.open();
             var binaryInputStream = Cc["@mozilla.org/binaryinputstream;1"].createInstance(Ci.nsIBinaryInputStream);
