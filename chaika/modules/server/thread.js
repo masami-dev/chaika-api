@@ -811,6 +811,13 @@ Thread2ch.prototype = {
 				this.write(this.converter.getFooter("abone"));
 				this.close();
 				return;
+			case 404: // 過去ログ取得時の404はDAT落ちと表示する
+				if(this._kakoDatDownload){
+					this.write(this.converter.getFooter("dat_down"));
+					this.close();
+					return;
+				}
+				// fall through
 			default: // HTTP エラー
 				this.write(this.converter.getFooter(httpStatus));
 				this.close();
