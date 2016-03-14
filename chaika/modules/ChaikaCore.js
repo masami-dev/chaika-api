@@ -466,7 +466,13 @@ var ChaikaCore = {
 		}
 
 		if(!httpChannel){
-			httpChannel = ioService.newChannelFromURI(aURL).QueryInterface(Ci.nsIHttpChannel);
+			if(ioService.newChannelFromURI2){	// Firefox 36+
+				var ssm = Cc["@mozilla.org/scriptsecuritymanager;1"].getService(Ci.nsIScriptSecurityManager);
+				httpChannel = ioService.newChannelFromURI2(aURL, null, ssm.getSystemPrincipal(), null,
+					Ci.nsILoadInfo.SEC_NORMAL, Ci.nsIContentPolicy.TYPE_OTHER).QueryInterface(Ci.nsIHttpChannel);
+			}else{
+				httpChannel = ioService.newChannelFromURI(aURL).QueryInterface(Ci.nsIHttpChannel);
+			}
 		}
 
 		httpChannel.setRequestHeader("User-Agent", this.getUserAgent(), false);
