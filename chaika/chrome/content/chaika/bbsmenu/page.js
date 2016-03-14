@@ -364,7 +364,10 @@ var SearchBox = {
      * @param {String} aID 検索エンジンのID
      */
     setSearchMode: function(aID){
-        document.querySelector('menuitem[value="' + aID + '"]').setAttribute('checked', 'true');
+        let engineNode = document.querySelector('menuitem[value="' + aID + '"]');
+        if(!engineNode) return;
+
+        engineNode.setAttribute('checked', 'true');
         this._textbox.emptyText = ChaikaSearch.getPlugin(aID).name;
     }
 
