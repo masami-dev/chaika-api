@@ -104,10 +104,12 @@
                     this.items.forEach(function(aElement, aIndex, aArray){
                         if(aElement.itemType == "board"){
                             this.ChaikaCore.browser.openBoard(aElement.getURL(), true);
-                        }else{
+                        }else if(aElement.itemType == "thread"){
                             this.ChaikaCore.browser.openThread(aElement.getURL(), true, true);
+                        }else{
+                            this.ChaikaCore.browser.openURL(aElement.getURL(), true);
                         }
-                    });
+                    }, this);
                     break;
 
                 case "openBrowser":

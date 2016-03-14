@@ -790,17 +790,26 @@ var Tree = {
 
 
     showContext: function Tree_showContext(aEvent){
-        var row = {}
+        var row = {};
         var subElement = {};
         this._treeBoxObject.getCellAt(aEvent.clientX, aEvent.clientY, row, {}, subElement);
         if(row.value == -1) return false;    // ツリーのアイテム以外をクリック
 
-        if(this.isContainer(row.value)) return false;
+        var currentIndex = this.selection.currentIndex;
+        var selectionIndices = this.getSelectionIndices();
 
-        var item = this.getURLItem(row.value)
+        var currentInSelection = selectionIndices.indexOf(currentIndex);
+
+        if(currentInSelection >= 1){
+            selectionIndices.splice(currentInSelection, 1);
+            selectionIndices.unshift(currentIndex);
+        }
+
+        var items = selectionIndices.filter((index) => !this.isContainer(index))
+                                    .map((index) => this.getURLItem(index));
         var treeContextMenu = document.getElementById("treeContextMenu");
-        treeContextMenu.items = [this.getURLItem(row.value)];
-        return true
+        treeContextMenu.items = items;
+        return true;
     },
 
 
@@ -819,6 +828,23 @@ var Tree = {
             itemType = "thread";
         }
         return new ChaikaCore.ChaikaURLItem(title, urlSpec, itemType, boardType);
+    },
+
+
+    getSelectionIndices: function Tree_getSelectionIndices(){
+        var result = [];
+
+        var count = this.selection.getRangeCount();
+        for(var i=0; i<count; i++){
+            var min = {};
+            var max = {};
+
+            this.selection.getRangeAt(i, min, max);
+            for(var j=min.value; j<=max.value; j++){
+                result.push(j);
+            }
+        }
+        return result;
     },
 
 
