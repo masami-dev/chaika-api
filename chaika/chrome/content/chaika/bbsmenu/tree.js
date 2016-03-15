@@ -102,13 +102,23 @@
 
             this._treeBoxObject.getCellAt(event.clientX, event.clientY, row, {}, obj);
 
-            if(row.value === -1 || obj.value === 'twisty') return false;
-            if(this.isContainer(row.value)) return false;
+            if(row.value === -1) return false;
 
-            let urlItem = this._getURLItem(row.value);
+            let currentIndex = this.selection.currentIndex;
+            let selectionIndices = this._getSelectionIndices();
+
+            let currentInSelection = selectionIndices.indexOf(currentIndex);
+
+            if(currentInSelection >= 1){
+                selectionIndices.splice(currentInSelection, 1);
+                selectionIndices.unshift(currentIndex);
+            }
+
+            let urlItems = selectionIndices.filter((index) => !this.isContainer(index))
+                                           .map((index) => this._getURLItem(index));
             let contextMenu = document.getElementById('treeContextMenu');
 
-            contextMenu.items = [urlItem];
+            contextMenu.items = urlItems;
 
             return true;
         },
@@ -129,6 +139,22 @@
             }
 
             return new ChaikaCore.ChaikaURLItem(title, urlSpec, itemType);
+        },
+
+        _getSelectionIndices: function(){
+            let result = [];
+
+            let count = this.selection.getRangeCount();
+            for(let i=0; i<count; i++){
+                let min = {};
+                let max = {};
+
+                this.selection.getRangeAt(i, min, max);
+                for(let j=min.value; j<=max.value; j++){
+                    result.push(j);
+                }
+            }
+            return result;
         },
 
         handleClick: function(event){
