@@ -224,15 +224,19 @@ var BoardTree = {
     },
 
 
-        // nsDragAndDrop Observer
-    onDragStart: function BoardTree_onDragStart(aEvent, aTransferData, aDragAction){
+    dragStart: function BoardTree_dragStart(aEvent){
         var itemIndex = this.getClickItemIndex(aEvent);
         if(itemIndex == -1) return;
 
         var item = this._getItem(itemIndex);
-        aTransferData.data = new TransferData();
-        aTransferData.data.addDataForFlavour("text/x-moz-url", item.urlSpec + "\n" + item.title);
-        aTransferData.data.addDataForFlavour("text/unicode", item.urlSpec);
+
+        var dt = aEvent.dataTransfer;
+        dt.setData("text/x-moz-url", item.urlSpec + "\n" + item.title);
+        dt.setData("text/unicode", item.urlSpec);
+
+        dt.effectAllowed = "link";
+        dt.addElement(aEvent.originalTarget);
+        aEvent.stopPropagation();
     }
 
 };
@@ -388,16 +392,20 @@ var ThreadTree = {
     },
 
 
-    // nsDragAndDrop Observer
-    onDragStart: function BoardTree_onDragStart(aEvent, aTransferData, aDragAction){
+    dragStart: function BoardTree_dragStart(aEvent){
         var itemIndex = this.getClickItemIndex(aEvent);
         if(itemIndex == -1) return;
         if(this.getSelectionIndices().length != 1) return;
 
         var item = this._getItem(itemIndex);
-        aTransferData.data = new TransferData();
-        aTransferData.data.addDataForFlavour("text/x-moz-url", item.urlSpec + "\n" + item.title);
-        aTransferData.data.addDataForFlavour("text/unicode", item.urlSpec);
+
+        var dt = aEvent.dataTransfer;
+        dt.setData("text/x-moz-url", item.urlSpec + "\n" + item.title);
+        dt.setData("text/unicode", item.urlSpec);
+
+        dt.effectAllowed = "link";
+        dt.addElement(aEvent.originalTarget);
+        aEvent.stopPropagation();
     },
 
 
