@@ -231,6 +231,13 @@ ChaikaServerHandler.prototype = {
         try{
             this.request = new ChaikaServerRequest(aInputStream);
         }catch(ex){
+            if(ex.result == Cr.NS_BASE_STREAM_CLOSED){
+                // 接続はされたが何も送られて来ずに切断された場合
+                // nsIInputStream.available() が投げてくる例外を検知して
+                // エラー扱いにはせずに終了する
+                this.close();
+                return;
+            }
             Logger.error(ex);
 
             aInputStream.close();
