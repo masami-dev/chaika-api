@@ -136,6 +136,14 @@ let Redirector = {
             redirectTo = redirectTo.replace(/[^\/]+$/, viewLimit ? 'l' + viewLimit : '');
         }
 
+        // Firefox 53 以降、http(s):// から chrome:// へのリダイレクトが不可能になったので、
+        // 板URLはここで旧来の chaika://board/～ 形式へリダイレクトし、
+        // それをさらに chrome:// 形式で読み込みしなおすという方法をとっている
+
+        redirectTo = redirectTo.replace(
+                /^chrome:\/\/chaika\/content\/board\/page\.xul\?(?:.*&)?url=([^&#]*).*$/,
+                'chaika://board/$1');
+
         aLocation.spec = redirectTo;
 
         return Ci.nsISimpleContentPolicy.ACCEPT;
