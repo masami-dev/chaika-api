@@ -371,6 +371,20 @@ this.ChaikaBeLogin = {
     _loggedIn: false,
 
 
+    /**
+     * originAttributes for nsICookieManager2 (Firefox 47+)
+     * @type {Object}
+     */
+    _originAttributes: {
+        addonId: "",
+        appId: 0,
+        firstPartyDomain: "",
+        inIsolatedMozBrowser: false,
+        privateBrowsingId: 0,
+        userContextId: 0
+    },
+
+
     get cookieManager(){
         if(!this._cookieManager)
             this._cookieManager = Cc["@mozilla.org/cookiemanager;1"].getService(Ci.nsICookieManager2);
@@ -460,13 +474,13 @@ this.ChaikaBeLogin = {
             host: ".2ch.net",
             path: '/',
             name: 'MDMD'
-        });
+        }, this._originAttributes);     // Firefox 52+
 
         var dmdmExists = this.cookieManager.cookieExists({
             host: ".2ch.net",
             path: '/',
             name: 'DMDM'
-        });
+        }, this._originAttributes);
 
         ChaikaCore.logger.debug('MDMD exists:' + mdmdExists + '; DMDM exists:' + dmdmExists);
 
@@ -499,10 +513,11 @@ this.ChaikaBeLogin = {
 
 
     logout: function ChaikaBeLogin_logout(){
-        this.cookieManager.remove(".2ch.net", 'MDMD', '/', false);
-        this.cookieManager.remove(".2ch.net", 'DMDM', '/', false);
-        this.cookieManager.remove('.bbspink.com', 'MDMD', '/', false);
-        this.cookieManager.remove('.bbspink.com', 'DMDM', '/', false);
+        // Firefox 47+ requires originAttributes
+        this.cookieManager.remove(".2ch.net", 'MDMD', '/', false, this._originAttributes);
+        this.cookieManager.remove(".2ch.net", 'DMDM', '/', false, this._originAttributes);
+        this.cookieManager.remove('.bbspink.com', 'MDMD', '/', false, this._originAttributes);
+        this.cookieManager.remove('.bbspink.com', 'DMDM', '/', false, this._originAttributes);
 
         this._loggedIn = false;
 
@@ -520,7 +535,7 @@ this.ChaikaBeLogin = {
 
     _onSuccess: function ChaikaBeLogin__onSuccess(){
         //送られてきたクッキーを登録する
-        var cookieStr = this._req.getResponseHeader('Set-Cookie');
+        var cookieStr = this._req.getResponseHeader('Set-Cookie') || '';
         var cookies = parseCookie(cookieStr.replace(/\n/g, ', '));
 
         cookies.forEach(function(cookie){
@@ -534,7 +549,8 @@ this.ChaikaBeLogin = {
                     false, false, false,
                     cookie.options.expires ?
                         cookie.options.expires.getTime() / 1000 :
-                        ( Date.now() / 1000 ) + ( 7 * 24 * 60 * 60 )
+                        ( Date.now() / 1000 ) + ( 7 * 24 * 60 * 60 ),
+                    this._originAttributes      // Firefox 49+
                 );
 
                 //for bbspink.com
@@ -546,7 +562,8 @@ this.ChaikaBeLogin = {
                     false, false, false,
                     cookie.options.expires ?
                         cookie.options.expires.getTime() / 1000 :
-                        ( Date.now() / 1000 ) + ( 7 * 24 * 60 * 60 )
+                        ( Date.now() / 1000 ) + ( 7 * 24 * 60 * 60 ),
+                    this._originAttributes
                 );
             }
         }, this);
@@ -586,6 +603,20 @@ this.ChaikaP2Login = {
      * @type {Boolean}
      */
     _enabled: false,
+
+
+    /**
+     * originAttributes for nsICookieManager2 (Firefox 47+)
+     * @type {Object}
+     */
+    _originAttributes: {
+        addonId: "",
+        appId: 0,
+        firstPartyDomain: "",
+        inIsolatedMozBrowser: false,
+        privateBrowsingId: 0,
+        userContextId: 0
+    },
 
 
     get enabled(){
@@ -696,17 +727,19 @@ this.ChaikaP2Login = {
 
 
     isLoggedIn: function ChaikaP2Login_isLoggedIn(){
+        var domain = ChaikaCore.pref.getChar("login.p2.cookie_domain");
+
         var psExists = this.cookieManager.cookieExists({
-            host: ChaikaCore.pref.getChar("login.p2.cookie_domain"),
+            host: domain,
             path: '/',
             name: 'PS'
-        });
+        }, this._originAttributes);     // Firefox 52+
 
         var cidExists = this.cookieManager.cookieExists({
-            host: ChaikaCore.pref.getChar("login.p2.cookie_domain"),
+            host: domain,
             path: '/',
             name: 'cid'
-        });
+        }, this._originAttributes);
 
         ChaikaCore.logger.debug('ps exists:' + psExists + '; cid exists:' + cidExists);
 
@@ -741,8 +774,10 @@ this.ChaikaP2Login = {
 
     logout: function ChaikaP2Login_logout(){
         //クッキーを削除する
-        this.cookieManager.remove(ChaikaCore.pref.getChar("login.p2.cookie_domain"), 'PS', '/', false);
-        this.cookieManager.remove(ChaikaCore.pref.getChar("login.p2.cookie_domain"), 'cid', '/', false);
+        var domain = ChaikaCore.pref.getChar("login.p2.cookie_domain");
+        // Firefox 47+ requires originAttributes
+        this.cookieManager.remove(domain, 'PS', '/', false, this._originAttributes);
+        this.cookieManager.remove(domain, 'cid', '/', false, this._originAttributes);
         this._loggedIn = false;
 
         //ログアウトを通知
@@ -757,7 +792,7 @@ this.ChaikaP2Login = {
 
         //一度ブラウザでログインしないとCookieを受け取れない問題への対策
         //強制的に送られてきたCookieを追加する
-        var cookieStr = this._req.getResponseHeader('Set-Cookie');
+        var cookieStr = this._req.getResponseHeader('Set-Cookie') || '';
         var cookies = parseCookie(cookieStr.replace(/\n/g, ', '));
 
         cookies.forEach(function(cookie){
@@ -770,7 +805,8 @@ this.ChaikaP2Login = {
                     false, false, false,
                     cookie.options.expires ?
                         cookie.options.expires.getTime() / 1000 :
-                        ( Date.now() / 1000 ) + ( 7 * 24 * 60 * 60 )
+                        ( Date.now() / 1000 ) + ( 7 * 24 * 60 * 60 ),
+                    this._originAttributes      // Firefox 49+
                 );
             }
         }, this);
