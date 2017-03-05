@@ -754,8 +754,10 @@ ChaikaBrowser.prototype = {
 
         if(!aOpenBrowser){
             threadURL = ioService.newURI(URLUtils.chaikafy(threadURL.spec), null, null);
-        }else if(ChaikaCore_.pref.getBool("browser.redirector.enabled")){
-            // スレッドリダイレクタを回避
+        }else if(ChaikaCore_.pref.getBool("browser.redirector.enabled") &&
+                 (!ChaikaCore_.pref.getBool("browser.redirector.thread_only") ||
+                  URLUtils.isThread(threadURL.spec))){
+            // URL リダイレクタを回避
             threadURL = ioService.newURI(threadURL.spec + '?chaika_force_browser=1', null, null);
         }
 

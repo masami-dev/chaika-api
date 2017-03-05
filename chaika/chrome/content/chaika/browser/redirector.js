@@ -120,6 +120,10 @@ let Redirector = {
         if(!URLUtils.isBBS(aLocation.spec))
             return Ci.nsISimpleContentPolicy.ACCEPT;
 
+        // Don't redirect if the user doesn't wish to be redirected to chaika-board-view page.
+        if(!URLUtils.isThread(aLocation.spec) && Prefs.get("browser.redirector.thread_only"))
+            return Ci.nsISimpleContentPolicy.ACCEPT;
+
         // Don't redirect if the page is forced to load as normal web-view.
         if(aLocation.spec.includes('chaika_force_browser=1'))
             return Ci.nsISimpleContentPolicy.ACCEPT;
