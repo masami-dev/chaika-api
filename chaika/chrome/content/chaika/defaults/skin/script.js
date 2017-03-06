@@ -636,16 +636,16 @@ var ResInfo = {
 
         // ID別総発言数を表示する
         if(enablePostsCount){
-            for(let id in idTable){
-                if(typeof idTable[id] !== 'number') continue;
-
-                let idNodes = $.selectorAll('.resContainer[data-id="' + id + '"] > .resHeader > .resHeaderContent');
-                if(!idNodes) continue;
-
-                idNodes.forEach((idNode) => {
-                    idNode.dataset.idPostsAll = idTable[id];
-                });
-            }
+            resNodes.forEach((resNode) => {
+                let id = resNode.dataset.id;
+                if(id in idTable){
+                    let count = idTable[id];
+                    let refHeader = $.klass('resHeaderContent', resNode);
+                    if(typeof count === 'number' && refHeader){
+                        refHeader.dataset.idPostsAll = count;
+                    }
+                }
+            });
         }
     },
 
