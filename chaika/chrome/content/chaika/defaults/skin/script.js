@@ -1498,6 +1498,8 @@ var Popup = {
         if(!targetPopup.classList.contains('popup')){
             if(aEvent.originalTarget.dataset.popup){
                 targetPopup = $.id(aEvent.originalTarget.dataset.popup);
+                //既にポップアップが消されていたら何もしない
+                if(!targetPopup) return;
             }else{
                 return;
             }
