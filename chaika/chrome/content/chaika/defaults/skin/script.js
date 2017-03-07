@@ -1530,6 +1530,22 @@ var Popup = {
             return;
         }
 
+        //まれにマウスがポップアップの上に乗っているのに mouseleave する
+        //不具合への対処としてマウスとポップアップの座標を比較する
+        //なお、ポップアップは角丸 (border-radius) になっているので
+        //マウスをポップアップの四隅に動かした時、ポップアップ範囲内の座標で mouseleave してしまう
+        //判定を簡単にするため、角を含まないポップアップの中身の座標を使う
+        let innerNode = $.selector('.popupInner', targetPopup);
+        if(innerNode){
+            let rect = innerNode.getBoundingClientRect();
+            if (aEvent.clientX > Math.round(rect.left) &&
+                aEvent.clientX < Math.round(rect.right) &&
+                aEvent.clientY > Math.round(rect.top) &&
+                aEvent.clientY < Math.round(rect.bottom))
+            {
+                return;
+            }
+        }
 
         //対象ポップアップを消去
         Effects.fadeout(targetPopup, { remove: true });
