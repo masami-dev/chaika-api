@@ -1814,7 +1814,7 @@ Popup.Image = {
 
         if(!this._isImageLink(linkURL)) return;
 
-        var image = $.node({ img: { 'class': 'small', 'src': linkURL }});
+        var image = $.node({ img: { 'class': 'small' }});
 
         var popupWidth = Prefs.get('pref-image-popup-width');
         var popupHeight = Prefs.get('pref-image-popup-height');
@@ -1831,6 +1831,7 @@ Popup.Image = {
 
         image.addEventListener('click', function(){
             let popupNode = this.closest('.popup');
+            if(!popupNode) return;
             if(this.classList.toggle('small')){
                 $.css(this, {
                     maxWidth: popupWidth > 0 ? popupWidth + 'px' : 'none',
@@ -1853,11 +1854,16 @@ Popup.Image = {
 
         image.addEventListener('load', function(){
             let popupNode = this.closest('.popup');
+            if(!popupNode) return;
             Popup._adjustPopupPosition(link, popupNode, popupNode.dataset.inverted === 'true');
         }, false);
 
         var popupContent = $.node({ 'div': { children: image }});
         var dir = Prefs.get('pref-invert-image-popup-dir');
+
+        //イベントハンドラを登録してから画像をロードする
+        //ロード時にポップアップがまだ表示されていない場合がある事に注意
+        image.src = linkURL;
 
         if(Prefs.get('pref-delay-popup')){
             Popup.showPopupDelay(aEvent, popupContent, "ImagePopup", dir);
