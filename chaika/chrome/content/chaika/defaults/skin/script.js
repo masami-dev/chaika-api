@@ -1374,6 +1374,9 @@ var Popup = {
         let scrollY = window.scrollY;
 
         $.css(popupNode, {
+            //現在の mouseover を乗っ取らないように背面で計算する
+            zIndex: -99,
+
             left: scrollX + 'px',
             top: scrollY + 'px'
         });
@@ -1405,7 +1408,10 @@ var Popup = {
         $.css(popupNode, {
             top: !invertDirection ? top + 'px' : '',
             bottom: invertDirection ? bottom + 'px' : '',
-            left: left + 'px'
+            left: left + 'px',
+
+            //最後に前面に戻す
+            zIndex: ''
         });
     },
 
