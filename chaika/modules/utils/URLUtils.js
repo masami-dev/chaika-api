@@ -31,6 +31,7 @@ let includes = {
         //  cf.) http://t-webber.hatenablog.com/entry/2015/05/01/231948
         /^https?:\/\/\w+\.2ch\.net\/\w+\/$/,
         /^https?:\/\/\w+\.bbspink\.com\/\w+\/$/,
+        /^https?:\/\/machi\.to\/\w+\/$/,
         /^https?:\/\/\w+\.machi\.to\/\w+\/$/,
         /^https?:\/\/jbbs\.shitaraba\.net\/\w+\/\d+\/$/,
         /^https?:\/\/jbbs\.livedoor\.jp\/\w+\/\d+\/$/,
