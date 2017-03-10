@@ -116,6 +116,7 @@ let excludes = {
 
         /* bbspink.com */
         /^https?:\/\/www\.bbspink\.com\//,      // Top Page
+        /^https?:\/\/deleter\.bbspink\.com\//,  // BBSPINK Wiki
         /^https?:\/\/headline\.bbspink\.com\//, // Headline on bbspink.com
         /^https?:\/\/update\.bbspink\.com\//,   // PINKheadline
         /^https?:\/\/ronin\.bbspink\.com\//,    // RONIN on bbspink.com
