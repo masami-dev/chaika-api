@@ -32,6 +32,7 @@
     <spacer flex="1" />
     <label id="boardTitle" crop="end" value="" />
     <spacer flex="1" />
+    <button id="repairButton" label="データベースの修復" oncommand="repair()" />
     <button id="vacuumButton" label="データベースの最適化" oncommand="vacuum()" />
 </hbox>
 

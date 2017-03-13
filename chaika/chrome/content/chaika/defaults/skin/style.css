@@ -231,6 +231,8 @@ nav > ul:hover > li > ul{
     margin-left: 15px;
     padding-left: 5px;
     border-left: 5px solid transparent;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .resHeader {

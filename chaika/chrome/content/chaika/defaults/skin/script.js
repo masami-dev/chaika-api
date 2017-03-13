@@ -636,16 +636,16 @@ var ResInfo = {
 
         // ID別総発言数を表示する
         if(enablePostsCount){
-            for(let id in idTable){
-                if(typeof idTable[id] !== 'number') continue;
-
-                let idNodes = $.selectorAll('.resContainer[data-id="' + id + '"] > .resHeader > .resHeaderContent');
-                if(!idNodes) continue;
-
-                idNodes.forEach((idNode) => {
-                    idNode.dataset.idPostsAll = idTable[id];
-                });
-            }
+            resNodes.forEach((resNode) => {
+                let id = resNode.dataset.id;
+                if(id in idTable){
+                    let count = idTable[id];
+                    let refHeader = $.klass('resHeaderContent', resNode);
+                    if(typeof count === 'number' && refHeader){
+                        refHeader.dataset.idPostsAll = count;
+                    }
+                }
+            });
         }
     },
 
@@ -1374,6 +1374,9 @@ var Popup = {
         let scrollY = window.scrollY;
 
         $.css(popupNode, {
+            //現在の mouseover を乗っ取らないように背面で計算する
+            zIndex: -99,
+
             left: scrollX + 'px',
             top: scrollY + 'px'
         });
@@ -1405,7 +1408,10 @@ var Popup = {
         $.css(popupNode, {
             top: !invertDirection ? top + 'px' : '',
             bottom: invertDirection ? bottom + 'px' : '',
-            left: left + 'px'
+            left: left + 'px',
+
+            //最後に前面に戻す
+            zIndex: ''
         });
     },
 
@@ -1498,6 +1504,8 @@ var Popup = {
         if(!targetPopup.classList.contains('popup')){
             if(aEvent.originalTarget.dataset.popup){
                 targetPopup = $.id(aEvent.originalTarget.dataset.popup);
+                //既にポップアップが消されていたら何もしない
+                if(!targetPopup) return;
             }else{
                 return;
             }
@@ -1522,6 +1530,22 @@ var Popup = {
             return;
         }
 
+        //まれにマウスがポップアップの上に乗っているのに mouseleave する
+        //不具合への対処としてマウスとポップアップの座標を比較する
+        //なお、ポップアップは角丸 (border-radius) になっているので
+        //マウスをポップアップの四隅に動かした時、ポップアップ範囲内の座標で mouseleave してしまう
+        //判定を簡単にするため、角を含まないポップアップの中身の座標を使う
+        let innerNode = $.selector('.popupInner', targetPopup);
+        if(innerNode){
+            let rect = innerNode.getBoundingClientRect();
+            if (aEvent.clientX > Math.round(rect.left) &&
+                aEvent.clientX < Math.round(rect.right) &&
+                aEvent.clientY > Math.round(rect.top) &&
+                aEvent.clientY < Math.round(rect.bottom))
+            {
+                return;
+            }
+        }
 
         //対象ポップアップを消去
         Effects.fadeout(targetPopup, { remove: true });
@@ -1812,7 +1836,7 @@ Popup.Image = {
 
         if(!this._isImageLink(linkURL)) return;
 
-        var image = $.node({ img: { 'class': 'small', 'src': linkURL }});
+        var image = $.node({ img: { 'class': 'small' }});
 
         var popupWidth = Prefs.get('pref-image-popup-width');
         var popupHeight = Prefs.get('pref-image-popup-height');
@@ -1829,6 +1853,7 @@ Popup.Image = {
 
         image.addEventListener('click', function(){
             let popupNode = this.closest('.popup');
+            if(!popupNode) return;
             if(this.classList.toggle('small')){
                 $.css(this, {
                     maxWidth: popupWidth > 0 ? popupWidth + 'px' : 'none',
@@ -1851,11 +1876,16 @@ Popup.Image = {
 
         image.addEventListener('load', function(){
             let popupNode = this.closest('.popup');
+            if(!popupNode) return;
             Popup._adjustPopupPosition(link, popupNode, popupNode.dataset.inverted === 'true');
         }, false);
 
         var popupContent = $.node({ 'div': { children: image }});
         var dir = Prefs.get('pref-invert-image-popup-dir');
+
+        //イベントハンドラを登録してから画像をロードする
+        //ロード時にポップアップがまだ表示されていない場合がある事に注意
+        image.src = linkURL;
 
         if(Prefs.get('pref-delay-popup')){
             Popup.showPopupDelay(aEvent, popupContent, "ImagePopup", dir);

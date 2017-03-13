@@ -1330,7 +1330,14 @@ function ThreadMachi(){
 
 ThreadMachi.prototype = Object.create(Thread2ch.prototype, {
     datDownload: {
-        value: function(){
+        value: function(aFailed){
+            // datDownload(true) が実装されていないと無限ループになるので終了
+            if(aFailed){
+                this.write("BAD URL");
+                this.close();
+                return;
+            }
+
             var datURLSpec = this.thread.url.resolve("./").replace("read.cgi", "offlaw.cgi/2");
             this._aboneChecked = true;
             this._threadAbone = false;
