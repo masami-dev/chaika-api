@@ -12,7 +12,6 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
 <script type="application/javascript;" src="chrome://chaika/content/board/log-manager.js"/>
-<script type="application/javascript" src="chrome://global/content/nsDragAndDrop.js"/>
 
 <xhtml:link rel="shortcut icon" href="chrome://chaika/content/icon.png" style="display: none;" />
 
@@ -41,7 +40,7 @@
 <hbox flex="1">
     <tree id="boardTree" class="plain" width="160" seltype="single" hidecolumnpicker="true"
             onselect="BoardTree.select(event)" context="boardTreeContext"
-            ondraggesture="nsDragAndDrop.startDrag(event, BoardTree);"
+            ondragstart="BoardTree.dragStart(event);"
             datasources="#boardTree" ref="*" querytype="xml" flags="dont-build-content">
         <treecols>
             <treecol id="boardTree-title" label="板名" flex="1" ignoreincolumnpicker="true"/>
@@ -67,7 +66,7 @@
 
     <tree id="threadTree" class="plain" flex="4" context="threadTreeContext"
             ondblclick="ThreadTree.onDblclick(event);"
-            ondraggesture="nsDragAndDrop.startDrag(event, ThreadTree);"
+            ondragstart="ThreadTree.dragStart(event);"
             datasources="#threadTree" ref="*" querytype="xml" flags="dont-build-content">
         <treecols>
             <treecol id="threadTree-title" sort="?title"      label="スレッドタイトル" flex="1" ignoreincolumnpicker="true"/>

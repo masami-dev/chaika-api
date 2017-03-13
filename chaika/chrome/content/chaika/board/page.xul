@@ -15,7 +15,6 @@
       xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
 <script type="application/javascript" src="chrome://chaika/content/board/page.js"/>
-<script type="application/javascript" src="chrome://global/content/nsDragAndDrop.js"/>
 
 <xhtml:link rel="shortcut icon" href="chrome://chaika/content/icon.png" style="display: none;" />
 
@@ -72,7 +71,7 @@
       onclick="BoardTree.click(event)"
       ondblclick="BoardTree.click(event)"
       onkeypress="BoardTree.keyDown(event)"
-      ondraggesture="nsDragAndDrop.startDrag(event, BoardTree)"
+      ondragstart="BoardTree.dragStart(event)"
       onmousemove="BoardTree.mouseMove(event)"
       onmouseout="BoardTree.mouseOut(event)"
       datasources="#boardTree"
