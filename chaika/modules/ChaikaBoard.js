@@ -775,7 +775,7 @@ ChaikaBoard.getBoardID = function ChaikaBoard_getBoardID(aBoardURL){
 	var boardID = "/";
 	if(aBoardURL.host.indexOf(".2ch.net")!=-1){
 		boardID += "2ch" + aBoardURL.path;
-	}else if(aBoardURL.host.indexOf(".machi.to")!=-1){
+	}else if(aBoardURL.host == "machi.to" || aBoardURL.host.indexOf(".machi.to")!=-1){
 		boardID += "machi" + aBoardURL.path;
 	}else if(aBoardURL.host.indexOf(".bbspink.com")!=-1){
 		boardID += "bbspink" + aBoardURL.path;
@@ -852,7 +852,7 @@ ChaikaBoard.getBoardType = function ChaikaBoard_getBoardType(aURL){
 		// bbspink.com
 	if(aURL.host.indexOf(".bbspink.com") != -1) return ChaikaBoard.BOARD_TYPE_2CH;
 		// まちBBS
-	if(aURL.host.indexOf(".machi.to") != -1) return ChaikaBoard.BOARD_TYPE_MACHI;
+	if(aURL.host == "machi.to" || aURL.host.indexOf(".machi.to") != -1) return ChaikaBoard.BOARD_TYPE_MACHI;
 		// JBBS
 	if(aURL.host == "jbbs.livedoor.jp") return ChaikaBoard.BOARD_TYPE_JBBS;
 	if(aURL.host == "jbbs.shitaraba.net") return ChaikaBoard.BOARD_TYPE_JBBS;
