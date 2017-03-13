@@ -1105,7 +1105,14 @@ function ThreadMachi(){
 }
 
 ThreadMachi.prototype = {
-	datDownload: function(){
+	datDownload: function(aFailed){
+		// datDownload(true) が実装されていないと無限ループになるので終了
+		if(aFailed){
+			this.write("BAD URL");
+			this.close();
+			return;
+		}
+
 		var datURLSpec = this.thread.url.resolve("./").replace("read.cgi", "offlaw.cgi");
 		this._aboneChecked = true;
 		this._threadAbone = false;
