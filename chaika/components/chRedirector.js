@@ -47,6 +47,8 @@ chRedirector.prototype = {
         var host = aContentLocation.host;
         if(host.indexOf(".2ch.net") == -1 &&
            host.indexOf(".bbspink.com") == -1 &&
+           host.indexOf(".machi.to") == -1 &&
+           host != "machi.to" &&
            host != "jbbs.livedoor.jp" &&
            host != "jbbs.shitaraba.net"){
             // is2chTypeBoard()で調べる必要のないケースをバイパスする
