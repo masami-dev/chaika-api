@@ -251,6 +251,19 @@ var ChaikaP2Login = {
 	//p2での書き込みを有効にするかどうか
 	_enabled: false,
 
+	/**
+	 * originAttributes for nsICookieManager2 (Firefox 47+)
+	 * @type {Object}
+	 */
+	_originAttributes: {
+		addonId: "",
+		appId: 0,
+		firstPartyDomain: "",
+		inIsolatedMozBrowser: false,
+		privateBrowsingId: 0,
+		userContextId: 0
+	},
+
 	get enabled(){
 		return this._enabled && this.isLoggedIn();
 	},
@@ -355,17 +368,19 @@ var ChaikaP2Login = {
 
 
 	isLoggedIn: function ChaikaP2Login_isLoggedIn(){
+		var domain = ChaikaCore.pref.getChar("login.p2.cookie_domain");
+
 		var psExists = this.cookieManager.cookieExists({
-			host: ChaikaCore.pref.getChar("login.p2.cookie_domain"),
+			host: domain,
 			path: '/',
 			name: 'PS'
-		});
+		}, this._originAttributes); 	// Firefox 52+
 
 		var cidExists = this.cookieManager.cookieExists({
-			host: ChaikaCore.pref.getChar("login.p2.cookie_domain"),
+			host: domain,
 			path: '/',
 			name: 'cid'
-		});
+		}, this._originAttributes);
 
 		ChaikaCore.logger.debug('ps exists:' + psExists + '; cid exists:' + cidExists);
 
@@ -398,8 +413,10 @@ var ChaikaP2Login = {
 
 	logout: function ChaikaP2Login_logout(){
 		//クッキーを削除する
-		this.cookieManager.remove(ChaikaCore.pref.getChar("login.p2.cookie_domain"), 'PS', '/', false);
-		this.cookieManager.remove(ChaikaCore.pref.getChar("login.p2.cookie_domain"), 'cid', '/', false);
+		var domain = ChaikaCore.pref.getChar("login.p2.cookie_domain");
+		// Firefox 47+ requires originAttributes
+		this.cookieManager.remove(domain, 'PS', '/', false, this._originAttributes);
+		this.cookieManager.remove(domain, 'cid', '/', false, this._originAttributes);
 		this._loggedIn = false;
 
 		//ログアウトを通知
@@ -433,7 +450,7 @@ var ChaikaP2Login = {
 
 		//一度ブラウザでログインしないとCookieを受け取れない問題への対策
 		//強制的に送られてきたCookieを追加する
-		var cookieStr = this._req.getResponseHeader('Set-Cookie');
+		var cookieStr = this._req.getResponseHeader('Set-Cookie') || '';
 		var cookies = this._parseCookie(cookieStr.replace(/\n/g, ', '));
 
 		cookies.forEach(function(cookie){
@@ -446,7 +463,8 @@ var ChaikaP2Login = {
 					false, false, false,
 					cookie.options.expires ?
 						cookie.options.expires.getTime() / 1000 :
-						( Date.now() / 1000 ) + ( 10 * 365 * 24 * 60 * 60 )
+						( Date.now() / 1000 ) + ( 10 * 365 * 24 * 60 * 60 ),
+					this._originAttributes		// Firefox 49+
 				);
 			}
 		}, this);
