@@ -346,6 +346,7 @@ Thread2ch.prototype = {
         if(this.thread.maruGetted){
             this.write(this.converter.getFooter("ok"));
             this.close();
+            return;
         }
 
         this._handler.response.flush();
