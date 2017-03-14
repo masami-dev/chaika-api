@@ -79,6 +79,12 @@ chRedirector.prototype = {
 		if(aContentType != Ci.nsIContentPolicy.TYPE_DOCUMENT) return Ci.nsIContentPolicy.ACCEPT;
 		if(aContentLocation.scheme.substring(0, 4) != "http") return Ci.nsIContentPolicy.ACCEPT;
 
+		// Firefox 53 以降、1つの読込に対して shouldLoad が2回連続で呼ばれる仕様になった
+		// 2回目の呼び出しでは aContext == null となるので、判定をバイパスする
+		// 1回目の呼び出しの時に ?chaika_force_browser=1 のフラグを消しているため、
+		// 2回目の呼び出しではリダイレクタ回避の判定が不可能になるので
+		if(aContext == null) return Ci.nsIContentPolicy.ACCEPT;
+
 		var host = aContentLocation.host;
 		if(host.indexOf(".2ch.net") == -1 &&
 		   host.indexOf(".bbspink.com") == -1 &&
