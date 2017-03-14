@@ -192,7 +192,7 @@ chContentHandler.prototype = {
 	// ********** ********* implements nsIProtocolHandler ********* **********
 
 	handleContent: function chContentHandler_handleContent(aContentType, aWindowContext, aRequest){
-		var url = aRequest.originalURI;
+		var url = aRequest.QueryInterface(Ci.nsIChannel).originalURI;
 		if(url.scheme != "chaika") return;
 
 		if(!(url instanceof Ci.nsIURL)){
