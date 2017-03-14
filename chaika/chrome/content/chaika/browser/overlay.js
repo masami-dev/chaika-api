@@ -51,7 +51,8 @@
             var showedVersion = ChaikaCore.pref.getChar('releasenotes_showed');
 
             if(Services.vc.compare(currentVersion, showedVersion) > 0){
-                gBrowser.selectedTab = gBrowser.addTab('chaika://releasenotes/?updated=1');
+            //  (chaika-api) リリースノート表示を無効化
+            //  gBrowser.selectedTab = gBrowser.addTab('chaika://releasenotes/?updated=1');
                 ChaikaCore.pref.setChar('releasenotes_showed', currentVersion);
             }
         },
