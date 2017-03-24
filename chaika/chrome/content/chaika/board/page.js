@@ -794,7 +794,8 @@ NewBoardURLFinder.prototype = {
 
         if(/Change your bookmark/m.test(responseText)){
             if(responseText.match(/<a href=\"([^\"]+)\">/m)){
-                this.onSuccess(RegExp.$1);
+                // //hawk.2ch.net/livejupiter/ のような相対URLが書かれている場合もある(2017/3/24)
+                this.onSuccess(this._httpReq.channel.URI.resolve(RegExp.$1));
             }
         }else{
             this.onFail();
