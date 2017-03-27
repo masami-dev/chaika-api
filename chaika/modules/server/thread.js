@@ -546,10 +546,14 @@ Thread2ch.prototype = {
                         target: 'post',
                         match: 'all',
                         expire: expire.getTime(),
+                        autoNGID: false,
+                        highlight: false,
                         rules: [{
                             target: 'id',
                             query: resID,
-                            condition: 'equals'
+                            condition: 'equals',
+                            regexp: false,
+                            ignoreCase: false
                         }]
                     });
                 }

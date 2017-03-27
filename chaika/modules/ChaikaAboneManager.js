@@ -401,12 +401,17 @@ NGExAboneData.prototype = Object.create(AboneData.prototype, {
                 }
             });
 
-            let jsonData = JSON.stringify(aNGData);
-
             //2重登録を防ぐ
-            if(this._data.indexOf(jsonData) !== -1){
+            //titleは動作に関係しないので重複チェックの対象から外す
+            let properties = ['match', 'target', 'autoNGID', 'highlight', 'hide', 'chain',
+                              'expire', 'rules', 'query', 'condition', 'regexp', 'ignoreCase'];
+            let jsonCheck = JSON.stringify(aNGData, properties);
+
+            if(this._dataObj.some((item) => jsonCheck === JSON.stringify(item, properties))){
                 return;
             }
+
+            let jsonData = JSON.stringify(aNGData);
 
             this._data.push(jsonData);
             this._dataObj.push(aNGData);
