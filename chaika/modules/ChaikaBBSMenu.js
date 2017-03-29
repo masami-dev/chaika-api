@@ -143,7 +143,7 @@ this.ChaikaBBSMenu = {
             // Fetch sub document
             if(url.startsWith('http')){
                 return this._fetch(url, charset)
-                           .then((htmlString) => this._parseHTML(htmlString));
+                           .then((htmlString) => this._parseHTML(htmlString, url));
             }else{
                 let file = this._resolveLocalURL(url);
 
@@ -169,11 +169,13 @@ this.ChaikaBBSMenu = {
     },
 
 
-    _parseHTML: function(htmlString){
+    _parseHTML: function(htmlString, srcURL){
+        let ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+        let baseURI = ioService.newURI(srcURL, null, null);
         let xmlDoc = this._parser.parseFromString("<bbsmenu/>", "text/xml");
         let htmlDoc = this._parser.parseFromString("<root xmlns:html='http://www.w3.org/1999/xhtml'/>", "text/xml");
         let parserUtils = Cc["@mozilla.org/parserutils;1"].getService(Ci.nsIParserUtils);
-        let fragment = parserUtils.parseFragment(htmlString, 0, false, null, htmlDoc.documentElement);
+        let fragment = parserUtils.parseFragment(htmlString, 0, false, baseURI, htmlDoc.documentElement);
 
         htmlDoc.documentElement.appendChild(fragment);
 
@@ -196,7 +198,7 @@ this.ChaikaBBSMenu = {
                     let board = xmlDoc.createElement('board');
 
                     board.setAttribute('title', node.textContent);
-                    board.setAttribute('url', node.getAttribute('href'));
+                    board.setAttribute('url', baseURI.resolve(node.getAttribute('href')));
 
                     currentCategoryNode.appendChild(board);
                 }
