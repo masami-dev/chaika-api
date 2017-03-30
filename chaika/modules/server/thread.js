@@ -566,7 +566,7 @@ Thread2ch.prototype = {
                 }
 
                 //自動NGID
-                if(aboneResult.autoNGID && resID && !resID.startsWith('???')){
+                if(aboneResult.autoNGID && resID && !resID.startsWith('???') && !resID.startsWith('CAP_USER')){
                     let now = new Date();
                     let expire = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
