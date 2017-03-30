@@ -839,7 +839,7 @@ ChaikaBoard.getBoardType = function ChaikaBoard_getBoardType(aURL){
 
 	if(!(aURL instanceof Ci.nsIURL)) return ChaikaBoard.BOARD_TYPE_PAGE;
 		// HTTP 以外
-	if(aURL.scheme != "http") return ChaikaBoard.BOARD_TYPE_PAGE;
+	if(aURL.scheme.indexOf("http") != 0) return ChaikaBoard.BOARD_TYPE_PAGE;
 		// HOST だけの URL
 	if(aURL.directory.length == 1) return ChaikaBoard.BOARD_TYPE_PAGE;
 
