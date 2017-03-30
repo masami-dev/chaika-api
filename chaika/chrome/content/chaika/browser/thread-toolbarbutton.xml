@@ -567,17 +567,25 @@
 				//FoxAge2chがインストールされている場合は
 				//FoxAge2chの次スレ検索機能の使用を試みる
 				if(FOX_AGE_2CH){
-					//FoxAge2chに登録されている場合のみ次スレ検索が可能
-					let FoxAge2chUtils = (Components.utils.import("resource://foxage2ch/utils.jsm", {})).FoxAge2chUtils;
-                    let [boardID, threadID] = FoxAge2chUtils.parseFromURL(threadURI.spec);
-					let item = FoxAge2chUtils.service.getItem(threadID);
+					try{
+						//FoxAge2chに登録されている場合のみ次スレ検索が可能
+						let FoxAge2chUtils = (Components.utils.import("resource://foxage2ch/utils.jsm", {})).FoxAge2chUtils;
+                    	let [boardID, threadID] = FoxAge2chUtils.parseFromURL(threadURI.spec);
+						let item = FoxAge2chUtils.service.getItem(threadID);
 
-					if(item){
-						window.openDialog(
-							"chrome://foxage2ch/content/findThread.xul", "FoxAge2ch:FindThread",
-							"chrome,centerscreen,modal,dialog=no,all", threadID
-						);
-						return;
+						if(item){
+							window.openDialog(
+								"chrome://foxage2ch/content/findThread.xul", "FoxAge2ch:FindThread",
+								"chrome,centerscreen,modal,dialog=no,all", threadID
+							);
+							return;
+						}
+					}catch(ex){
+						//FoxAge2chがhttps:のURLを認識しない場合など
+						if(!(ex instanceof Ci.nsIXPCException)){
+							ex = new Components.Exception("", ex);
+						}
+						this.ChaikaCore.logger.error(ex);
 					}
 				}
 
