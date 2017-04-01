@@ -172,10 +172,13 @@ this.ChaikaBBSMenu = {
     _parseHTML: function(htmlString, srcURL){
         let ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
         let baseURI = ioService.newURI(srcURL, null, null);
+        let htmlParser = Cc["@mozilla.org/xmlextras/domparser;1"].createInstance(Ci.nsIDOMParser);
+        htmlParser.init(null, null, baseURI);
+
         let xmlDoc = this._parser.parseFromString("<bbsmenu/>", "text/xml");
-        let htmlDoc = this._parser.parseFromString("<root xmlns:html='http://www.w3.org/1999/xhtml'/>", "text/xml");
+        let htmlDoc = htmlParser.parseFromString("<root xmlns:html='http://www.w3.org/1999/xhtml'/>", "text/xml");
         let parserUtils = Cc["@mozilla.org/parserutils;1"].getService(Ci.nsIParserUtils);
-        let fragment = parserUtils.parseFragment(htmlString, 0, false, baseURI, htmlDoc.documentElement);
+        let fragment = parserUtils.parseFragment(htmlString, 0, false, null, htmlDoc.documentElement);
 
         htmlDoc.documentElement.appendChild(fragment);
 
