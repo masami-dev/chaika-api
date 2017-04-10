@@ -105,6 +105,7 @@ this.ChaikaBBSMenu = {
             req.open("GET", url, true);
             req.overrideMimeType('text/html; charset=' + (charset || 'utf-8'));
             req.responseType = 'document';      // enable HTML parsing
+            req.channel.loadFlags |= Ci.nsIRequest.LOAD_BYPASS_CACHE;
             req.send(null);
         });
     },
