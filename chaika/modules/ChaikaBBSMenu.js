@@ -94,16 +94,17 @@ this.ChaikaBBSMenu = {
     /**
      * @param {String} url url to fetch
      */
-    _fetch: function(url, charset){
+    _fetchDom: function(url, charset){
         return new Promise((resolve, reject) => {
             const XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1");
 
             let req = XMLHttpRequest();
 
             req.addEventListener('error', reject, false);
-            req.addEventListener('load', () => resolve(req.responseText), false);
+            req.addEventListener('load', () => resolve(req.responseXML), false);
             req.open("GET", url, true);
             req.overrideMimeType('text/html; charset=' + (charset || 'utf-8'));
+            req.responseType = 'document';      // enable HTML parsing
             req.send(null);
         });
     },
@@ -142,8 +143,8 @@ this.ChaikaBBSMenu = {
 
             // Fetch sub document
             if(url.startsWith('http')){
-                return this._fetch(url, charset)
-                           .then((htmlString) => this._parseHTML(htmlString, url));
+                return this._fetchDom(url, charset)
+                           .then((htmlDoc) => this._analyzeBBSMenu(htmlDoc));
             }else{
                 let file = this._resolveLocalURL(url);
 
@@ -169,18 +170,8 @@ this.ChaikaBBSMenu = {
     },
 
 
-    _parseHTML: function(htmlString, srcURL){
-        let ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-        let baseURI = ioService.newURI(srcURL, null, null);
-        let htmlParser = Cc["@mozilla.org/xmlextras/domparser;1"].createInstance(Ci.nsIDOMParser);
-        htmlParser.init(null, null, baseURI);
-
+    _analyzeBBSMenu: function(htmlDoc){
         let xmlDoc = this._parser.parseFromString("<bbsmenu/>", "text/xml");
-        let htmlDoc = htmlParser.parseFromString("<root xmlns:html='http://www.w3.org/1999/xhtml'/>", "text/xml");
-        let parserUtils = Cc["@mozilla.org/parserutils;1"].getService(Ci.nsIParserUtils);
-        let fragment = parserUtils.parseFragment(htmlString, 0, false, null, htmlDoc.documentElement);
-
-        htmlDoc.documentElement.appendChild(fragment);
 
         let targetNodes = htmlDoc.querySelectorAll('b, a[href]');
         let currentCategoryNode;
@@ -201,7 +192,7 @@ this.ChaikaBBSMenu = {
                     let board = xmlDoc.createElement('board');
 
                     board.setAttribute('title', node.textContent);
-                    board.setAttribute('url', baseURI.resolve(node.getAttribute('href')));
+                    board.setAttribute('url', node.baseURIObject.resolve(node.getAttribute('href')));
 
                     currentCategoryNode.appendChild(board);
                 }
