@@ -385,11 +385,11 @@ var BbsmenuUpdater = {
     update: function BbsmenuUpdater_update(){
         var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
         var bbsmenuHtmlURLSpec = ChaikaCore.pref.getChar("bbsmenu.bbsmenu_html_url");
-        var bbsmenuHtmlURL = ioService.newURI(bbsmenuHtmlURLSpec, null, null);
         var bbsmenuHtmlCharset = ChaikaCore.pref.getChar("bbsmenu.bbsmenu_html_charset");
+        this._bbsmenuHtmlURL = ioService.newURI(bbsmenuHtmlURLSpec, null, null);
 
         this._downloader = new ChaikaSimpleDownloader();
-        this._downloader.download(bbsmenuHtmlURL, bbsmenuHtmlCharset, this);
+        this._downloader.download(this._bbsmenuHtmlURL, bbsmenuHtmlCharset, this);
         Notification.removeAll();
         this._infoNode = Notification.info("BBSMENU 更新中");
     },
@@ -397,7 +397,7 @@ var BbsmenuUpdater = {
 
     onStop: function BbsmenuUpdater_onStop(aDownloader, aResponse, aHttpStatus){
         if(aResponse && aResponse.indexOf(".2ch.net/") != -1){
-            Bbsmenu.update(aResponse);
+            Bbsmenu.update(aResponse, this._bbsmenuHtmlURL);
             Bbsmenu.initTree()
             Notification.info("更新しました", 1200);
         }else{
@@ -438,13 +438,12 @@ var Bbsmenu = {
         Tree.initTree(doc, MODE_BBSMENU);
     },
 
-    update: function Bbsmenu_update(aHtmlSource){
-        var parserUtils = Cc["@mozilla.org/parserutils;1"].getService(Ci.nsIParserUtils);
+    update: function Bbsmenu_update(aHtmlSource, aBaseURI){
+        var domParser = Cc["@mozilla.org/xmlextras/domparser;1"].createInstance(Ci.nsIDOMParser);
+        domParser.init(null, null, aBaseURI);
         var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 
-        var bbsmenuDoc = this._DOMParser.parseFromString("<root xmlns:html='http://www.w3.org/1999/xhtml'/>", "text/xml");
-        var fragment = parserUtils.parseFragment(aHtmlSource, 0, false, null, bbsmenuDoc.documentElement);
-        bbsmenuDoc.documentElement.appendChild(fragment);
+        var bbsmenuDoc = domParser.parseFromString(aHtmlSource, "text/html");
 
 
         var storage = ChaikaCore.storage;
@@ -463,12 +462,8 @@ var Bbsmenu = {
             storage.executeSimpleSQL("INSERT INTO bbsmenu(title, title_n, path, is_category) " +
                     "VALUES('2ch', '', '/2ch/', 1);");
 
-            var xpath = "root/html:font/html:b/text() | root/html:font/html:a[@href]" +
-                            " | root/font/b/text() | root/font/a[@href]";
-            function resolver(){
-                return "http://www.w3.org/1999/xhtml";
-            }
-            var xpathResult = bbsmenuDoc.evaluate(xpath, bbsmenuDoc, resolver,
+            var xpath = "html/body/font/b/text() | html/body/font/a[@href]";
+            var xpathResult = bbsmenuDoc.evaluate(xpath, bbsmenuDoc, null,
                     Ci.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
             while(node = xpathResult.iterateNext()){
                 if(node.nodeType == Ci.nsIDOMNode.TEXT_NODE){
@@ -479,7 +474,7 @@ var Bbsmenu = {
                     categoryInsertStatement.execute();
                 }else if(currentCategoryPath){
                     var title = node.firstChild.nodeValue;
-                    var urlSpec = node.getAttribute("href");
+                    var urlSpec = node.baseURIObject.resolve(node.getAttribute("href"));
                     var type = ChaikaBoard.BOARD_TYPE_PAGE;
                     var boardID = "";
                     try{
