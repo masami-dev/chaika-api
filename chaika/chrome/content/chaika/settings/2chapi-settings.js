@@ -141,12 +141,13 @@ var g2chApiPane = {
         var emptyPrefs = ["api_url", "auth_url", "appkey", "hmkey"].filter(function(name){
             var value = getPrefValue(name);
             return value == null || !value.trim();
-        }).map(function(name){
-            return document.getElementsByAttribute("control", name).item(0).value;
         });
         if(emptyPrefs.length != 0){
-            this.selectTab("tabAPI");
-            var msg = emptyPrefs.join(", ") + " の設定値が空白です。\n" +
+            this.selectContainingTab(emptyPrefs[0]);
+            var labels = emptyPrefs.map(function(name){
+                return document.getElementsByAttribute("control", name).item(0).value;
+            });
+            var msg = labels.join(", ") + " の設定値が空白です。\n" +
                       "この状態では 2ch API は有効にはなりません。\n\n" +
                       "このままこの設定ウィンドウを閉じますか？";
             var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
@@ -157,7 +158,7 @@ var g2chApiPane = {
         // User-Agent の入力チェック
         var postUA = getPrefValue("post_ua");
         if(postUA == null || !postUA.trim()){
-            this.selectTab("tabUA");
+            this.selectContainingTab("post_ua");
             var datUA = getPrefValue("useragent");
             var msg = "投稿時UA(postUA) の設定値が空白です。\n" +
                       "この状態では 2ch への書き込みができません。\n\n" +
@@ -177,11 +178,19 @@ var g2chApiPane = {
     },
 
     /**
-     * 指定されたタブページを選択する
+     * 指定された要素を含んでいるタブページを選択する
      */
-    selectTab: function(aTabID){
-        var tab = document.getElementById(aTabID);
-        document.getElementById("box2chApi").selectedTab = tab;
+    selectContainingTab: function(aID){
+        var child, node = document.getElementById(aID);
+        if(node == null) return;
+
+        while(child = node, (node = node.parentNode) != null){
+            if(node.localName == "tabpanels"){
+                node.tabbox.selectedIndex =
+                    Array.slice(node.childNodes).indexOf(child);
+                break;
+            }
+        }
     },
 
     /**
@@ -353,11 +362,12 @@ PreferenceManager.prototype = {
     _prefTable: {
         // ** APIのON/OFF **
         "enabled": null,    // enabled は対象から外す
-        // ** API・認証 **
+        // ** 詳細 **
         "api_url":   { iskey: false, regexp: /^api[_-]?url$/i,
                        check: function(v){ return (/^https?:/i).test(v); } },
         "auth_url":  { iskey: false, regexp: /^auth[_-]?url$/i,
                        check: function(v){ return (/^https?:/i).test(v); } },
+        // ** 認証 **
         "appkey":    { iskey: true,  regexp: /^app[_-]?key$/i },
         "hmkey":     { iskey: true,  regexp: /^hm(ac)?[_-]?key$/i },
         "ct_value":  { iskey: false, regexp: /^ct[_-]?value$/i,
