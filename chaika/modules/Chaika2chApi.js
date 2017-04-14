@@ -821,11 +821,12 @@ Chaika2chApiPref.prototype = {
     _prefTable: {
         // ** APIのON/OFF **
         "2chapi.enabled": { variable: "enabled", get: "getBool" },
-        // ** API・認証 **
+        // ** 詳細 **
         "2chapi.api_url": { variable: "apiURL",  get: "getUniChar",
                             check: function(v){ return v.trim().replace(/[^\/]$/, "$&/"); } },
         "2chapi.auth_url": { variable: "authURL", get: "getUniChar",
                              check: function(v){ return v.trim(); } },
+        // ** 認証 **
         "2chapi.appkey":   { variable: "appKey",  get: "getUniChar",
                              check: function(v){ return v.trim(); } },
         "2chapi.hmkey":    { variable: "hmKey",   get: "getUniChar",

@@ -92,26 +92,19 @@
 
     <tabbox id="box2chApi" persist="selectedIndex">
         <tabs>
-            <tab id="tabAPI" label="API・認証"/>
-            <tab id="tabUA"  label="User-Agent"/>
-            <tab id="tabUpdate" label="自動更新"/>
-            <tab id="tabStatus" label="状態・テスト"/>
+            <tab label="認証"/>
+            <tab label="User-Agent"/>
+            <tab label="自動更新"/>
+            <tab label="詳細"/>
+            <tab label="状態・テスト"/>
         </tabs>
         <tabpanels>
             <tabpanel orient="vertical">
                 <groupbox>
-                    <caption class="setting-description" label="APIサーバー・認証キー"/>
+                    <caption class="setting-description" label="認証キー"/>
                     <grid>
                         <columns><column/><column flex="1"/></columns>
                         <rows>
-                            <row align="center">
-                                <label control="api_url" value="API URL" style="text-align:right;"/>
-                                <textbox id="api_url" preference="extensions.chaika.2chapi.api_url"/>
-                            </row>
-                            <row align="center">
-                                <label control="auth_url" value="認証URL" style="text-align:right;"/>
-                                <textbox id="auth_url" preference="extensions.chaika.2chapi.auth_url"/>
-                            </row>
                             <row align="center">
                                 <label control="appkey" value="AppKey" style="text-align:right;"/>
                                 <textbox id="appkey" preference="extensions.chaika.2chapi.appkey"/>
@@ -224,6 +217,25 @@
                         <textbox id="wake_delay" type="number" min="0" max="999" size="3"
                                  preference="extensions.chaika.2chapi.wake_delay"/>
                     </hbox>
+                </groupbox>
+            </tabpanel>
+
+            <tabpanel orient="vertical">
+                <groupbox>
+                    <caption class="setting-description" label="APIサーバー"/>
+                    <grid>
+                        <columns><column/><column flex="1"/></columns>
+                        <rows>
+                            <row align="center">
+                                <label control="api_url" value="API URL" style="text-align:right;"/>
+                                <textbox id="api_url" preference="extensions.chaika.2chapi.api_url"/>
+                            </row>
+                            <row align="center">
+                                <label control="auth_url" value="認証URL" style="text-align:right;"/>
+                                <textbox id="auth_url" preference="extensions.chaika.2chapi.auth_url"/>
+                            </row>
+                        </rows>
+                    </grid>
                 </groupbox>
             </tabpanel>
 
