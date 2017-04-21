@@ -15,7 +15,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2016/02/26 20:50:00
+ * Last Modified : 2017/04/21 23:40:00
 -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
@@ -34,6 +34,8 @@
                   name="extensions.chaika.2chapi.api_url" type="unichar"/>
         <preference id="extensions.chaika.2chapi.auth_url"
                   name="extensions.chaika.2chapi.auth_url" type="unichar"/>
+        <preference id="extensions.chaika.2chapi.domains"
+                  name="extensions.chaika.2chapi.domains" type="unichar"/>
         <preference id="extensions.chaika.2chapi.appkey"
                   name="extensions.chaika.2chapi.appkey" type="unichar"/>
         <preference id="extensions.chaika.2chapi.hmkey"
@@ -233,6 +235,18 @@
                             <row align="center">
                                 <label control="auth_url" value="認証URL" style="text-align:right;"/>
                                 <textbox id="auth_url" preference="extensions.chaika.2chapi.auth_url"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </groupbox>
+                <groupbox>
+                    <caption class="setting-description" label="API対象ドメイン"/>
+                    <grid>
+                        <columns><column/><column flex="1"/></columns>
+                        <rows>
+                            <row align="center">
+                                <label control="domains" value="APIドメイン" style="text-align:right;"/>
+                                <textbox id="domains" preference="extensions.chaika.2chapi.domains"/>
                             </row>
                         </rows>
                     </grid>
