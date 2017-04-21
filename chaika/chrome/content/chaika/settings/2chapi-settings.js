@@ -15,7 +15,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2016/02/26 20:50:00
+ * Last Modified : 2017/04/21 23:40:00
  */
 
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
@@ -127,7 +127,8 @@ var g2chApiPane = {
         if(!getPrefValue("enabled")) return true;
 
         // 必須設定項目のチェック
-        var emptyPrefs = ["api_url", "auth_url", "appkey", "hmkey"].filter(function(name){
+        var prefsToCheck = ["api_url", "auth_url", "domains", "appkey", "hmkey"];
+        var emptyPrefs = prefsToCheck.filter(function(name){
             var value = getPrefValue(name);
             return value == null || !value.trim();
         });
@@ -356,6 +357,8 @@ PreferenceManager.prototype = {
                        check: function(v){ return (/^https?:/i).test(v); } },
         "auth_url":  { iskey: false, regexp: /^auth[_-]?url$/i,
                        check: function(v){ return (/^https?:/i).test(v); } },
+        "domains":   { iskey: false, regexp: /^(api[_-]?)?domains$/i,
+                       check: function(v){ return (v != ""); } },
         // ** 認証 **
         "appkey":    { iskey: true,  regexp: /^app[_-]?key$/i },
         "hmkey":     { iskey: true,  regexp: /^hm(ac)?[_-]?key$/i },
