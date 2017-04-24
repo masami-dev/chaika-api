@@ -16,7 +16,7 @@ chaika-api
 これは、chaika 開発版 (developブランチ) に対して 2ch API 機能を追加したものです。  
 このバージョンにマージされている本家developブランチのコミットハッシュと日時は以下のとおりです。
 
-* **[028b9c7](https://github.com/chaika/chaika/commits/ 028b9c79ce91dade8385477204dc875da3809014)** (2016/03/28 14:02:31)
+* **[028b9c7](https://github.com/chaika/chaika/commits/028b9c79ce91dade8385477204dc875da3809014)** (2016/03/28 14:02:31)
 
 
 ----
