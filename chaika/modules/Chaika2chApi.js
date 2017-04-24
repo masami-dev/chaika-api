@@ -15,7 +15,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2016/02/26 20:50:00
+ * Last Modified : 2017/04/23 06:05:00
  */
 
 
@@ -54,7 +54,7 @@ function makeException(aResult){
  */
 this.Chaika2chApi = {
 
-    VERSION: "0.12",
+    VERSION: "0.13",
 
 
     /**
@@ -508,17 +508,17 @@ this.Chaika2chApi = {
                 throw makeException(Cr.NS_ERROR_INVALID_POINTER);
             }
             var self = Chaika2chApi;    // この関数内での this は ChaikaCore を指すため
-            var match;
+            var httpChannel, host, path;
 
             // RoninがなければAPIサーバからは過去ログは取れないし、
             // Roninがあれば最初の1回のアクセスで現行ログも過去ログも取れるので、
             // 過去ログを取るためのdatKakoURLはここでは敢えて認識していない。
 
             if(aAPI !== undefined ||
-               !((match = (aURL.host + aURL.path)
-                          .match(/^(\w+)(?:\.2ch\.net|\.bbspink\.com)\/(\w+)\/dat\/(\d+)\.dat$/i)
-                  ) && self.pref.appKey && self.pref.hmKey && self.pref.apiURL)){
-                var httpChannel = ChaikaCore_getHttpChannel.call(this, aURL);   // 元の関数
+               !((host = aURL.host.match(self.pref.hostRxp)) &&
+                 (path = aURL.path.match(/^\/([^\/]+)\/dat\/(\d+)\.dat$/)) &&
+                 self.pref.appKey && self.pref.hmKey && self.pref.apiURL)){
+                httpChannel = ChaikaCore_getHttpChannel.call(this, aURL);   // 元の関数
 
                 if(aAPI !== undefined){
                     if(aAPI == "auth"){
@@ -528,7 +528,7 @@ this.Chaika2chApi = {
                         httpChannel.setRequestHeader("User-Agent", self.pref.userAgent, false);
                         httpChannel.loadFlags |= Ci.nsIRequest.LOAD_ANONYMOUS;
                     }
-                }else if(aURL.host.search(/(?:\.2ch\.net|\.bbspink\.com)$/i) != -1){
+                }else if(host){
                     if(aURL.path.indexOf("/test/bbs.cgi?guid=ON") == 0){
                         httpChannel.setRequestHeader("User-Agent", self.pref.postUA, false);
                     }else{
@@ -539,12 +539,12 @@ this.Chaika2chApi = {
                 return httpChannel;
             }
 
+            var datPath = host[1] +"/"+ path[1] +"/"+ path[2];  // Server/Board/Thread
             var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-            var apiURL = ioService.newURI(self.pref.apiURL, null, null).QueryInterface(Ci.nsIURL);
-            var datURLSpec = apiURL.resolve(match.slice(1,4).join("/"));
-            var datURL = ioService.newURI(datURLSpec, null, null).QueryInterface(Ci.nsIURL);
+            var apiURL = ioService.newURI(self.pref.apiURL, null, null);
+            var datURL = ioService.newURI(datPath, null, apiURL).QueryInterface(Ci.nsIURL);
 
-            var httpChannel = Chaika2chApi_getHttpChannel.call(this, datURL, "dat");  // callee
+            httpChannel = Chaika2chApi_getHttpChannel.call(this, datURL, "dat");  // callee
             httpChannel.setRequestHeader("Content-Type", "application/x-www-form-urlencoded", false);
             httpChannel = httpChannel.QueryInterface(Ci.nsIUploadChannel);
 
@@ -796,6 +796,7 @@ Chaika2chApiPref.prototype = {
     enabled: false,
     apiURL: null,
     authURL: null,
+    domains: null,
     appKey: null,
     hmKey: null,
     ctValue: null,
@@ -809,6 +810,7 @@ Chaika2chApiPref.prototype = {
     retryInterval: null,
     wakeDelay: null,
 
+    hostRxp: /(?!)/,                        // 何にもマッチしない
     ronin: { id: "", password: "" },
 
     _callback: null,
@@ -821,11 +823,14 @@ Chaika2chApiPref.prototype = {
     _prefTable: {
         // ** APIのON/OFF **
         "2chapi.enabled": { variable: "enabled", get: "getBool" },
-        // ** API・認証 **
+        // ** 詳細 **
         "2chapi.api_url": { variable: "apiURL",  get: "getUniChar",
                             check: function(v){ return v.trim().replace(/[^\/]$/, "$&/"); } },
         "2chapi.auth_url": { variable: "authURL", get: "getUniChar",
                              check: function(v){ return v.trim(); } },
+        "2chapi.domains":  { variable: "domains", get: "getUniChar",
+                             check: function(v){ return v.trim(); } },
+        // ** 認証 **
         "2chapi.appkey":   { variable: "appKey",  get: "getUniChar",
                              check: function(v){ return v.trim(); } },
         "2chapi.hmkey":    { variable: "hmKey",   get: "getUniChar",
@@ -991,6 +996,23 @@ Chaika2chApiPref.prototype = {
                 var prev = this._setRonin({ id: "", password: "" });
                 if(prev != null) this._callback("login.ronin.id_pass*", aContext, prev);
             }
+        }else if(aName == "2chapi.domains"){    // domains -> hostRxp
+            // 頭に # が付くエントリは除外ホストと解釈される
+            // 例）domains: 2ch.net bbspink.com #carpenter #qb5
+            //  → hostRxp: ^(?!carpenter|qb5)([\w\-]+)\.(?:2ch\.net|bbspink\.com)$
+            var domains = [], excludes = [];
+            (this.domains || "").split(/\s+/).forEach(function(str){
+                var arr = str.replace(/[.*+?|^$(){}[\]\\]/g, "\\$&").match(/^(\\.|#)?(.*)/);
+                if(arr[2] != "") (arr[1] === "#" ? excludes : domains).push(arr[2]);
+            });
+            if(domains.length > 0){
+                this.hostRxp = new RegExp("^" +
+                        (excludes.length > 0 ? "(?!" + excludes.join("|") + ")" : "") +
+                                 "([\\w\\-]+)\\.(?:" +  domains.join("|") + ")$", "i");
+            }else{
+                delete this.hostRxp;    // prototype のデフォルト値へ戻す
+            }
+            Logger.debug("hostRxp: " + this.hostRxp.source + " <- " + this.domains);
         }
     },
 
