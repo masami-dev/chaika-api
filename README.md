@@ -6,7 +6,7 @@ chaika-api
 * [プロジェクトの概要](https://github.com/masami-dev/chaika-api/wiki)
 * [2ch API 拡張部のオンラインヘルプ](https://github.com/masami-dev/chaika-api/wiki/%E4%BB%98%E5%B1%9E%E6%96%87%E6%9B%B8%28README%29)
 
-###オリジナル版 chaika との違い
+### オリジナル版 chaika との違い
 
 このバージョンの chaika は、元々の chaika に対し、2ch API 関連機能のみを追加したものです。  
 2ch API に関係しない変更は一切加えられておらず、アドインのIDもオリジナル版から変更されていません。
@@ -16,7 +16,7 @@ chaika-api
 これは、chaika 開発版 (developブランチ) に対して 2ch API 機能を追加したものです。  
 このバージョンにマージされている本家developブランチのコミットハッシュと日時は以下のとおりです。
 
-* **[22b1736](https://github.com/chaika/chaika/commits/22b1736a82c86ad7ad01946529b436d23df47ed3)** (2016/02/18 15:54:07)
+* **[028b9c7](https://github.com/chaika/chaika/commits/ 028b9c79ce91dade8385477204dc875da3809014)** (2016/03/28 14:02:31)
 
 
 ----
@@ -27,18 +27,18 @@ chaika-api
 
 # chaika
 
-## :warning: 重要なお知らせ
-chaika は e10s には対応しますが， WebExtensions に対応する予定はありません．
-詳しくは，以下の記事をお読みください．
+2ちゃんねるなどの掲示板閲覧をより快適にするアドオンです。
+他の専用ブラウザに引けを取らないだけでなく、Firefox と連携した多様な機能を提供します。
 
-- [bbs2chreader/chaika 避難所 ★3 (レス432番)](http://jbbs.shitaraba.net/bbs/read.cgi/computer/44179/1435322223/432)
-- [chaikaの開発を無期限停止します - 徒然技術日記](http://nodaguti.hatenablog.com/entry/2015/09/13/222613)
-- [bbs2chreader/chaika Part49 (レス568番)](http://potato.2ch.net/test/read.cgi/software/1434991857/568)
 
 ----
 
-2ちゃんねるなどの掲示板閲覧をより快適にするアドオンです。
-他の専用ブラウザに引けを取らないだけでなく、Firefox と連携した多様な機能を提供します。
+### :warning: :warning: :warning:
+chaika は e10s には対応しますが， WebExtensions に対応する予定はありません．
+
+詳しくは，[重要なお知らせ](./NOTICE.md) をご覧ください．
+
+----
 
 ## Install
 
