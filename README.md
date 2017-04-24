@@ -14,7 +14,7 @@ chaika-api
 
 2ch API サポートは非公式対応となっており、2ch API 機能を働かせるには所定のAPIキーを入力する必要があります。初めて使用する際には、[2ch API 拡張部の説明](https://github.com/masami-dev/chaika-api/wiki/%E4%BB%98%E5%B1%9E%E6%96%87%E6%9B%B8%28README%29) を参照の上、必要な初期設定を行なってください。
 
-###オリジナル版 chaika との違い
+### オリジナル版 chaika との違い
 
 このバージョンの chaika は、元々の chaika に対し、2ch API サポートを筆頭にいくつかの機能を追加し、既知の不具合を修正したカスタム版となっています。
 
@@ -22,7 +22,7 @@ chaika-api
 
 末尾の (XXX.zip) という表記は、[公式アップローダー](http://bbs2ch.osdn.jp/uploader/upload.php) に上げられているパッチが元になっていることを意味します。
 
-* 2ch API サポートの追加 (2ch API extension v0.12)
+* 2ch API サポートの追加 (2ch API extension v0.13)
 * サイドバーのメニューに chaika-api の組み込みリリースノートを開くリンクを追加
 * サイドバーのスレッド検索に ff2ch.syoboi.jp を追加 ([767.zip](http://bbs2ch.osdn.jp/uploader/img/767.zip))
 * 2ch.net と bbspink.com ドメインの BE 2.0 ログインに対応 ([818.zip](http://bbs2ch.osdn.jp/uploader/img/818.zip))
