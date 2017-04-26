@@ -4,6 +4,7 @@ this.EXPORTED_SYMBOLS = ["ChaikaHttpController"];
 
 const { interfaces: Ci, classes: Cc, results: Cr, utils: Cu } = Components;
 
+Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://chaika-modules/ChaikaCore.js");
 Cu.import("resource://chaika-modules/ChaikaServer.js");
@@ -343,6 +344,11 @@ ChaikaImageViewURLReplace.prototype = {
                 ivurObj.referrer = this._resolveBackReference(ivurObj.referrer, match);
                 ivurObj.cookie.referrer = this._resolveBackReference(ivurObj.cookie.referrer, match);
 
+                //ChaikaIvurSubへ画像URLを通知する
+                Services.ppmm.broadcastAsyncMessage('chaika-ivur-image-url', {
+                    url: url, image: ivurObj.image
+                });
+
                 //Cookieの取得
                 if(ivurObj.cookie.shouldGet){
                     let request = new ChaikaIvurRequest(ivurObj);
@@ -368,6 +374,11 @@ ChaikaImageViewURLReplace.prototype = {
 
                     this._replaceMap[url].image =
                         this._resolveBackReference(this._replaceMap[url].image, match, extractMatch);
+
+                    //ChaikaIvurSubへ画像URLを通知する
+                    Services.ppmm.broadcastAsyncMessage('chaika-ivur-image-url', {
+                        url: url, image: this._replaceMap[url].image
+                    });
                 }).catch((err) => {
                     ChaikaCore.logger.error('Fail to fetch $EXTRACT.', err, JSON.stringify(ivurObj));
                 });

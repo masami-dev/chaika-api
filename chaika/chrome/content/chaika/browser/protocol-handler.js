@@ -8,7 +8,7 @@ let { XPCOMUtils } = Cu.import('resource://gre/modules/XPCOMUtils.jsm', {});
 let { Services } = Cu.import('resource://gre/modules/Services.jsm', {});
 let { URLUtils } = Cu.import('resource://chaika-modules/utils/URLUtils.js', {});
 let { Logger } = Cu.import('resource://chaika-modules/utils/Logger.js', {});
-let { ChaikaHttpController } = Cu.import('resource://chaika-modules/ChaikaHttpController.js', {});
+let { ChaikaIvurSub } = Cu.import('resource://chaika-modules/ChaikaIvurSub.js', {});
 
 
 function AbstractProtocolHandler(){
@@ -113,7 +113,7 @@ ChaikaProtocolHandler.prototype = Object.create(AbstractProtocolHandler.prototyp
                     break;
 
                 case 'ivur':
-                    channel = this._getRedirectChannel(ChaikaHttpController.ivur.getRedirectURI(aURI), aLoadinfo);
+                    channel = this._getRedirectChannel(ChaikaIvurSub.getRedirectURI(aURI), aLoadinfo);
                     break;
 
                 case 'post': {
