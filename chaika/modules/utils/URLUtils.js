@@ -31,6 +31,7 @@ let includes = {
         //  cf.) http://t-webber.hatenablog.com/entry/2015/05/01/231948
         /^https?:\/\/\w+\.2ch\.net\/\w+\/$/,
         /^https?:\/\/\w+\.bbspink\.com\/\w+\/$/,
+        /^https?:\/\/machi\.to\/\w+\/$/,
         /^https?:\/\/\w+\.machi\.to\/\w+\/$/,
         /^https?:\/\/jbbs\.shitaraba\.net\/\w+\/\d+\/$/,
         /^https?:\/\/jbbs\.livedoor\.jp\/\w+\/\d+\/$/,
@@ -87,6 +88,7 @@ let excludes = {
         /^https?:\/\/api\.2ch\.net\//,          // 2ch API entry point
         /^https?:\/\/be\.2ch\.net\//,           // 2ch Be 2.0
         /^https?:\/\/stats\.2ch\.net\//,        // 2ch Hot Threads
+        /^https?:\/\/stat\.2ch\.net\//,         // 2ch Hot Threads
         /^https?:\/\/c\.2ch\.net\//,            // Mobile-version 2ch.net
         /^https?:\/\/itest\.2ch\.net\//,        // Smartphone-version 2ch.net
         /^https?:\/\/i\.2ch\.net\//,            // Smartphone-version 2ch.net
@@ -115,6 +117,7 @@ let excludes = {
 
         /* bbspink.com */
         /^https?:\/\/www\.bbspink\.com\//,      // Top Page
+        /^https?:\/\/deleter\.bbspink\.com\//,  // BBSPINK Wiki
         /^https?:\/\/headline\.bbspink\.com\//, // Headline on bbspink.com
         /^https?:\/\/update\.bbspink\.com\//,   // PINKheadline
         /^https?:\/\/ronin\.bbspink\.com\//,    // RONIN on bbspink.com

@@ -390,7 +390,9 @@ var ChaikaCore_ = {
         }
 
         var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-        var httpChannel;
+        var ssm = Cc["@mozilla.org/scriptsecuritymanager;1"].getService(Ci.nsIScriptSecurityManager);
+        var httpChannel = ioService.newChannelFromURI2(aURL, null, ssm.getSystemPrincipal(), null,
+            Ci.nsILoadInfo.SEC_NORMAL, Ci.nsIContentPolicy.TYPE_OTHER).QueryInterface(Ci.nsIHttpChannel);
 
         var proxyMode = this.pref.getInt("http_proxy_mode");
         if(proxyMode != 0){
@@ -400,28 +402,24 @@ var ChaikaCore_ = {
                     .getService(Ci.nsIProtocolProxyService);
             if(proxyMode == 1){
                 var proxyInfo = pps.newProxyInfo("direct", "", -1, 0, 0, null);
-                httpChannel = httpProtocolHandler.newProxiedChannel(aURL, proxyInfo, 0, null)
-                        .QueryInterface(Ci.nsIHttpChannel);
+                httpChannel = httpProtocolHandler.newProxiedChannel2(aURL, proxyInfo, 0, null,
+                        httpChannel.loadInfo).QueryInterface(Ci.nsIHttpChannel);
             }else if(proxyMode == 2){
-                    var httpProxyValue = this.pref.getUniChar("http_proxy_value");
-                    httpProxyValue = httpProxyValue.replace(/\s/g, "");
-                    if(httpProxyValue.match(/([^:]+):(\d+)/)){
-                        var host = RegExp.$1;
-                        var port = parseInt(RegExp.$2);
-                        try{
-                            var proxyInfo = pps.newProxyInfo("http", host, port, 0, 10,
-                                    pps.newProxyInfo("direct", "", -1, 0, 0, null));
-                            httpChannel = httpProtocolHandler.newProxiedChannel(aURL, proxyInfo, 0, null)
-                                .QueryInterface(Ci.nsIHttpChannel);
-                        }catch(ex){
-                            this.logger.error(ex);
-                        }
+                var httpProxyValue = this.pref.getUniChar("http_proxy_value");
+                var hostPort = httpProxyValue.replace(/\s/g, "").match(/([^:]+):(\d+)/);
+                if(hostPort){
+                    var host = hostPort[1];
+                    var port = parseInt(hostPort[2]);
+                    try{
+                        var proxyInfo = pps.newProxyInfo("http", host, port, 0, 10,
+                                pps.newProxyInfo("direct", "", -1, 0, 0, null));
+                        httpChannel = httpProtocolHandler.newProxiedChannel2(aURL, proxyInfo, 0, null,
+                                httpChannel.loadInfo).QueryInterface(Ci.nsIHttpChannel);
+                    }catch(ex){
+                        this.logger.error(ex);
                     }
+                }
             }
-        }
-
-        if(!httpChannel){
-            httpChannel = ioService.newChannelFromURI(aURL).QueryInterface(Ci.nsIHttpChannel);
         }
 
         httpChannel.setRequestHeader("User-Agent", this.getUserAgent(), false);
@@ -756,8 +754,10 @@ ChaikaBrowser.prototype = {
 
         if(!aOpenBrowser){
             threadURL = ioService.newURI(URLUtils.chaikafy(threadURL.spec), null, null);
-        }else if(ChaikaCore_.pref.getBool("browser.redirector.enabled")){
-            // スレッドリダイレクタを回避
+        }else if(ChaikaCore_.pref.getBool("browser.redirector.enabled") &&
+                 (!ChaikaCore_.pref.getBool("browser.redirector.thread_only") ||
+                  URLUtils.isThread(threadURL.spec))){
+            // URL リダイレクタを回避
             threadURL = ioService.newURI(threadURL.spec + '?chaika_force_browser=1', null, null);
         }
 

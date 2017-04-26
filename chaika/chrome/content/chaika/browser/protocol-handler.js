@@ -48,6 +48,10 @@ AbstractProtocolHandler.prototype = {
         return Cr.NS_ERROR_NO_CONTENT;
     },
 
+    newChannel2(aURI, aLoadinfo) {
+        return Cr.NS_ERROR_NO_CONTENT;
+    },
+
 
     classDescription: null,
 
@@ -74,38 +78,42 @@ ChaikaProtocolHandler.prototype = Object.create(AbstractProtocolHandler.prototyp
 
 
     _getRedirectChannel: {
-        value: function(aURI){
+        value: function(aURI, aLoadinfo){
             let channelURI = Services.io.newURI(aURI, null, null);
 
-            return Services.io.newChannelFromURI(channelURI);
+            return Services.io.newChannelFromURIWithLoadInfo(channelURI, aLoadinfo);
         }
     },
 
 
-    newChannel: {
-        value: function(aURI){
+    // 旧来のメソッド newChannel は意図的に実装していない
+    // newChannel2 を呼んでエラーが返されれば newChannel を呼ぶという動作をするので、
+    // newChannel も実装すると書き込みウィザードが２つ開かれてしまう
+
+    newChannel2: {
+        value: function(aURI, aLoadinfo){
             let channel;
 
             switch(aURI.host){
 
                 case 'board':
-                    channel = this._getRedirectChannel('chrome://chaika/content/board/page.xul');
+                    channel = this._getRedirectChannel('chrome://chaika/content/board/page.xul', aLoadinfo);
                     break;
 
                 case 'log-manager':
-                    channel = this._getRedirectChannel('chrome://chaika/content/board/log-manager.xul');
+                    channel = this._getRedirectChannel('chrome://chaika/content/board/log-manager.xul', aLoadinfo);
                     break;
 
                 case 'support':
-                    channel = this._getRedirectChannel('chrome://chaika/content/support.xhtml');
+                    channel = this._getRedirectChannel('chrome://chaika/content/support.xhtml', aLoadinfo);
                     break;
 
                 case 'releasenotes':
-                    channel = this._getRedirectChannel('chrome://chaika/content/releasenotes.html');
+                    channel = this._getRedirectChannel('chrome://chaika/content/releasenotes.html', aLoadinfo);
                     break;
 
                 case 'ivur':
-                    channel = this._getRedirectChannel(ChaikaHttpController.ivur.getRedirectURI(aURI));
+                    channel = this._getRedirectChannel(ChaikaHttpController.ivur.getRedirectURI(aURI), aLoadinfo);
                     break;
 
                 case 'post': {

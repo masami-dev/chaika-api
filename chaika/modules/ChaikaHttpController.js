@@ -10,6 +10,16 @@ Cu.import("resource://chaika-modules/ChaikaServer.js");
 
 
 /**
+ * Polyfill for Firefox 39-
+ */
+if(!String.prototype.includes){
+    String.prototype.includes = function(){'use strict';
+        return String.prototype.indexOf.apply(this, arguments) !== -1;
+    };
+}
+
+
+/**
  * chaika のスレッド表示における HTTP 通信を制御するクラス
  * @class
  */
@@ -256,12 +266,12 @@ ChaikaImageViewURLReplace.prototype = {
         config.userAgent = data[5];
 
         if(data[3]){
-            if(data[3].contains('$COOKIE')){
+            if(data[3].includes('$COOKIE')){
                 config.cookie.shouldGet = true;
                 config.cookie.referrer = data[3].split('=')[1] || '';
             }
 
-            if(data[3].contains('$EXTRACT') && data[4]){
+            if(data[3].includes('$EXTRACT') && data[4]){
                 config.extract.pattern = data[4];
                 config.extract.referrer = data[3].split('=')[1] || '';
                 config.cookie.shouldGet = true;
@@ -579,7 +589,9 @@ ChaikaNGFiles.prototype = {
     _getMD5: function ChaikaNGFiles__getMD5(uri){
         try{
             var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-            var channel = ioService.newChannelFromURI(uri);
+            var ssm = Cc["@mozilla.org/scriptsecuritymanager;1"].getService(Ci.nsIScriptSecurityManager);
+            var channel = ioService.newChannelFromURI2(uri, null, ssm.getSystemPrincipal(), null,
+                            Ci.nsILoadInfo.SEC_NORMAL, Ci.nsIContentPolicy.TYPE_OTHER);
 
             var stream = channel.open();
             var binaryInputStream = Cc["@mozilla.org/binaryinputstream;1"].createInstance(Ci.nsIBinaryInputStream);

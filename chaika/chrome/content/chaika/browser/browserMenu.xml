@@ -126,6 +126,15 @@
             Components.utils.import("resource://chaika-modules/utils/URLUtils.js", this);
             Components.utils.import("resource://chaika-modules/ChaikaAboneManager.js", this);
 
+            /**
+             * Polyfill for Firefox 39-
+             */
+            if(!String.prototype.includes){
+                String.prototype.includes = function(){'use strict';
+                    return String.prototype.indexOf.apply(this, arguments) !== -1;
+                };
+            }
+
             this.classList.add('chaika-browser-menu');
             this.classList.add('popup-internal-box');
 
@@ -238,16 +247,19 @@
                     return new Promise((resolve, reject) => {
                         // 応答タイムアウト設定
                         let timeoutID = setTimeout(() => {
+                            mm.removeMessageListener('chaika-get-selected-text', listener);
                             clearTimeout(timeoutID);
                             reject(new Error('chaika-get-selected-text is timeout.'));
                         }, 1000);
-                        
+
                         // frameスクリプトからの応答メッセージのlistener
-                        mm.addMessageListener('chaika-get-selected-text', message => {
+                        let listener = message => {
+                            mm.removeMessageListener('chaika-get-selected-text', listener);
                             clearTimeout(timeoutID);
                             resolve(message.data);
-                        });
-                        
+                        };
+                        mm.addMessageListener('chaika-get-selected-text', listener);
+
                         // frameスクリプトへ要求メッセージ送信
                         mm.sendAsyncMessage('chaika-get-selected-text');
                     });
@@ -877,18 +889,26 @@
                 //FoxAge2chがインストールされている場合は
                 //FoxAge2chの次スレ検索機能の使用を試みる
                 if(FOX_AGE_2CH){
-                    //FoxAge2chに登録されている場合のみ次スレ検索が可能
-                    let FoxAge2chUtils = (Components.utils.import("resource://foxage2ch/utils.jsm", {})).FoxAge2chUtils;
-                    let [boardID, threadID] = FoxAge2chUtils.parseFromURL(threadURI.spec);
-                    let item = FoxAge2chUtils.service.getItem(threadID);
+                    try{
+                        //FoxAge2chに登録されている場合のみ次スレ検索が可能
+                        let FoxAge2chUtils = (Components.utils.import("resource://foxage2ch/utils.jsm", {})).FoxAge2chUtils;
+                        let [boardID, threadID] = FoxAge2chUtils.parseFromURL(threadURI.spec);
+                        let item = FoxAge2chUtils.service.getItem(threadID);
 
-                    if(item){
-                        this.ChaikaCore.browser.openWindow(
-                            "chrome://foxage2ch/content/findThread.xul",
-                            "FoxAge2ch:FindThread",
-                            threadID
-                        );
-                        return;
+                        if(item){
+                            this.ChaikaCore.browser.openWindow(
+                                "chrome://foxage2ch/content/findThread.xul",
+                                "FoxAge2ch:FindThread",
+                                threadID
+                            );
+                            return;
+                        }
+                    }catch(ex){
+                        //FoxAge2chがhttps:のURLを認識しない場合など
+                        if(!(ex instanceof Ci.nsIXPCException)){
+                            ex = new Components.Exception("exception", ex);
+                        }
+                        this.ChaikaCore.logger.error(ex);
                     }
                 }
 

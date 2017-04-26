@@ -313,6 +313,7 @@ Thread2ch.prototype = {
         if(this.thread.maruGetted){
             this.write(this.converter.getFooter("ok"));
             this.close();
+            return;
         }
 
         this._handler.response.flush();
@@ -536,7 +537,7 @@ Thread2ch.prototype = {
                 }
 
                 //自動NGID
-                if(aboneResult.autoNGID && resID && !resID.startsWith('???')){
+                if(aboneResult.autoNGID && resID && !resID.startsWith('???') && !resID.startsWith('CAP_USER')){
                     let now = new Date();
                     let expire = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
@@ -545,10 +546,14 @@ Thread2ch.prototype = {
                         target: 'post',
                         match: 'all',
                         expire: expire.getTime(),
+                        autoNGID: false,
+                        highlight: false,
                         rules: [{
                             target: 'id',
                             query: resID,
-                            condition: 'equals'
+                            condition: 'equals',
+                            regexp: false,
+                            ignoreCase: false
                         }]
                     });
                 }
@@ -998,6 +1003,13 @@ Thread2ch.prototype = {
             case 416: //あぼーん
                 this._onThreadCollapsed();
                 return;
+            case 404: // 過去ログ取得時の404はDAT落ちと表示する
+                if(this._kakoDatDownload){
+                    this.write(this.converter.getFooter("dat_down"));
+                    this.close();
+                    return;
+                }
+                // fall through
             default: // HTTP エラー
                 this.write(this.converter.getFooter(httpStatus));
                 this.close();
@@ -1322,7 +1334,14 @@ function ThreadMachi(){
 
 ThreadMachi.prototype = Object.create(Thread2ch.prototype, {
     datDownload: {
-        value: function(){
+        value: function(aFailed){
+            // datDownload(true) が実装されていないと無限ループになるので終了
+            if(aFailed){
+                this.write("BAD URL");
+                this.close();
+                return;
+            }
+
             var datURLSpec = this.thread.url.resolve("./").replace("read.cgi", "offlaw.cgi/2");
             this._aboneChecked = true;
             this._threadAbone = false;

@@ -120,6 +120,10 @@ let Redirector = {
         if(!URLUtils.isBBS(aLocation.spec))
             return Ci.nsISimpleContentPolicy.ACCEPT;
 
+        // Don't redirect if the user doesn't wish to be redirected to chaika-board-view page.
+        if(!URLUtils.isThread(aLocation.spec) && Prefs.get("browser.redirector.thread_only"))
+            return Ci.nsISimpleContentPolicy.ACCEPT;
+
         // Don't redirect if the page is forced to load as normal web-view.
         if(aLocation.spec.includes('chaika_force_browser=1'))
             return Ci.nsISimpleContentPolicy.ACCEPT;
@@ -135,6 +139,14 @@ let Redirector = {
         if(replaceViewLimit){
             redirectTo = redirectTo.replace(/[^\/]+$/, viewLimit ? 'l' + viewLimit : '');
         }
+
+        // Firefox 53 以降、http(s):// から chrome:// へのリダイレクトが不可能になったので、
+        // 板URLはここで旧来の chaika://board/～ 形式へリダイレクトし、
+        // それをさらに chrome:// 形式で読み込みしなおすという方法をとっている
+
+        redirectTo = redirectTo.replace(
+                /^chrome:\/\/chaika\/content\/board\/page\.xul\?(?:.*&)?url=([^&#]*).*$/,
+                'chaika://board/$1');
 
         aLocation.spec = redirectTo;
 

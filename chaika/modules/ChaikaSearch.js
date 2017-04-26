@@ -11,6 +11,16 @@ let { ChaikaCore } = Cu.import("resource://chaika-modules/ChaikaCore.js", {});
 
 
 /**
+ * Polyfill for Firefox 39-
+ */
+if(!String.prototype.includes){
+    String.prototype.includes = function(){'use strict';
+        return String.prototype.indexOf.apply(this, arguments) !== -1;
+    };
+}
+
+
+/**
  * chaika のスレッド検索を行うクラス
  */
 this.ChaikaSearch = {
@@ -52,7 +62,7 @@ this.ChaikaSearch = {
                 let plugin = this._loadPluginFromURL(url);
 
                 // Migration: remove the old files.
-                if(plugin && plugin.updateURL && plugin.updateURL.contains('%%ChaikaDefaultsDir%%')){
+                if(plugin && plugin.updateURL && plugin.updateURL.includes('%%ChaikaDefaultsDir%%')){
                     file.remove(false);
                     continue;
                 }

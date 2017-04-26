@@ -22,8 +22,9 @@ pref("extensions.chaika.historymenu.thread_max", 6);
 // replacement manager
 pref('extensions.chaika.replace.warn_when_delete', true);
 
-// thread redirector
+// url redirector
 pref("extensions.chaika.browser.redirector.enabled", true);
+pref("extensions.chaika.browser.redirector.thread_only", false);
 pref("extensions.chaika.browser.redirector.throw_bookmarks", false);
 pref("extensions.chaika.browser.redirector.replace_view_limit", true);
 pref('extensions.chaika.browser.redirector.ivur.behavior', 0);

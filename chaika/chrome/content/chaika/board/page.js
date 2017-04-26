@@ -559,8 +559,7 @@ var BoardTree = {
         ChaikaCore.browser.openThread(this.getItemURL(index), aAddTab, true, false, true);
     },
 
-        // nsDragAndDrop Observer
-    onDragStart: function BoardTree_onDragStart(aEvent, aTransferData, aDragAction){
+    dragStart: function BoardTree_dragStart(aEvent){
         if(aEvent.originalTarget.localName != "treechildren") return;
         var itemIndex = this.getClickItemIndex(aEvent);
         if(itemIndex == -1) return;
@@ -568,9 +567,14 @@ var BoardTree = {
 
         var url = this.getItemURL(itemIndex).spec;
         var title = this.getItemTitle(itemIndex);
-        aTransferData.data = new TransferData();
-        aTransferData.data.addDataForFlavour("text/x-moz-url", url + "\n" + title);
-        aTransferData.data.addDataForFlavour("text/unicode", url);
+
+        var dt = aEvent.dataTransfer;
+        dt.setData("text/x-moz-url", url + "\n" + title);
+        dt.setData("text/unicode", url);
+
+        dt.effectAllowed = "link";
+        dt.addElement(aEvent.originalTarget);
+        aEvent.stopPropagation();
     }
 
 };
@@ -790,7 +794,8 @@ NewBoardURLFinder.prototype = {
 
         if(/Change your bookmark/m.test(responseText)){
             if(responseText.match(/<a href=\"([^\"]+)\">/m)){
-                this.onSuccess(RegExp.$1);
+                // //hawk.2ch.net/livejupiter/ のような相対URLが書かれている場合もある(2017/3/24)
+                this.onSuccess(this._httpReq.channel.URI.resolve(RegExp.$1));
             }
         }else{
             this.onFail();

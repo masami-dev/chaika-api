@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=1020">
-    <title>chaika-api 1.8.0 リリースノート</title>
+    <title>chaika-api 1.8.1 リリースノート</title>
 
     <!-- stylesheet delivered from https://github.com/sindresorhus/github-markdown-css -->
     <link href="./github-markdown.css" media="all" rel="stylesheet">
@@ -19,30 +19,38 @@
   </head>
 
   <body>
-    <!-- Last Modified : 2016/02/19 00:12:30 -->
+    <!-- Last Modified : 2017/04/11 15:26:51 -->
       <div class="markdown-body">
         <h2>
-<a id="user-content-chaika-api-180-リリースノート" class="anchor" href="#chaika-api-180-%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%8E%E3%83%BC%E3%83%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0 リリースノート</h2>
-
-<p>chaika 1.8.0 を基にして、2ch API サポートなどの独自機能を追加したカスタム版 chaika です。そのほか、オリジナル版では未修正の不具合も幾つか修正されています。</p>
-
+<a id="chaika-api-181-リリースノート" class="anchor" href="#chaika-api-181-%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%8E%E3%83%BC%E3%83%88"><span class="octicon octicon-link"></span></a>chaika-api 1.8.1 リリースノート</h2>
+<p>chaika 1.8.1 を基にして、2ch API サポートなどの独自機能を追加したカスタム版 chaika です。そのほか、オリジナル版では未修正の不具合も幾つか修正されています。</p>
 <p>この chaika-api の制作は、オリジナル版 chaika の開発者とは全く別の者が行なっています。オリジナル版 chaika の開発者は、この chaika-api への直接的な関与はしておりません。特に 2ch API に関わる問い合わせなどをオリジナル版の開発者へは送らないでください。</p>
-
 <h3>
-<a id="user-content-使用上の注意" class="anchor" href="#%E4%BD%BF%E7%94%A8%E4%B8%8A%E3%81%AE%E6%B3%A8%E6%84%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用上の注意</h3>
-
+<a id="使用上の注意" class="anchor" href="#%E4%BD%BF%E7%94%A8%E4%B8%8A%E3%81%AE%E6%B3%A8%E6%84%8F"><span class="octicon octicon-link"></span></a>使用上の注意</h3>
 <p>この chaika-api は、オリジナル版 chaika とは別のアドオンとして Firefox に認識され、オリジナル版との共存はできません。そのため、<strong>インストール前に必ず、アドオンマネージャにてオリジナル版 chaika を削除してください</strong>。ログや設定などは全てそのまま引き継がれます。</p>
-
 <p>2ch API サポートは非公式対応となっており、2ch API 機能を働かせるには所定のAPIキーを入力する必要があります。初めて 2ch API 機能を使用する際には、<a class="internal present" href="./api-readme.html">2ch API 拡張の説明</a> を参照の上、必要な初期設定を行なってください。</p>
-
 <h3>
-<a id="user-content-便利な小技tips" class="anchor" href="#%E4%BE%BF%E5%88%A9%E3%81%AA%E5%B0%8F%E6%8A%80tips" aria-hidden="true"><span class="octicon octicon-link"></span></a>便利な小技(Tips)</h3>
-
+<a id="chaika-api-の独自機能について" class="anchor" href="#chaika-api-%E3%81%AE%E7%8B%AC%E8%87%AA%E6%A9%9F%E8%83%BD%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><span class="octicon octicon-link"></span></a>chaika-api の独自機能について</h3>
 <h4>
-<a id="user-content-スレタイの-転載禁止-2chnet-などを消去して表示する方法" class="anchor" href="#%E3%82%B9%E3%83%AC%E3%82%BF%E3%82%A4%E3%81%AE-%E8%BB%A2%E8%BC%89%E7%A6%81%E6%AD%A2-2chnet-%E3%81%AA%E3%81%A9%E3%82%92%E6%B6%88%E5%8E%BB%E3%81%97%E3%81%A6%E8%A1%A8%E7%A4%BA%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>スレタイの [転載禁止] ©2ch.net などを消去して表示する方法</h4>
-
+<a id="ログマネージャのデータベースの修復181122-から" class="anchor" href="#%E3%83%AD%E3%82%B0%E3%83%9E%E3%83%8D%E3%83%BC%E3%82%B8%E3%83%A3%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E4%BF%AE%E5%BE%A9181122-%E3%81%8B%E3%82%89"><span class="octicon octicon-link"></span></a>ログマネージャの「データベースの修復」（1.8.1.12.2 から）</h4>
+<p>これは、ログフォルダにあるログ（datファイル）すべてについてデータベースへの登録状態を調べ、もし登録されていなければデータベースへ新規登録し、登録されていても登録内容（現時点ではレス数のみをチェック）に相違があれば修正登録を行います。</p>
+<p>これによって、ログフォルダ chaika-logs 内の適切なフォルダにdatファイルをコピーしてからこれを実行することで、いわゆるログのインポートができますが、現状においては以下のような制限があります。</p>
+<ol>
+<li>
+<p>2ch.net/bbspink.com において、bbsmenu に登録が無くかつ取得済みのログが一つも無い板へはインポートできません（スレッドURLを推定できないため）。bbsmenu に現れない隠し板などの場合は、最低一つログを取得済みの状態で実行してください。</p>
+</li>
+<li>
+<p>2ch.net/bbspink.com においては、サーバ移転のため時々URL（サーバ名）が変わりますが、原則として現在のサーバ名のスレッドURLにてインポートされます。そのため、古いログの場合は、そのスレッドが収容されているサーバとは異なるURLでインポートされる場合があり、「ブラウザで開く」で過去ログを表示できないなどの制限が生じます。</p>
+</li>
+<li>
+<p>datファイルの内容のチェックはしていません。間違ったフォルダにあるログもチェックされずにインポートされます。注意が必要です。</p>
+</li>
+</ol>
+<h3>
+<a id="便利な小技tips" class="anchor" href="#%E4%BE%BF%E5%88%A9%E3%81%AA%E5%B0%8F%E6%8A%80tips"><span class="octicon octicon-link"></span></a>便利な小技(Tips)</h3>
+<h4>
+<a id="スレタイの-転載禁止-2chnet-などを消去して表示する方法" class="anchor" href="#%E3%82%B9%E3%83%AC%E3%82%BF%E3%82%A4%E3%81%AE-%E8%BB%A2%E8%BC%89%E7%A6%81%E6%AD%A2-2chnet-%E3%81%AA%E3%81%A9%E3%82%92%E6%B6%88%E5%8E%BB%E3%81%97%E3%81%A6%E8%A1%A8%E7%A4%BA%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95"><span class="octicon octicon-link"></span></a>スレタイの [転載禁止] ©2ch.net などを消去して表示する方法</h4>
 <p>置換マネージャに以下の内容を新規登録します。「条件」は設定しません。検索文字列は、<u>下線</u> の範囲だけを前後に空白が入らないようにコピー＆ペーストしてください。</p>
-
 <ul>
 <li>置換の対象 → <u>スレタイ (subject.txt)</u> を次のように置換する</li>
 <li>検索文字列 → <u>\s*\[(無断)?転載禁止\]\s?|\s*([©・\uFFFD]|\(c\)|&amp;(amp;)?(copy|#169|#65533);)(\d+ch\.net|bbspink\.com)\uFF65?|\t</u>
@@ -50,23 +58,76 @@
 <li>置換文字列 → 空欄のまま</li>
 <li>/a/ ・ Aa ・ 全て置換する → ３つともチェック(ON)</li>
 </ul>
-
 <h3>
-<a id="user-content-公式サイト一次配布元" class="anchor" href="#%E5%85%AC%E5%BC%8F%E3%82%B5%E3%82%A4%E3%83%88%E4%B8%80%E6%AC%A1%E9%85%8D%E5%B8%83%E5%85%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>公式サイト（一次配布元）</h3>
-
+<a id="公式サイト一次配布元" class="anchor" href="#%E5%85%AC%E5%BC%8F%E3%82%B5%E3%82%A4%E3%83%88%E4%B8%80%E6%AC%A1%E9%85%8D%E5%B8%83%E5%85%83"><span class="octicon octicon-link"></span></a>公式サイト（一次配布元）</h3>
 <blockquote>
 <p>chaika-api Wiki<br>
 <a href="https://github.com/masami-dev/chaika-api/wiki">https://github.com/masami-dev/chaika-api/wiki</a></p>
 </blockquote>
-
 <h3>
-<a id="user-content-更新履歴" class="anchor" href="#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4" aria-hidden="true"><span class="octicon octicon-link"></span></a>更新履歴</h3>
-
+<a id="更新履歴" class="anchor" href="#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4"><span class="octicon octicon-link"></span></a>更新履歴</h3>
 <p>先頭の◎は、ベースとなっているオリジナル版 chaika に対する変更点であることを表します。</p>
-
 <h4>
-<a id="user-content-chaika-api-180116---20160219" class="anchor" href="#chaika-api-180116---20160219" aria-hidden="true"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.6 - 2016/02/19</h4>
-
+<a id="chaika-api-181123---20170411" class="anchor" href="#chaika-api-181123---20170411"><span class="octicon octicon-link"></span></a>chaika-api 1.8.1.12.3 - 2017/04/11</h4>
+<ul>
+<li>◎https: で始まるスレッドURL・板URLを正常に認識できるようにした</li>
+<li>◎BBSMENU の読み込みで // で始まるURLも正常に認識できるようにした</li>
+<li>◎サーバの移転先URLを正しく認識できない場合があるのを修正</li>
+<li>◎BBSMENU の読み込みで最新のファイルが取得されない場合があるのを修正</li>
+<li>◎NGEx でキャップ共有ID ID:CAP_USER を自動NGIDの対象から除外した</li>
+<li>◎NGEx の自動NGIDで同じIDが重複して登録される不具合を修正</li>
+</ul>
+<h4>
+<a id="chaika-api-181122---20170315" class="anchor" href="#chaika-api-181122---20170315"><span class="octicon octicon-link"></span></a>chaika-api 1.8.1.12.2 - 2017/03/15</h4>
+<ul>
+<li>◎ログマネージャにデータベース修復（DATインポート）機能を追加</li>
+<li>◎URLリダイレクタの動作対象をスレッドURLのみにする設定項目を新たに追加</li>
+<li>◎まちBBSの <a href="http://machi.to/">http://machi.to/</a> で始まる URL を認識できるようにした</li>
+<li>◎デフォルトスキンでまれにポップアップが勝手に閉じる事がある不具合に対処</li>
+<li>◎デフォルトスキンでマウスオーバー時にポップアップが多重に開かれる事があるのを修正</li>
+<li>◎Firefox 50 以降でスレ一覧・ログマネージャからの drag&amp;drop ができない不具合を修正</li>
+<li>◎Firefox 53 以降で板URLをchaika表示へリダイレクトできない現象について対処</li>
+<li>◎Firefox 54 以降で chaika 独自のプロキシ設定をするとネットワークエラーになるのを修正</li>
+<li>◎2ch.net の発言数集計ページ stat.2ch.net/SPARROW/ が板と誤認識されていたのを修正</li>
+<li>◎そのほか、通常の使用状態では表面化しにくい細かな不具合をいくつか修正</li>
+</ul>
+<h4>
+<a id="chaika-api-181121---20160316" class="anchor" href="#chaika-api-181121---20160316"><span class="octicon octicon-link"></span></a>chaika-api 1.8.1.12.1 - 2016/03/16</h4>
+<ul>
+<li>◎chaikaサイドバー板一覧リストを複数選択動作できるようにした</li>
+<li>◎存在しない検索エンジンがデフォルトになっているとサイドバーに何も表示されない現象を修正</li>
+<li>◎2ch.netの新サーバでdat落ちしたスレッドへのアクセスが「エラー:404」と表示されるのを修正</li>
+<li>◎Firefox 48 以降で板やスレッドの読み込みが全くできなくなる不具合を修正</li>
+</ul>
+<h4>
+<a id="chaika-api-18112---20160308" class="anchor" href="#chaika-api-18112---20160308"><span class="octicon octicon-link"></span></a>chaika-api 1.8.1.12 - 2016/03/08</h4>
+<p>chaika 1.8.1 ベースになりました。chaika-api 1.8.0.11～1.8.0.11.6 におけるオリジナル版部分への修正点の多くが、オリジナル版 chaika 1.8.1 へ取り込まれています。</p>
+<ul>
+<li>2ch API 拡張部分について、機能の見直しと修正を行いました (<a class="internal present" href="./api-readme.html#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4">2ch API extension v0.12</a>)</li>
+</ul>
+<h5>
+<a id="chaikaサイドバーの板一覧リストと検索ボックス" class="anchor" href="#chaika%E3%82%B5%E3%82%A4%E3%83%89%E3%83%90%E3%83%BC%E3%81%AE%E6%9D%BF%E4%B8%80%E8%A6%A7%E3%83%AA%E3%82%B9%E3%83%88%E3%81%A8%E6%A4%9C%E7%B4%A2%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9"><span class="octicon octicon-link"></span></a>chaikaサイドバーの板一覧リストと検索ボックス</h5>
+<ul>
+<li>◎サイドバー板一覧にてキーボードで板を開けるようにした（Enter，Ctrl+Enter）</li>
+<li>◎サイドバー板一覧リストを複数選択できないタイプへ変更（複数選択できても動作しないため）</li>
+<li>◎サイドバー板一覧のフォルダをキーボードで開閉したとき選択位置が移動してしまう現象を修正</li>
+<li>◎検索エンジンをキーボードで変更できるようにした（Ctrl(Cmd)+↑↓，Alt(Option)+↑↓，F4）</li>
+<li>◎検索エンジンをメニューから変更したとき、検索欄に何か入力されていれば検索するようにした</li>
+<li>◎板名フィルタの検索を 1.7.3 までと同様に大文字小文字や全角半角などを区別しないようにした</li>
+</ul>
+<h5>
+<a id="スレッド一覧ログマネージャそのほか" class="anchor" href="#%E3%82%B9%E3%83%AC%E3%83%83%E3%83%89%E4%B8%80%E8%A6%A7%E3%83%AD%E3%82%B0%E3%83%9E%E3%83%8D%E3%83%BC%E3%82%B8%E3%83%A3%E3%81%9D%E3%81%AE%E3%81%BB%E3%81%8B"><span class="octicon octicon-link"></span></a>スレッド一覧・ログマネージャ・そのほか</h5>
+<ul>
+<li>◎スレ一覧で「シングルクリックで開く」が有効の時はカーソルをリンクポインタにするようにした</li>
+<li>◎スレ一覧・ログマネージャにてフォーカスのあるスレッドが選択状態として扱われる不具合を修正</li>
+<li>◎スレ一覧・ログマネージャにてキーボードでコンテキストメニューを開けない不具合を修正</li>
+<li>◎板・スレッドに対するコンテキストメニューが上下矢印キーで項目を選択できなかったのを修正</li>
+<li>◎板一覧・スレ一覧のフォントサイズを変更したとき即座に反映されない場合があるのを修正</li>
+<li>◎「常に最前面にする」が有効のときに書き込みウィザードを複数開くと競合状態になる現象を修正</li>
+<li>◎そのほか、細かな不具合をいくつか修正</li>
+</ul>
+<h4>
+<a id="chaika-api-180116---20160219" class="anchor" href="#chaika-api-180116---20160219"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.6 - 2016/02/19</h4>
 <ul>
 <li>◎スレ一覧を開いた直後、キーボードショートカットが効かなくなっていたのを修正</li>
 <li>◎板・スレ一覧のフォントサイズを変更したとき即座に反映されない場合があるのを修正</li>
@@ -76,10 +137,8 @@
 <li>ログマネージャで外部板の板名が正しく表示されていなかったのを修正</li>
 <li>jikkyo.org のリンクジャンプページが板と誤認識されていたのを修正</li>
 </ul>
-
 <h4>
-<a id="user-content-chaika-api-180115---20160109" class="anchor" href="#chaika-api-180115---20160109" aria-hidden="true"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.5 - 2016/01/09</h4>
-
+<a id="chaika-api-180115---20160109" class="anchor" href="#chaika-api-180115---20160109"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.5 - 2016/01/09</h4>
 <ul>
 <li>◎デフォルトスキンで画像ポップアップの上限サイズを設定できるようなった</li>
 <li>◎デフォルトスキンで画像ポップアップが表示領域を超えないようにする設定項目が追加された</li>
@@ -88,17 +147,13 @@
 <li>◎ログマネージャで正しい板名が表示されない場合がある不具合を修正</li>
 <li>◎ログマネージャのスレッド一覧のカラム幅が不適切な配分になっていたのを修復した</li>
 </ul>
-
 <h4>
-<a id="user-content-chaika-api-180114---20160103" class="anchor" href="#chaika-api-180114---20160103" aria-hidden="true"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.4 - 2016/01/03</h4>
-
+<a id="chaika-api-180114---20160103" class="anchor" href="#chaika-api-180114---20160103"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.4 - 2016/01/03</h4>
 <ul>
 <li>前バージョンの修正で、開けないURLを稀にスレッドと誤認識するようになっていたのを再修正</li>
 </ul>
-
 <h4>
-<a id="user-content-chaika-api-180113---20151230" class="anchor" href="#chaika-api-180113---20151230" aria-hidden="true"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.3 - 2015/12/30</h4>
-
+<a id="chaika-api-180113---20151230" class="anchor" href="#chaika-api-180113---20151230"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.3 - 2015/12/30</h4>
 <ul>
 <li>アドオンマネージャによるアドオン自動更新が有効になりました（自動更新は次バージョンから）</li>
 <li>サイドバーのメニューに追加されていた chaika-api ホームのリンクを除去</li>
@@ -108,30 +163,23 @@
 <li>◎設定の「外部板・BBSMENU取得元を追加する」ボタンが効いていなかった不具合を修正</li>
 <li>◎そのほか、細かな不具合をいくつか修正</li>
 </ul>
-
 <h4>
-<a id="user-content-chaika-api-180112---20151213" class="anchor" href="#chaika-api-180112---20151213" aria-hidden="true"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.2 - 2015/12/13</h4>
-
+<a id="chaika-api-180112---20151213" class="anchor" href="#chaika-api-180112---20151213"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.2 - 2015/12/13</h4>
 <ul>
 <li>◎本来はchaikaで開けないURLに対してリダイレクタが働いてしまう不具合を修正</li>
 <li>前バージョンの修正で「次のスレッドを検索する」が効かなくなっていたのを修復</li>
 </ul>
-
 <h4>
-<a id="user-content-chaika-api-180111---20151212" class="anchor" href="#chaika-api-180111---20151212" aria-hidden="true"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.1 - 2015/12/12</h4>
-
+<a id="chaika-api-180111---20151212" class="anchor" href="#chaika-api-180111---20151212"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11.1 - 2015/12/12</h4>
 <ul>
 <li>◎hanabi.2ch.net など特定の名前のサーバにある板が板と認識されない不具合を修正</li>
 <li>◎chaikaスレ一覧のURLで、?url= 以降をURLエンコードされていない形式に統一</li>
 <li>◎板TOPブラウザ表示で「chaikaで開く」を選ぶと、URLにchaika_force_browser=1が残るのを修正</li>
 <li>不具合報告テンプレートの関連アドオンリストに chaika-api が現れる現象を修正</li>
 </ul>
-
 <h4>
-<a id="user-content-chaika-api-18011---20151210" class="anchor" href="#chaika-api-18011---20151210" aria-hidden="true"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11 - 2015/12/10</h4>
-
+<a id="chaika-api-18011---20151210" class="anchor" href="#chaika-api-18011---20151210"><span class="octicon octicon-link"></span></a>chaika-api 1.8.0.11 - 2015/12/10</h4>
 <p>chaika-api 1.8.x 系最初のバージョン。chaika 1.8.0 ベース。</p>
-
 <ul>
 <li>◎2ch API サポートの追加 (2ch API extension v0.11a)</li>
 <li>◎サイドバーのメニューに chaika-api プロジェクトホームへのリンクを追加</li>
