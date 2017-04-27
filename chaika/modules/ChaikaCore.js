@@ -1009,14 +1009,14 @@ ChaikaIO.prototype = {
         //U+FFFD = REPLACEMENT CHARACTER
         if(fileString.includes('\uFFFD')){
             if(suspects.length > 0){
-                fileString = this.readUnknownEncodingString(file, overrideOrigFile, suspects);
+                return this.readUnknownEncodingString(file, overrideOrigFile, ...suspects);
             }else{
                 ChaikaCore_.logger.error('Unable to read string from ' + file.leafName + ': Unknown Encoding');
                 return null;
             }
         }
 
-        if(fileString !== null && overrideOrigFile){
+        if(overrideOrigFile && encoding.toLowerCase() != 'utf-8'){
             this.writeString(file, 'utf-8', false, fileString);
         }
 
