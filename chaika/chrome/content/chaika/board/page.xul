@@ -88,7 +88,7 @@
                  label="No"
                  sort="?numberSort"
                  sorthints="twostate"
-                 style="width:3em;"
+                 style="width:3.5em;"
                  class="boardTreeCol"
                  persist2="hidden width sortActive sortDirection"/>
         <splitter class="tree-splitter"/>

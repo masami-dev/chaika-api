@@ -1,0 +1,21 @@
+/* See license.txt for terms of usage */
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+
+/* ---- Tree Styling ------------------------------ */
+
+#threadTree-read,
+#threadTree-force {
+    text-align: right;
+}
+
+#threadTree treechildren::-moz-tree-cell {
+    margin-right: 4px;
+    margin-left: 2px;
+}
+
+#threadTree treechildren::-moz-tree-cell(created),
+#threadTree treechildren::-moz-tree-cell(boardTitle) {
+    margin-left: 6px;
+}
