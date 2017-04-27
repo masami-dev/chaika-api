@@ -331,13 +331,15 @@ var BoardTree = {
         var colNodes = document.getElementsByClassName("boardTreeCol");
         for(var i=0; i<colNodes.length; i++){
             if(colNodes[i].getAttribute("sortActive") == "true"){
+                // builderView.sort() はカラムヘッダをクリックするのと同じ効果を持つ。
+                // すでに sortActive なカラムを指定するとソート順が反転するので、
+                // 呼ぶ前に sortDirection を一つ前の状態に戻しておく必要がある。
+                // <treecol> に sorthints="twostate" を付けているため "natural" は無い
                 var sortDirection = colNodes[i].getAttribute("sortDirection");
                 if(sortDirection == "descending"){
                     colNodes[i].setAttribute("sortDirection", "ascending");
-                }else if(sortDirection == "natural"){
-                    colNodes[i].setAttribute("sortDirection", "descending");
                 }else{
-                    colNodes[i].setAttribute("sortDirection", "natural");
+                    colNodes[i].setAttribute("sortDirection", "descending");
                 }
                 this.tree.builderView.sort(colNodes[i]);
             }

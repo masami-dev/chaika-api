@@ -83,6 +83,7 @@
         <treecol id="boardTreeCol-status"
                  label="!"
                  sort="?statusSort"
+                 sorthints="twostate"
                  style="width:3em;"
                  class="boardTreeCol"
                  persist2="hidden width sortActive sortDirection"/>
@@ -90,6 +91,7 @@
         <treecol id="boardTreeCol-number"
                  label="No"
                  sort="?numberSort"
+                 sorthints="twostate"
                  style="width:3em;"
                  class="boardTreeCol"
                  persist2="hidden width sortActive sortDirection"/>
@@ -97,6 +99,7 @@
         <treecol id="boardTreeCol-title"
                  label="タイトル"
                  sort="?title"
+                 sorthints="twostate"
                  flex="1"
                  ignoreincolumnpicker="true"
                  class="boardTreeCol"
@@ -105,6 +108,7 @@
         <treecol id="boardTreeCol-count"
                  label="レス"
                  sort="?countSort"
+                 sorthints="twostate"
                  style="width:4em;"
                  class="boardTreeCol"
                  persist2="hidden width sortActive sortDirection"/>
@@ -112,6 +116,7 @@
         <treecol id="boardTreeCol-read"
                  label="既読"
                  sort="?readSort"
+                 sorthints="twostate"
                  style="width:4em;"
                  class="boardTreeCol"
                  persist2="hidden width sortActive sortDirection"/>
@@ -119,6 +124,7 @@
         <treecol id="boardTreeCol-unread"
                  label="未読"
                  sort="?unreadSort"
+                 sorthints="twostate"
                  style="width:4em;"
                  class="boardTreeCol"
                  persist2="hidden width sortActive sortDirection"/>
@@ -126,6 +132,7 @@
         <treecol id="boardTreeCol-force"
                  label="勢い"
                  sort="?forceSort"
+                 sorthints="twostate"
                  style="width:4em;"
                  class="boardTreeCol"
                  persist2="hidden width sortActive sortDirection"/>
@@ -133,6 +140,7 @@
         <treecol id="boardTreeCol-created"
                  label="作成日"
                  sort="?createdSort"
+                 sorthints="twostate"
                  style="width:9em;"
                  class="boardTreeCol"
                  persist2="hidden width sortActive sortDirection"/>
