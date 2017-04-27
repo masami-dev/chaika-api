@@ -13,6 +13,14 @@
     font-weight: bold;
 }
 
+/* Windows 7 でフィルタの <textbox> が不必要に横長になることへの対策
+ * Windows 8.1 でのデフォルト値が 15em 相当なのでそれに倣った */
+@media (-moz-os-version: windows-win7){
+    #searchTextBox {
+        width: 15em;
+    }
+}
+
 
 /* ---- Text Size ------------------------------ */
 
