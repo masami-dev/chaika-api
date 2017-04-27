@@ -721,7 +721,10 @@ function moveToNewURL(newURL){
         }catch(ex){}
 
         setTimeout(function(){
-            window.location.href = "chaika://board/" + newURL;
+            //Search Queryが指定されている時は継承する（次スレ検索など）
+            var query = window.location.search.match(/query=[^&]+/);
+            query = query ? "?" + query[0] : "";
+            window.location.href = "chaika://board/" + newURL + query;
         }, 0);
     }
 }
