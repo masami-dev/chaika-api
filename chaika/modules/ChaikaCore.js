@@ -1047,14 +1047,16 @@ ChaikaIO.prototype = {
         //U+FFFD = REPLACEMENT CHARACTER
         if(fileString.indexOf('\uFFFD') > -1){
             if(suspects.length > 0){
-                fileString = this.readUnknownEncodingString(file, overrideOrigFile, suspects);
+                // 関数呼び出しでのスプレッド演算子は Firefox 27 から
+                var args = [file, overrideOrigFile, ...suspects];
+                return this.readUnknownEncodingString.apply(this, args);
             }else{
                 ChaikaCore.logger.error('Unable to read string from ' + file.leafName + ': Unknown Encoding');
                 return null;
             }
         }
 
-        if(fileString !== null && overrideOrigFile){
+        if(overrideOrigFile && encoding.toLowerCase() != 'utf-8'){
             this.writeString(file, 'utf-8', false, fileString);
         }
 
