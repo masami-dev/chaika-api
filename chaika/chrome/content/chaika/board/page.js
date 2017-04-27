@@ -666,7 +666,10 @@ function moveNewURL(aEvent){
 		}catch(ex){}
 
 		setTimeout(function(){
-			window.location.href = "chaika://board/" + gNewURL;
+			//Search Queryが指定されている時は継承する（次スレ検索など）
+			var query = window.location.search.match(/query=[^&]+/);
+			query = query ? "?" + query[0] : "";
+			window.location.href = "chaika://board/" + gNewURL + query;
 		}, 0);
 	}else{
 		document.getElementById("dckUpdate").selectedIndex = 0;
