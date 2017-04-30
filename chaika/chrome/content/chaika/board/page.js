@@ -387,7 +387,11 @@ var BoardTree = {
     },
 
     keyDown: function BoardTree_keyDown(aEvent){
-        switch(aEvent.key){
+        // CapsLock の影響を打ち消す
+        let key = !aEvent.getModifierState("CapsLock") ? aEvent.key :
+            aEvent.key.replace(/^[A-Z]$/i, (c) => c < 'a' ? c.toLowerCase() : c.toUpperCase());
+
+        switch(key){
             case 'Enter':
                 this.openThread(aEvent.ctrlKey || aEvent.altKey);
                 break;
