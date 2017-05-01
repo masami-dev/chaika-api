@@ -765,17 +765,17 @@ Thread2ch.prototype = {
 
         // 通常リンク処理
         if(resMes.contains("ttp")){
-            var regUrlLink = /(h?ttp)(s)?\:([\-_\.\!\~\*\'\(\)a-zA-Z0-9\;\/\?\:\@\&\=\+\$\,\%\#\|]+)/g;
+            var regUrlLink = /((?:^|[^\x81-\x9f\xe0-\xfc])(?:[\x81-\x9f\xe0-\xfc][\x40-\x7e\x80-\xfc])*)(h?ttp)(s)?\:([\-_\.\!\~\*\'\(\)a-zA-Z0-9\;\/\?\:\@\&\=\+\$\,\%\#\|]+)/g;
 
             if(ChaikaHttpController.ivur.enabled){
-                resMes = resMes.replace(regUrlLink, function(aStr, aScheme, aSecure, aSpec){
+                resMes = resMes.replace(regUrlLink, function(aStr, aPrefix, aScheme, aSecure, aSpec){
                     const url = 'http' + (aSecure || '') + ':' + aSpec;
                     const image_url = ChaikaHttpController.ivur.replaceURL(url);
 
-                    return '<a href="' + image_url + '" class="outLink">' + aStr + '</a>';
+                    return aPrefix + '<a href="' + image_url + '" class="outLink">' + aStr.slice(aPrefix.length) + '</a>';
                 });
             }else{
-                resMes = resMes.replace(regUrlLink, '<a href="http$2:$3" class="outLink">$1$2:$3</a>');
+                resMes = resMes.replace(regUrlLink, '$1<a href="http$3:$4" class="outLink">$2$3:$4</a>');
             }
         }
 
