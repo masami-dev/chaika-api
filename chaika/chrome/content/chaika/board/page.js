@@ -462,6 +462,13 @@ var BoardTree = {
                 this.tree.treeBoxObject.ensureRowIsVisible(prevIndex);
                 break;
 
+            case 'a':
+                if(aEvent.getModifierState("Accel") && !aEvent.altKey){
+                    // すべて選択 Ctrl/Cmd + A
+                    this.tree.treeBoxObject.view.selection.selectAll();
+                }
+                break;
+
         }
     },
 
