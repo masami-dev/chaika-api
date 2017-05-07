@@ -171,6 +171,14 @@ function eventBubbleCheck(aEvent){
     // オートスクロールや Find As You Type を抑制しつつキーボードショートカットを許可
     if(!(aEvent.ctrlKey || aEvent.shiftKey || aEvent.altKey || aEvent.metaKey))
         aEvent.stopPropagation();
+
+    // BoardTree.keyDown() にて Ctrl/Cmd + U を別の動作に割り当てているため、
+    // 標準ショートカットキー Ctrl/Cmd + U （ソースの表示）を抑制する
+    // tree 以外にフォーカスがある場合も含めて抑制するため、ここに置いている
+    if((aEvent.key === 'u' || aEvent.key === 'U') && !aEvent.shiftKey &&
+       aEvent.getModifierState("Accel") && !aEvent.altKey){
+        aEvent.preventDefault();
+    }
 }
 
 function loadPersist(){
@@ -469,6 +477,27 @@ var BoardTree = {
                 }
                 break;
 
+            case 'u':
+                if(aEvent.getModifierState("Accel") && !aEvent.altKey){
+                    // 未読をすべて選択 Ctrl/Cmd + U (see also eventBubbleCheck())
+                    let n = this.selectAllMatch("boardTreeCol-status", (p) => p.startsWith("s2"));
+                    setStatus(n > 0 ? "未読スレッド " + n + "件を選択" :
+                                      "未読スレッドはありません", 3000);
+                    if(n == 0) Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound).beep();
+                    break;
+                }
+                // fall through
+            case 'U':
+                if(!aEvent.getModifierState("Accel") && !aEvent.altKey){
+                    // 次の(前の)未読へ移動 (Shift +) U
+                    let m = this.moveToNextMatch((key == "U"),
+                                                 "boardTreeCol-status", (p) => p.startsWith("s2"));
+                    setStatus(m.total > 0 ? "未読スレッド " + m.current + " / " + m.total :
+                                            "未読スレッドはありません", 3000);
+                    if(m.total == 0) Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound).beep();
+                }
+                break;
+
         }
     },
 
@@ -572,6 +601,62 @@ var BoardTree = {
         ChaikaCore.browser.openThread(this.getItemURL(index), aAddTab, true, false, true);
     },
 
+    moveToNextMatch: function BoardTree_moveToNextMatch(aPrev, aColumnID, aCallback){
+        // callback が true を返す行へ移動する（aPrev:上方向へ）
+        let col = this.tree.columns.getNamedColumn(aColumnID);
+        let view = this.tree.view;
+        let match = [];
+
+        for(let idx = 0, rc = view.rowCount; idx < rc; idx++){
+            if(aCallback(view.getCellProperties(idx,col)/*, view.getCellValue(idx,col),
+                         view.getCellText(idx,col), view.getRowProperties(idx)*/)){
+                if(aPrev) match.unshift(idx);
+                else match.push(idx);
+            }
+        }
+
+        let curIdx = this.tree.currentIndex;
+        let select = match.findIndex(aPrev ? (idx) => idx < curIdx : (idx) => idx > curIdx);
+        if(select == -1) select = 0;
+
+        if(match.length > 0){
+            view.selection.select(match[select]);
+            this.tree.treeBoxObject.ensureRowIsVisible(match[select]);
+        }
+
+        return { total: match.length, current: aPrev ? match.length - select : select + 1 };
+    },
+
+    selectAllMatch: function BoardTree_selectAllMatch(aColumnID, aCallback){
+        // callback が true を返す行を全て選択する
+        let col = this.tree.columns.getNamedColumn(aColumnID);
+        let view = this.tree.view;
+        let match = [];
+
+        view.selection.clearSelection();
+
+        // 最後に選択した行に currentIndex が移動するので、
+        // 選択範囲の一番上に currentIndex が来るように下から上の順に選択する
+
+        for(let idx = view.rowCount; --idx >= 0; ){
+            if(aCallback(view.getCellProperties(idx,col)/*, view.getCellValue(idx,col),
+                         view.getCellText(idx,col), view.getRowProperties(idx)*/)){
+                match.push(idx);
+            }
+        }
+
+        if(match.length > 0){
+            while(match.length > 0){
+                let start = match.shift(), end = start;
+                while(match[0] === end - 1) end = match.shift();
+                view.selection.rangedSelect(start, end, true);
+            }
+            this.tree.treeBoxObject.ensureRowIsVisible(this.tree.currentIndex);
+        }
+
+        return view.selection.count;
+    },
+
     dragStart: function BoardTree_dragStart(aEvent){
         if(aEvent.originalTarget.localName != "treechildren") return;
         var itemIndex = this.getClickItemIndex(aEvent);
@@ -592,8 +677,19 @@ var BoardTree = {
 
 };
 
-function setStatus(aString){
-    document.getElementById("lblStatus").value = aString;
+function setStatus(aString, aTimeout){
+    let status = document.getElementById("lblStatus");
+    status.value = aString;
+
+    if(setStatus.timeoutID){
+        clearTimeout(setStatus.timeoutID);
+        setStatus.timeoutID = undefined;
+    }
+    if(!aTimeout) return;
+    setStatus.timeoutID = setTimeout((aStatus) => {
+        setStatus.timeoutID = undefined;
+        aStatus.value = "";
+    }, aTimeout, status);
 }
 
 /**
