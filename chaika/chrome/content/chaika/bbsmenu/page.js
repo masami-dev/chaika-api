@@ -469,8 +469,8 @@ var Bbsmenu = {
                 if(node.nodeType == Ci.nsIDOMNode.TEXT_NODE){
                     var title = node.nodeValue;
                     currentCategoryPath = "/2ch/" + title.replace(/\//g, "_") + "/";
-                    categoryInsertStatement.bindStringParameter(0, title);
-                    categoryInsertStatement.bindStringParameter(1, currentCategoryPath);
+                    categoryInsertStatement.params[0] = title;
+                    categoryInsertStatement.params[1] = currentCategoryPath;
                     categoryInsertStatement.execute();
                 }else if(currentCategoryPath){
                     var title = node.firstChild.nodeValue;
@@ -488,11 +488,11 @@ var Bbsmenu = {
                     }
 
                     var path = currentCategoryPath + title.replace(/\//g, "_") + "/";
-                    bosrdInsertStatement.bindStringParameter(0, title);
-                    bosrdInsertStatement.bindStringParameter(1, urlSpec);
-                    bosrdInsertStatement.bindStringParameter(2, path);
-                    bosrdInsertStatement.bindInt32Parameter(3, type);
-                    bosrdInsertStatement.bindStringParameter(4, boardID);
+                    bosrdInsertStatement.params[0] = title;
+                    bosrdInsertStatement.params[1] = urlSpec;
+                    bosrdInsertStatement.params[2] = path;
+                    bosrdInsertStatement.params[3] = type;
+                    bosrdInsertStatement.params[4] = boardID;
                     bosrdInsertStatement.execute();
                 }
             }

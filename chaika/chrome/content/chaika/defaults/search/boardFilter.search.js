@@ -17,7 +17,7 @@ var BoardFilter = {
 
     name: '板名フィルタ',
 
-    version: '1.0.0',
+    version: '1.0.1',
 
     updateURL: '%%ChaikaDefaultsDir%%/search/boardFilter.search.js',
 
@@ -40,7 +40,7 @@ var BoardFilter = {
         storage.beginTransaction();
 
         try{
-            statement.bindStringParameter(0, "%" + term + "%");
+            statement.params[0] = "%" + term + "%";
 
             while(statement.executeStep()){
                 let title = statement.getString(0);
