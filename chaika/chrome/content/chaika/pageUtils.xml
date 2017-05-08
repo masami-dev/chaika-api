@@ -231,8 +231,8 @@
                 storage.beginTransaction();
                 try{
                     var historyType = (aItemType=="board") ? 0 : 1;
-                    aStatement.bindInt32Parameter(0, historyType);
-                    aStatement.bindInt32Parameter(1, aLimit);
+                    aStatement.params[0] = historyType;
+                    aStatement.params[1] = aLimit;
                     while(aStatement.executeStep()){
                         var menuitem = document.createElement("menuitem");
                         menuitem.setAttribute("label", io.unescapeHTML(aStatement.getString(0)));

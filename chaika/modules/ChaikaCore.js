@@ -1251,7 +1251,7 @@ ChaikaHistory.prototype = {
             // ID で指定されたレコードがあるかチェック
             var rowID = 0;
             var statement = this._statement["visitPage_SelectID"];
-            statement.bindStringParameter(0, aID);
+            statement.params[0] = aID;
             if(statement.executeStep()){
                 rowID = statement.getInt32(0);
             }
@@ -1260,19 +1260,19 @@ ChaikaHistory.prototype = {
             var now = Date.now()/1000;
             if(rowID){ // レコードがあれば更新
                 statement = this._statement["visitPage_UpdateHistory"];
-                statement.bindStringParameter(0, aURL.spec);// url
-                statement.bindStringParameter(1, title);    // title
-                statement.bindInt32Parameter(2, now);        // last_visited
-                statement.bindStringParameter(3, rowID);    // id
+                statement.params[0] = aURL.spec;// url
+                statement.params[1] = title;    // title
+                statement.params[2] = now;      // last_visited
+                statement.params[3] = rowID;    // id
                 statement.execute();
             }else{ // レコードがなければ新規作成
                 statement = this._statement["visitPage_InsertHistory"];
-                statement.bindStringParameter(0, aID);        // id
-                statement.bindStringParameter(1, aURL.spec);// url
-                statement.bindStringParameter(2, title);    // title
-                statement.bindInt32Parameter(3, now);        // last_visited
-                statement.bindInt32Parameter(4, 1);            // visit_count
-                statement.bindInt32Parameter(5, aType);        // type
+                statement.params[0] = aID;      // id
+                statement.params[1] = aURL.spec;// url
+                statement.params[2] = title;    // title
+                statement.params[3] = now;      // last_visited
+                statement.params[4] = 1;        // visit_count
+                statement.params[5] = aType;    // type
                 statement.execute();
             }
 
