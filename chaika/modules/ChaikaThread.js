@@ -239,7 +239,7 @@ ChaikaThread.prototype = {
 			var statement = storage.createStatement(
 					"SELECT title, line_count, http_last_modified, maru_getted" +
 						"    FROM thread_data WHERE thread_id=?1;");
-			statement.bindStringParameter(0, this.threadID);
+			statement.params[0] = this.threadID;
 			if(statement.executeStep()){
 				this.title        = ChaikaCore.io.unescapeHTML(statement.getString(0));
 				this.lineCount    = statement.getInt32(1);
@@ -275,7 +275,7 @@ ChaikaThread.prototype = {
 		try{
 			var statement = storage.createStatement(
 								"SELECT _rowid_ FROM thread_data WHERE thread_id=?1;");
-			statement.bindStringParameter(0, this.threadID);
+			statement.params[0] = this.threadID;
 			var threadRowID = 0;
 			if(statement.executeStep()){
 				threadRowID = statement.getInt64(0);
@@ -286,26 +286,26 @@ ChaikaThread.prototype = {
 				statement = storage.createStatement(
 					"UPDATE thread_data SET url=?1, line_count=?2, http_last_modified=?3, " +
 						"maru_getted=?4 WHERE _rowid_=?5;");
-				statement.bindStringParameter(0, this.url.spec);
-				statement.bindInt32Parameter(1, this.lineCount);
-				statement.bindStringParameter(2, this.lastModified);
-				statement.bindInt32Parameter(3, this.maruGetted ? 1 : 0);
-				statement.bindInt64Parameter(4, threadRowID);
+				statement.params[0] = this.url.spec;
+				statement.params[1] = this.lineCount;
+				statement.params[2] = this.lastModified;
+				statement.params[3] = this.maruGetted ? 1 : 0;
+				statement.params[4] = threadRowID;
 				statement.execute();
 			}else{
 				statement = storage.createStatement(
 				"INSERT INTO thread_data(thread_id, board_id, url, dat_id, title, " +
 					"title_n, line_count, http_last_modified, maru_getted)" +
 					"   VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9);");
-				statement.bindStringParameter(0, this.threadID);
-				statement.bindStringParameter(1, ChaikaBoard.getBoardID(this.boardURL));
-				statement.bindStringParameter(2, this.url.spec);
-				statement.bindStringParameter(3, this.datID);
-				statement.bindStringParameter(4, this.rawTitle);	// データベースの互換性維持のため
-				statement.bindStringParameter(5, "");
-				statement.bindInt32Parameter(6, this.lineCount);
-				statement.bindStringParameter(7, this.lastModified);
-				statement.bindInt32Parameter(8, this.maruGetted ? 1 : 0);
+				statement.params[0] = this.threadID;
+				statement.params[1] = ChaikaBoard.getBoardID(this.boardURL);
+				statement.params[2] = this.url.spec;
+				statement.params[3] = this.datID;
+				statement.params[4] = this.rawTitle;	// データベースの互換性維持のため
+				statement.params[5] = "";
+				statement.params[6] = this.lineCount;
+				statement.params[7] = this.lastModified;
+				statement.params[8] = this.maruGetted ? 1 : 0;
 				statement.execute();
 			}
 		}catch(ex){
@@ -323,7 +323,7 @@ ChaikaThread.prototype = {
 	deleteThreadData: function ChaikaThread_deleteThreadData(){
 		var storage = ChaikaCore.storage;
 		var statement = storage.createStatement("DELETE FROM thread_data WHERE thread_id=?1");
-		statement.bindStringParameter(0, this.threadID);
+		statement.params[0] = this.threadID;
 
 		storage.beginTransaction();
 		try{
