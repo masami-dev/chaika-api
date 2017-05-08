@@ -135,6 +135,9 @@ ChaikaProtocolHandler.prototype = Object.create(AbstractProtocolHandler.prototyp
 
             channel.originalURI = aURI;
 
+            if('resultPrincipalURI' in aLoadinfo)
+                aLoadinfo.resultPrincipalURI = aURI;    // Firefox 55+
+
             return channel;
         }
     },
