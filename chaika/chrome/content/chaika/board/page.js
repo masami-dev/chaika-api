@@ -596,9 +596,21 @@ var BoardTree = {
     },
 
     openThread: function BoardTree_openThread(aAddTab){
-        var index = this.tree.currentIndex;
-        if(index == -1) return null;
-        ChaikaCore.browser.openThread(this.getItemURL(index), aAddTab, true, false, true);
+        var currentIndex = this.tree.currentIndex;
+        var selectionIndices = this.getSelectionIndices();
+
+        var currentInSelection = selectionIndices.indexOf(currentIndex);
+
+        // フォーカスが当たっているものがあれば先頭へ移動
+        if(currentInSelection >= 1){
+            selectionIndices.splice(currentInSelection, 1);
+            selectionIndices.unshift(currentIndex);
+        }
+
+        selectionIndices.every((index) => {
+            ChaikaCore.browser.openThread(this.getItemURL(index), aAddTab, true, false, true);
+            return aAddTab;   // false なら最初の一つだけを開く
+        });
     },
 
     moveToNextMatch: function BoardTree_moveToNextMatch(aPrev, aColumnID, aCallback){
