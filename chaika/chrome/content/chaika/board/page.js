@@ -333,10 +333,8 @@ var BoardTree = {
 		if(this.tree.currentIndex == -1) return;
 
 		if(aEvent.keyCode == aEvent.DOM_VK_ENTER || aEvent.keyCode == aEvent.DOM_VK_RETURN){
-			if(aEvent.ctrlKey || aEvent.altKey){
-				this.openThread(true);
-			}else{
-				this.openThread(false);
+			if(!aEvent.repeat){		// Firefox 28+
+				this.openThread(aEvent.ctrlKey || aEvent.altKey);
 			}
 
 		}else if(aEvent.charCode == aEvent.DOM_VK_SPACE){
