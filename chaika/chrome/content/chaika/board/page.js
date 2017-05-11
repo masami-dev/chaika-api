@@ -433,6 +433,7 @@ var BoardTree = {
 
         switch(key){
             case 'Enter':
+                if(aEvent.repeat) break;
                 this.openThread(aEvent.ctrlKey || aEvent.altKey);
                 break;
 
