@@ -49,11 +49,21 @@ var gSubjectDownloader;
 var gSettingDownloader;
 var gBoardMoveChecker;
 var gNewURL;
+var gPageReloaded = false;
 
 /**
  * 開始時の処理
  */
 function startup(){
+	gPageReloaded = false;
+	// https:の板URLをhttp:でリロードする（変換プロキシを併用する場合への対策）
+	if(ChaikaCore.pref.getBool("redirect_https_to_http") &&
+	   location.pathname.indexOf("/https:") == 0){
+		location.replace(location.href.replace("/https:", "/http:"));
+		return;
+	}
+	gPageReloaded = true;
+
 	PrefObserver.start();
 
 	document.title = location.href;
@@ -124,6 +134,8 @@ function startup(){
  * 終了時の処理
  */
 function shutdown(){
+	if(!gPageReloaded) return;
+
 	PrefObserver.stop();
 
 	if(!BoardTree.firstInitBoardTree){

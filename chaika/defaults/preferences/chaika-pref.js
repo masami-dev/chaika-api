@@ -6,6 +6,7 @@ pref('extensions.chaika.browser_toolbarbutton_add_tab_by_click', false);
 pref("extensions.chaika.browser_toolbarbutton_disregard_url_option", true);
 pref("extensions.chaika.http_proxy_mode", 0);
 pref("extensions.chaika.http_proxy_value", "localhost:8080");
+pref("extensions.chaika.redirect_https_to_http", false);
 pref("extensions.chaika.tab_load_in_foreground", false);
 pref("extensions.chaika.appoint_data_dir", false);
 pref("extensions.chaika.data_dir", "");
