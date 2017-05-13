@@ -76,6 +76,12 @@ function startup(){
                         .replace(/%(2F|3A)/ig, (match, p1) => String.fromCharCode('0x' + p1));
         return;
     }
+    // https:の板URLをhttp:でリロードする（変換プロキシを併用する場合への対策）
+    if(ChaikaCore.pref.getBool("redirect_https_to_http") &&
+       /\burl=https\b/.test(location.search)){
+        location.replace(location.href.replace(/\burl=https\b/, "url=http"));
+        return;
+    }
     gPageReloaded = true;
 
     PrefObserver.start();
