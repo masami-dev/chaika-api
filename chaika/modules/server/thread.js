@@ -67,6 +67,16 @@ function ThreadServerScript(){
 ThreadServerScript.prototype  = {
 
     start: function(aServerHandler){
+        // https:のスレッドURLをhttp:へリダイレクトする（変換プロキシを併用する場合への対策）
+        if(ChaikaCore.pref.getBool("redirect_https_to_http") &&
+           aServerHandler.request.url.path.startsWith("/thread/https:")){
+            aServerHandler.response.setHeader("Location",
+                aServerHandler.request.url.spec.replace("/thread/https:", "/thread/http:"));
+            aServerHandler.response.writeHeaders(302);
+            aServerHandler.close();
+            return;
+        }
+
         aServerHandler.response.setHeader("Content-Type", "text/html; charset=Shift_JIS");
         aServerHandler.response.writeHeaders(200);
 

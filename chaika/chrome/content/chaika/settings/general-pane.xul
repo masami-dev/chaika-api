@@ -32,6 +32,9 @@
         <preference id="extensions.chaika.http_proxy_value"
                     name="extensions.chaika.http_proxy_value"
                     type="unichar"/>
+        <preference id="extensions.chaika.redirect_https_to_http"
+                    name="extensions.chaika.redirect_https_to_http"
+                    type="bool"/>
         <preference id="extensions.chaika.replace.warn_when_delete"
                     name="extensions.chaika.replace.warn_when_delete"
                     type="bool" />
@@ -86,6 +89,10 @@
             </menulist>
             <textbox id="txtProxyValue" preference="extensions.chaika.http_proxy_value"/>
         </hbox>
+
+    <checkbox label="板・スレッド URL の https: を http: に直して開く"
+              preference="extensions.chaika.redirect_https_to_http"
+              tooltiptext="URL が https: で始まる板・スレッドを chaika で開くとき, 自動的に http: に直します. https: のときはプロキシは通信内容に介入することが不可能になりますので, 通信に介入して何らかの機能を果たすプロキシを使用する場合に有効にしてください." />
     </groupbox>
 
     <groupbox>
