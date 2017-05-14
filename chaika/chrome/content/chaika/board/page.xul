@@ -40,6 +40,7 @@
             <menuitem label="すべて" value="0" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
             <menuitem label="TOP200" value="200" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
             <menuitem label="既読" value="-2" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
+            <menuitem label="未読" value="-3" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
             <menuitem label="DAT落ち" value="-1" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
         </menupopup>
     </menulist>
