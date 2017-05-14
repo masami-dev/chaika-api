@@ -331,6 +331,12 @@ var ThreadTree = {
     },
 
 
+    selectAll: function ThreadTree_selectAll(){
+        this.tree.treeBoxObject.view.selection.selectAll();
+        this.tree.focus();
+    },
+
+
     showContext: function ThreadTree_showContext(aEvent){
         // ツリーのアイテムをクリックしたかチェックする
         // see BoardTree.showContext in ./page.js

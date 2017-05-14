@@ -16,6 +16,10 @@
 
 <xhtml:link rel="shortcut icon" href="chrome://chaika/content/icon.png" style="display: none;" />
 
+<keyset>
+    <key modifiers="accel" key="A" oncommand="ThreadTree.selectAll();"/>
+</keyset>
+
 <popupset>
 
     <menupopup id="boardTreeContext"
