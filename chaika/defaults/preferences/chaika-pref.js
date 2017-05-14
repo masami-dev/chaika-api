@@ -116,6 +116,7 @@ pref("extensions.chaika.board.thread_view_limit", 50);
 pref("extensions.chaika.board.tree_size", "small");
 pref("extensions.chaika.board.open_single_click", true);
 pref("extensions.chaika.board.open_new_tab", true);
+pref("extensions.chaika.board.persist_filter_limit", false);
 
 // thread view
 pref("extensions.chaika.thread_skin", "");

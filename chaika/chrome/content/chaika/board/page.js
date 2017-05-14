@@ -103,6 +103,10 @@ function startup(){
 
     loadPersist();
 
+    // loadPersistで復元された属性値とメニューの表示状態を同期させる
+    let filter = document.getElementById("filterGroup");
+    filter.value = filter.getAttribute("value");
+
     var subjectFile = gBoard.subjectFile.clone();
     var settingFile = gBoard.settingFile.clone();
 
@@ -211,6 +215,9 @@ function savePersist(){
     for (var i = 0; i < xpathResult.snapshotLength; i++){
         var element = xpathResult.snapshotItem(i);
         var persists = element.getAttribute("persist2").split(/\s/);
+
+        var persistPref = element.getAttribute("persist2pref");
+        if(persistPref && !ChaikaCore.pref.getBool(persistPref)) continue;
 
         for(var j=0; j<persists.length; j++){
             var attrName = persists[j];
