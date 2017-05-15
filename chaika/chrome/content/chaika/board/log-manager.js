@@ -332,6 +332,15 @@ var ThreadTree = {
 	},
 
 
+	keyDown: function ThreadTree_keyDown(aEvent){
+		if(aEvent.keyCode == aEvent.DOM_VK_ENTER || aEvent.keyCode == aEvent.DOM_VK_RETURN){
+			if(!aEvent.repeat){		// Firefox 28+
+				this.openThread(aEvent.ctrlKey || aEvent.altKey);
+			}
+		}
+	},
+
+
 	showContext: function ThreadTree_showContext(aEvent){
 		// ツリーのアイテムをクリックしたかチェックする
 		// see BoardTree.showContext in ./page.js
@@ -397,6 +406,16 @@ var ThreadTree = {
 		var type    = parseInt(view.getCellValue(aIndex, readColumn));
 
 		return new ChaikaCore.ChaikaURLItem(title, urlSpec, "thread", type);
+	},
+
+
+	openThread: function ThreadTree_openThread(aAddTab){
+		var index = this.tree.currentIndex;
+		if(index == -1) return null;
+
+		var item = this._getItem(index);
+		var url = Services.io.newURI(item.urlSpec, null, null);
+		ChaikaCore.browser.openThread(url, aAddTab, true, false, true);
 	},
 
 
