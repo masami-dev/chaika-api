@@ -184,6 +184,11 @@
         },
 
         handleKeydown: function(event){
+            if((event.key == 'a' || event.key == 'A') && !event.shiftKey &&
+               event.getModifierState("Accel") && !event.altKey){   // Ctrl/Cmd + A
+                this.selection.selectAll();
+                return;
+            }
             if(event.key != 'Enter' || event.repeat) return;
 
             let index = this.selection.currentIndex;
