@@ -70,6 +70,7 @@
 
     <tree id="threadTree" flex="4" context="threadTreeContext"
             ondblclick="ThreadTree.onDblclick(event);"
+            onkeypress="ThreadTree.keyDown(event);"
             ondragstart="ThreadTree.dragStart(event);"
             datasources="#threadTree" ref="*" querytype="xml" flags="dont-build-content">
         <treecols>
