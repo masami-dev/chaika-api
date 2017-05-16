@@ -627,7 +627,8 @@ function subjectUpdate(aForceUpdate){
         var subjectFile = gBoard.subjectFile.clone();
         var settingFile = gBoard.settingFile.clone();
 
-        if(aStatus === 302 || !subjectFile.exists() || subjectFile.fileSize === 0){
+        if(aStatus === 301 || aStatus === 302 ||
+           !subjectFile.exists() || subjectFile.fileSize === 0){
             setStatus("スレッド一覧を取得できませんでした。板の移転を確認しています...");
             return checkBoardRelocation();
         }
