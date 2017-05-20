@@ -111,6 +111,7 @@ pref("extensions.chaika.bbsmenu.open_new_tab", false);
 
 // board (list of threads)
 pref("extensions.chaika.board.auto_update", true);
+pref("extensions.chaika.board.dynamic_update", true);
 pref("extensions.chaika.board.update_interval_limit", 45);
 pref("extensions.chaika.board.thread_view_limit", 50);
 pref("extensions.chaika.board.tree_size", "small");

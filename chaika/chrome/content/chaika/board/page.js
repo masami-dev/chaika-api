@@ -942,16 +942,27 @@ NewBoardURLFinder.prototype = {
 
 var UpdateObserver = {
 
+    updateInfoList: new Map(),
+
     startup: function UpdateObserver_startup(){
         var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
         os.addObserver(this, "itemContext:deleteLog", false);
         os.addObserver(this, "findNewThread:update", false);
+
+        if(ChaikaCore.pref.getBool("board.dynamic_update")){
+            this._dynamicUpdateEnabled = true;
+            os.addObserver(this, "ChaikaThread:update", false);
+        }
     },
 
     shutdown: function UpdateObserver_shutdown(){
         var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
         os.removeObserver(this, "itemContext:deleteLog");
         os.removeObserver(this, "findNewThread:update");
+
+        if(this._dynamicUpdateEnabled){
+            os.removeObserver(this, "ChaikaThread:update");
+        }
     },
 
     deleteLogsTreeUpdate: function UpdateObserver_deleteLogsTreeUpdate(aURLs){
@@ -968,9 +979,52 @@ var UpdateObserver = {
                 element.setAttribute("status", "0");
                 element.setAttribute("unread", "0");
                 element.setAttribute("read", "0");
+
+                var sort1 = element.getAttribute("countSort")
+                    .replace(/^\d+/, (m) => m - element.getAttribute("count"));
+                var sort2 = sort1.replace(/^\d+:/, "$&$&");
+                element.setAttribute("statusSort", sort1);
+                element.setAttribute("readSort",   sort1);
+                element.setAttribute("unreadSort", sort2);
+
+                if(this._dynamicUpdateEnabled){
+                    this.updateInfoList.delete(gBoard.id + url.match(/\/(\d{9,10})/)[1]);
+                }
             }
         }
         BoardTree.tree.boxObject.endUpdateBatch();
+    },
+
+    chaikaThreadTreeUpdate: function UpdateObserver_chaikaThreadTreeUpdate(){
+        if(this.updateInfoList.size == 0) return;
+        BoardTree.tree.boxObject.beginUpdateBatch();
+
+        this.updateInfoList.forEach((updateInfo) => {
+            let { threadID: tid, lineCount: read } = updateInfo;
+            let node = gBoard.itemsDoc.querySelector(`boarditem[threadID='${tid}']`);
+            if(node == null || node.getAttribute("read") == read) return;
+
+            // ステータス・既読数・未読数の更新
+            let count  = node.getAttribute("count");
+            let status = (read == 0) ? 0 : (count == 0) ? 4 : 1 + (count > read);
+            let unread = (read == 0) ? 0 : Math.max(count - read, 0);
+            node.setAttribute("status", status);
+            node.setAttribute("read",   read);
+            node.setAttribute("unread", unread);
+
+            // ソートキーの調整
+            let [countSort, numberReverse] = node.getAttribute("countSort").split(":");
+            let sortPlace  = countSort - count;
+            let statusSort = status + sortPlace;
+            let readSort   = read + sortPlace;
+            let unreadSort = unread + sortPlace;
+            node.setAttribute("statusSort", statusSort +":"+ numberReverse);
+            node.setAttribute("readSort",   readSort +":"+ numberReverse);
+            node.setAttribute("unreadSort", unreadSort +":"+ readSort +":"+ numberReverse);
+        });
+
+        BoardTree.tree.boxObject.endUpdateBatch();
+        this.updateInfoList.clear();
     },
 
     observe: function UpdateObserver_observe(aSubject, aTopic, aData){
@@ -986,6 +1040,30 @@ var UpdateObserver = {
             }
             return;
         }
+
+        if(aTopic == "ChaikaThread:update"){
+            let updateInfo = JSON.parse(aData);
+            if(updateInfo.threadID.startsWith(gBoard.id)){
+                this.updateInfoList.set(updateInfo.threadID, updateInfo);
+                this.setTimeoutIdle(this.chaikaThreadTreeUpdate, this, 500);
+            }
+            return;
+        }
+    },
+
+    setTimeoutIdle: function UpdateObserver_setTimeoutIdle(aHandler, aThis, aTimeout){
+        if(!this._timer) this._timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+        let callback = {
+            notify: function(aTimer){
+                let thread = Cc["@mozilla.org/thread-manager;1"].getService().currentThread;
+                if(thread.hasPendingEvents()){  // 処理待ちのイベントがあるときはさらに待つ
+                    aTimer.initWithCallback(callback, aTimeout/10, Ci.nsITimer.TYPE_ONE_SHOT);
+                }else{
+                    aHandler.call(aThis);
+                }
+            }
+        };
+        this._timer.initWithCallback(callback, aTimeout, Ci.nsITimer.TYPE_ONE_SHOT);
     },
 
     QueryInterface: XPCOMUtils.generateQI([
