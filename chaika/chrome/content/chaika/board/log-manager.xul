@@ -16,6 +16,10 @@
 
 <xhtml:link rel="shortcut icon" href="chrome://chaika/content/icon.png" style="display: none;" />
 
+<keyset>
+    <key modifiers="accel" key="A" oncommand="ThreadTree.selectAll();"/>
+</keyset>
+
 <popupset>
 
     <menupopup id="boardTreeContext"
@@ -66,6 +70,7 @@
 
     <tree id="threadTree" flex="4" context="threadTreeContext"
             ondblclick="ThreadTree.onDblclick(event);"
+            onkeypress="ThreadTree.keyDown(event);"
             ondragstart="ThreadTree.dragStart(event);"
             datasources="#threadTree" ref="*" querytype="xml" flags="dont-build-content">
         <treecols>

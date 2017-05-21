@@ -35,11 +35,12 @@
     <textbox id="searchTextBox" value="" emptytext="フィルタ" type="search"
              timeout="500" oncommand="BoardTree.initTree(true)"/>
 
-    <menulist id="filterGroup" size="5">
+    <menulist id="filterGroup" size="5" persist2="value" persist2pref="board.persist_filter_limit">
         <menupopup>
             <menuitem label="すべて" value="0" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
             <menuitem label="TOP200" value="200" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
             <menuitem label="既読" value="-2" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
+            <menuitem label="未読" value="-3" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
             <menuitem label="DAT落ち" value="-1" oncommand="setTimeout(function(){ BoardTree.initTree(); }, 0)"/>
         </menupopup>
     </menulist>

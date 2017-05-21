@@ -287,6 +287,7 @@ ChaikaThread.prototype = {
             statement.finalize();
             storage.commitTransaction();
         }
+        this._notifyOfUpdate();
     },
 
 
@@ -315,10 +316,25 @@ ChaikaThread.prototype = {
             ChaikaCore.logger.error(ex);
         }
 
+        var lineCount = this.lineCount;
+
         this.title        = "";
         this.lineCount    = 0;
         this.lastModified = "";
         this.maruGetted   = false;
+
+        if(lineCount != 0) this._notifyOfUpdate();
+    },
+
+
+    /**
+     * スレッド情報が更新されたことを通知する。
+     * @private
+     */
+    _notifyOfUpdate: function ChaikaThread__notifyOfUpdate(){
+        var props = ["threadID", "lineCount"];  // 通知に含めるプロパティ
+        var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
+        os.notifyObservers(null, "ChaikaThread:update", JSON.stringify(this, props));
     },
 
 

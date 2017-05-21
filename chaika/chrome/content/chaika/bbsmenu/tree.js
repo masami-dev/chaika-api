@@ -184,16 +184,34 @@
         },
 
         handleKeydown: function(event){
-            if(event.key != 'Enter' || event.repeat) return;
+            if((event.key == 'a' || event.key == 'A') && !event.shiftKey &&
+               event.getModifierState("Accel") && !event.altKey){   // Ctrl/Cmd + A
+                this.selection.selectAll();
+                return;
+            }
+            if(event.key == 'Enter' && !event.repeat){
+                let currentIndex = this.selection.currentIndex;
+                let selectionIndices = this._getSelectionIndices();
 
-            let index = this.selection.currentIndex;
-            if (index < 0 || index >= this.rowCount) return;
+                let currentInSelection = selectionIndices.indexOf(currentIndex);
 
-            let node = this._visibleNodes[index];
-            let inNewTab = ChaikaCore.pref.getBool('bbsmenu.open_new_tab') ? !event.ctrlKey : event.ctrlKey;
+                if(currentInSelection >= 1){
+                    selectionIndices.splice(currentInSelection, 1);
+                    selectionIndices.unshift(currentIndex);
+                }
 
-            if(node.hasAttribute('url')){
-                this._openURL(node.getAttribute('url'), inNewTab);
+                let inNewTab = ChaikaCore.pref.getBool('bbsmenu.open_new_tab') ?
+                                                    !event.ctrlKey : event.ctrlKey;
+
+                selectionIndices.every((index) => {
+                    let node = this._visibleNodes[index];
+                    if(!node.hasChildNodes() && node.hasAttribute('url')){
+                        this._openURL(node.getAttribute('url'), inNewTab);
+                    }
+                    return inNewTab;  // if false, open the first item only
+                });
+
+                return;
             }
         },
 

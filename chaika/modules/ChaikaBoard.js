@@ -306,16 +306,21 @@ ChaikaBoard.prototype = {
      */
     FILTER_LIMIT_SUBSCRIBE: -2,
     /**
-     * 作成されたばかりのスレッド
-     * @private
+     * 購読中で未読のあるスレッド
      * @constant
      */
-    FILTER_LIMIT_NEW: -3,
+    FILTER_LIMIT_UNREAD: -3,
     /**
      * 検索でヒットしたスレッド。
      * @constant
      */
     FILTER_LIMIT_SEARCH: -4,
+    /**
+     * 作成されたばかりのスレッド
+     * @private
+     * @constant
+     */
+    FILTER_LIMIT_NEW: -5,
 
 
     /**
@@ -418,7 +423,7 @@ ChaikaBoard.prototype = {
                 statement = database.createStatement(sql);
                 statement.params.board_id = boardID;
                 break;
-            case this.FILTER_LIMIT_NEW:
+            case this.FILTER_LIMIT_UNREAD:
                 sql = [
                     "SELECT",
                     "    2 AS status,",

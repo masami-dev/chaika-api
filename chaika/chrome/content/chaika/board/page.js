@@ -109,6 +109,10 @@ function startup(){
 
     loadPersist();
 
+    // loadPersistで復元された属性値とメニューの表示状態を同期させる
+    let filter = document.getElementById("filterGroup");
+    filter.value = filter.getAttribute("value");
+
     var subjectFile = gBoard.subjectFile.clone();
     var settingFile = gBoard.settingFile.clone();
 
@@ -177,6 +181,14 @@ function eventBubbleCheck(aEvent){
     // オートスクロールや Find As You Type を抑制しつつキーボードショートカットを許可
     if(!(aEvent.ctrlKey || aEvent.shiftKey || aEvent.altKey || aEvent.metaKey))
         aEvent.stopPropagation();
+
+    // BoardTree.keyDown() にて Ctrl/Cmd + U を別の動作に割り当てているため、
+    // 標準ショートカットキー Ctrl/Cmd + U （ソースの表示）を抑制する
+    // tree 以外にフォーカスがある場合も含めて抑制するため、ここに置いている
+    if((aEvent.key === 'u' || aEvent.key === 'U') && !aEvent.shiftKey &&
+       aEvent.getModifierState("Accel") && !aEvent.altKey){
+        aEvent.preventDefault();
+    }
 }
 
 function loadPersist(){
@@ -209,6 +221,9 @@ function savePersist(){
     for (var i = 0; i < xpathResult.snapshotLength; i++){
         var element = xpathResult.snapshotItem(i);
         var persists = element.getAttribute("persist2").split(/\s/);
+
+        var persistPref = element.getAttribute("persist2pref");
+        if(persistPref && !ChaikaCore.pref.getBool(persistPref)) continue;
 
         for(var j=0; j<persists.length; j++){
             var attrName = persists[j];
@@ -425,8 +440,13 @@ var BoardTree = {
     },
 
     keyDown: function BoardTree_keyDown(aEvent){
-        switch(aEvent.key){
+        // CapsLock の影響を打ち消す
+        let key = !aEvent.getModifierState("CapsLock") ? aEvent.key :
+            aEvent.key.replace(/^[A-Z]$/i, (c) => c < 'a' ? c.toLowerCase() : c.toUpperCase());
+
+        switch(key){
             case 'Enter':
+                if(aEvent.repeat) break;
                 this.openThread(aEvent.ctrlKey || aEvent.altKey);
                 break;
 
@@ -462,6 +482,34 @@ var BoardTree = {
 
                 this.tree.treeBoxObject.view.selection.select(prevIndex);
                 this.tree.treeBoxObject.ensureRowIsVisible(prevIndex);
+                break;
+
+            case 'a':
+                if(aEvent.getModifierState("Accel") && !aEvent.altKey){
+                    // すべて選択 Ctrl/Cmd + A
+                    this.tree.treeBoxObject.view.selection.selectAll();
+                }
+                break;
+
+            case 'u':
+                if(aEvent.getModifierState("Accel") && !aEvent.altKey){
+                    // 未読をすべて選択 Ctrl/Cmd + U (see also eventBubbleCheck())
+                    let n = this.selectAllMatch("boardTreeCol-status", (p) => p.startsWith("s2"));
+                    setStatus(n > 0 ? "未読スレッド " + n + "件を選択" :
+                                      "未読スレッドはありません", 3000);
+                    if(n == 0) Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound).beep();
+                    break;
+                }
+                // fall through
+            case 'U':
+                if(!aEvent.getModifierState("Accel") && !aEvent.altKey){
+                    // 次の(前の)未読へ移動 (Shift +) U
+                    let m = this.moveToNextMatch((key == "U"),
+                                                 "boardTreeCol-status", (p) => p.startsWith("s2"));
+                    setStatus(m.total > 0 ? "未読スレッド " + m.current + " / " + m.total :
+                                            "未読スレッドはありません", 3000);
+                    if(m.total == 0) Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound).beep();
+                }
                 break;
 
         }
@@ -562,9 +610,77 @@ var BoardTree = {
     },
 
     openThread: function BoardTree_openThread(aAddTab){
-        var index = this.tree.currentIndex;
-        if(index == -1) return null;
-        ChaikaCore.browser.openThread(this.getItemURL(index), aAddTab, true, false, true);
+        var currentIndex = this.tree.currentIndex;
+        var selectionIndices = this.getSelectionIndices();
+
+        var currentInSelection = selectionIndices.indexOf(currentIndex);
+
+        // フォーカスが当たっているものがあれば先頭へ移動
+        if(currentInSelection >= 1){
+            selectionIndices.splice(currentInSelection, 1);
+            selectionIndices.unshift(currentIndex);
+        }
+
+        selectionIndices.every((index) => {
+            ChaikaCore.browser.openThread(this.getItemURL(index), aAddTab, true, false, true);
+            return aAddTab;   // false なら最初の一つだけを開く
+        });
+    },
+
+    moveToNextMatch: function BoardTree_moveToNextMatch(aPrev, aColumnID, aCallback){
+        // callback が true を返す行へ移動する（aPrev:上方向へ）
+        let col = this.tree.columns.getNamedColumn(aColumnID);
+        let view = this.tree.view;
+        let match = [];
+
+        for(let idx = 0, rc = view.rowCount; idx < rc; idx++){
+            if(aCallback(view.getCellProperties(idx,col)/*, view.getCellValue(idx,col),
+                         view.getCellText(idx,col), view.getRowProperties(idx)*/)){
+                if(aPrev) match.unshift(idx);
+                else match.push(idx);
+            }
+        }
+
+        let curIdx = this.tree.currentIndex;
+        let select = match.findIndex(aPrev ? (idx) => idx < curIdx : (idx) => idx > curIdx);
+        if(select == -1) select = 0;
+
+        if(match.length > 0){
+            view.selection.select(match[select]);
+            this.tree.treeBoxObject.ensureRowIsVisible(match[select]);
+        }
+
+        return { total: match.length, current: aPrev ? match.length - select : select + 1 };
+    },
+
+    selectAllMatch: function BoardTree_selectAllMatch(aColumnID, aCallback){
+        // callback が true を返す行を全て選択する
+        let col = this.tree.columns.getNamedColumn(aColumnID);
+        let view = this.tree.view;
+        let match = [];
+
+        view.selection.clearSelection();
+
+        // 最後に選択した行に currentIndex が移動するので、
+        // 選択範囲の一番上に currentIndex が来るように下から上の順に選択する
+
+        for(let idx = view.rowCount; --idx >= 0; ){
+            if(aCallback(view.getCellProperties(idx,col)/*, view.getCellValue(idx,col),
+                         view.getCellText(idx,col), view.getRowProperties(idx)*/)){
+                match.push(idx);
+            }
+        }
+
+        if(match.length > 0){
+            while(match.length > 0){
+                let start = match.shift(), end = start;
+                while(match[0] === end - 1) end = match.shift();
+                view.selection.rangedSelect(start, end, true);
+            }
+            this.tree.treeBoxObject.ensureRowIsVisible(this.tree.currentIndex);
+        }
+
+        return view.selection.count;
     },
 
     dragStart: function BoardTree_dragStart(aEvent){
@@ -587,8 +703,19 @@ var BoardTree = {
 
 };
 
-function setStatus(aString){
-    document.getElementById("lblStatus").value = aString;
+function setStatus(aString, aTimeout){
+    let status = document.getElementById("lblStatus");
+    status.value = aString;
+
+    if(setStatus.timeoutID){
+        clearTimeout(setStatus.timeoutID);
+        setStatus.timeoutID = undefined;
+    }
+    if(!aTimeout) return;
+    setStatus.timeoutID = setTimeout((aStatus) => {
+        setStatus.timeoutID = undefined;
+        aStatus.value = "";
+    }, aTimeout, status);
 }
 
 /**
@@ -822,16 +949,27 @@ NewBoardURLFinder.prototype = {
 
 var UpdateObserver = {
 
+    updateInfoList: new Map(),
+
     startup: function UpdateObserver_startup(){
         var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
         os.addObserver(this, "itemContext:deleteLog", false);
         os.addObserver(this, "findNewThread:update", false);
+
+        if(ChaikaCore.pref.getBool("board.dynamic_update")){
+            this._dynamicUpdateEnabled = true;
+            os.addObserver(this, "ChaikaThread:update", false);
+        }
     },
 
     shutdown: function UpdateObserver_shutdown(){
         var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
         os.removeObserver(this, "itemContext:deleteLog");
         os.removeObserver(this, "findNewThread:update");
+
+        if(this._dynamicUpdateEnabled){
+            os.removeObserver(this, "ChaikaThread:update");
+        }
     },
 
     deleteLogsTreeUpdate: function UpdateObserver_deleteLogsTreeUpdate(aURLs){
@@ -848,9 +986,52 @@ var UpdateObserver = {
                 element.setAttribute("status", "0");
                 element.setAttribute("unread", "0");
                 element.setAttribute("read", "0");
+
+                var sort1 = element.getAttribute("countSort")
+                    .replace(/^\d+/, (m) => m - element.getAttribute("count"));
+                var sort2 = sort1.replace(/^\d+:/, "$&$&");
+                element.setAttribute("statusSort", sort1);
+                element.setAttribute("readSort",   sort1);
+                element.setAttribute("unreadSort", sort2);
+
+                if(this._dynamicUpdateEnabled){
+                    this.updateInfoList.delete(gBoard.id + url.match(/\/(\d{9,10})/)[1]);
+                }
             }
         }
         BoardTree.tree.boxObject.endUpdateBatch();
+    },
+
+    chaikaThreadTreeUpdate: function UpdateObserver_chaikaThreadTreeUpdate(){
+        if(this.updateInfoList.size == 0) return;
+        BoardTree.tree.boxObject.beginUpdateBatch();
+
+        this.updateInfoList.forEach((updateInfo) => {
+            let { threadID: tid, lineCount: read } = updateInfo;
+            let node = gBoard.itemsDoc.querySelector(`boarditem[threadID='${tid}']`);
+            if(node == null || node.getAttribute("read") == read) return;
+
+            // ステータス・既読数・未読数の更新
+            let count  = node.getAttribute("count");
+            let status = (read == 0) ? 0 : (count == 0) ? 4 : 1 + (count > read);
+            let unread = (read == 0) ? 0 : Math.max(count - read, 0);
+            node.setAttribute("status", status);
+            node.setAttribute("read",   read);
+            node.setAttribute("unread", unread);
+
+            // ソートキーの調整
+            let [countSort, numberReverse] = node.getAttribute("countSort").split(":");
+            let sortPlace  = countSort - count;
+            let statusSort = status + sortPlace;
+            let readSort   = read + sortPlace;
+            let unreadSort = unread + sortPlace;
+            node.setAttribute("statusSort", statusSort +":"+ numberReverse);
+            node.setAttribute("readSort",   readSort +":"+ numberReverse);
+            node.setAttribute("unreadSort", unreadSort +":"+ readSort +":"+ numberReverse);
+        });
+
+        BoardTree.tree.boxObject.endUpdateBatch();
+        this.updateInfoList.clear();
     },
 
     observe: function UpdateObserver_observe(aSubject, aTopic, aData){
@@ -866,6 +1047,30 @@ var UpdateObserver = {
             }
             return;
         }
+
+        if(aTopic == "ChaikaThread:update"){
+            let updateInfo = JSON.parse(aData);
+            if(updateInfo.threadID.startsWith(gBoard.id)){
+                this.updateInfoList.set(updateInfo.threadID, updateInfo);
+                this.setTimeoutIdle(this.chaikaThreadTreeUpdate, this, 500);
+            }
+            return;
+        }
+    },
+
+    setTimeoutIdle: function UpdateObserver_setTimeoutIdle(aHandler, aThis, aTimeout){
+        if(!this._timer) this._timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+        let callback = {
+            notify: function(aTimer){
+                let thread = Cc["@mozilla.org/thread-manager;1"].getService().currentThread;
+                if(thread.hasPendingEvents()){  // 処理待ちのイベントがあるときはさらに待つ
+                    aTimer.initWithCallback(callback, aTimeout/10, Ci.nsITimer.TYPE_ONE_SHOT);
+                }else{
+                    aHandler.call(aThis);
+                }
+            }
+        };
+        this._timer.initWithCallback(callback, aTimeout, Ci.nsITimer.TYPE_ONE_SHOT);
     },
 
     QueryInterface: XPCOMUtils.generateQI([
