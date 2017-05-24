@@ -1229,6 +1229,8 @@ ChaikaHistory.prototype = {
 
 
     _quit: function ChaikaHistory__startup(){
+        this.truncateHistory();
+
         this._statement["visitPage_SelectID"].finalize();
         this._statement["visitPage_UpdateHistory"].finalize();
         this._statement["visitPage_InsertHistory"].finalize();
@@ -1285,6 +1287,31 @@ ChaikaHistory.prototype = {
         }
 
         return true;
+    },
+
+
+    truncateHistory: function ChaikaHistory_truncateHistory(){
+        var expireDays = ChaikaCore_.pref.getInt("history_expire_days");
+        if(expireDays < 0) expireDays = 0;
+
+        // 現在日時から1日24時間で単純計算する
+        var expireTime = Math.floor(Date.now() / 1000) - expireDays * 86400;
+
+        var storage = ChaikaCore_.storage;
+        storage.beginTransaction();
+        try{
+            var statement = storage.createStatement(
+                "DELETE FROM history WHERE last_visited < ?1;");
+            statement.params[0] = expireTime;
+            statement.execute();
+
+        }catch(ex){
+            ChaikaCore_.logger.error(storage.lastErrorString);
+            ChaikaCore_.logger.error(ex);
+        }finally{
+            statement.finalize();
+            storage.commitTransaction();
+        }
     },
 
 
