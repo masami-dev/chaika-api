@@ -53,6 +53,9 @@ function delayVacuum(){
     var storage = ChaikaCore.storage;
     var beforeStorageSize = storage.databaseFile.clone().fileSize / 1024;
 
+        // 保存期限の切れた履歴を削除
+    ChaikaCore.history.truncateHistory();
+
         // スレを読んだことのない板情報を削除
     storage.beginTransaction();
     try{
