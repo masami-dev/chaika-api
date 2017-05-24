@@ -1257,7 +1257,7 @@ ChaikaHistory.prototype = {
             }
             statement.reset();
 
-            var now = Date.now()/1000;
+            var now = Math.floor(Date.now() / 1000);
             if(rowID){ // レコードがあれば更新
                 statement = this._statement["visitPage_UpdateHistory"];
                 statement.params[0] = aURL.spec;// url
