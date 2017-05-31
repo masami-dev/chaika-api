@@ -746,7 +746,7 @@ Thread2ch.prototype = {
 
         // 通常リンク処理
         if(resMes.includes("ttp")){
-            var regUrlLink = /(^|[^\x81-\x9f\xe0-\xfc])(h?ttp)(s)?\:([\-_\.\!\~\*\'\(\)a-zA-Z0-9\;\/\?\:\@\&\=\+\$\,\%\#\|]+)/g;
+            var regUrlLink = /((?:^|[^\x81-\x9f\xe0-\xfc])(?:[\x81-\x9f\xe0-\xfc][\x40-\x7e\x80-\xfc])*)(h?ttp)(s)?\:([\-_\.\!\~\*\'\(\)a-zA-Z0-9\;\/\?\:\@\&\=\+\$\,\%\#\|]+)/g;
 
             if(ChaikaHttpController.ivur.enabled){
                 resMes = resMes.replace(regUrlLink, function(aStr, aPrefix, aScheme, aSecure, aSpec){
