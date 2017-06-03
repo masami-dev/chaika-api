@@ -111,7 +111,7 @@ var ChaikaAboneManager = {
 		ngFile.appendRelativePath(aNgFileName);
 		if(!ngFile.exists()) return new Array();
 
-		var contentLine = ChaikaCore.io.readData(ngFile).split("\n");
+		var contentLine = ChaikaCore.io.readData(ngFile).split(/[\r\n]+/);
 		var resultArray = new Array();
 			// 空白行は読み込まない
 		for(let [i, line] in Iterator(contentLine)){
