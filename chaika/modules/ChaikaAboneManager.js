@@ -125,7 +125,7 @@ AboneData.prototype = {
             this._encodingError = true;
         }
 
-        this._data = this._data.split('\n')
+        this._data = this._data.split(/[\r\n]+/)
                                .filter((line) => !!line); //空白行を取り除く
     },
 
