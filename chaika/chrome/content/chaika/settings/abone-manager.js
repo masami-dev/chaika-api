@@ -50,7 +50,7 @@ var gAboneObserver = {
         switch(aTopic){
             case "chaika-abone-data-add":
             case "chaika-abone-data-remove":
-                gAboneManager[aboneType].update(aData);
+                gAboneManager[aboneType].updateDelay(aData);
                 break;
 
             default:
@@ -146,6 +146,9 @@ AboneManagerView.prototype = {
     _initList: function(){
         let ngData = ChaikaAboneManager[this._type].getNgData();
 
+        // 選択状態では removeItemAt が非常に遅くなる
+        this._listbox.clearSelection();
+
         while(this._listbox.getRowCount() > 0){
             this._listbox.removeItemAt(0);
         }
@@ -175,6 +178,21 @@ AboneManagerView.prototype = {
                 this.remove();
                 break;
         }
+    },
+
+
+    /**
+     * オブザーバから短時間に多数の通知が来るとき、
+     * 通知を集約して一つのみを適用する
+     */
+    updateDelay: function(updatedData){
+        if(this._timer){
+            clearTimeout(this._timer);
+        }
+        this._timer = setTimeout((data) => {
+            this._timer = 0;
+            this.update(data);
+        }, 50, updatedData);
     },
 
 
@@ -269,6 +287,9 @@ NGExAboneManagerView.prototype = Object.create(AboneManagerView.prototype, {
     _initList: {
         value: function(){
             let ngData = ChaikaAboneManager[this._type].getNgData();
+
+            // 選択状態では removeItemAt が非常に遅くなる
+            this._listbox.clearSelection();
 
             while(this._listbox.getRowCount() > 0){
                 this._listbox.removeItemAt(0);
