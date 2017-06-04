@@ -41,6 +41,15 @@ tab[selected="true"] {
     color: black !important;
 }
 
+/* listboxbody への指定は scrollbar が resizer に
+ * 被らないようにするためだけのもの */
+#abone-ex listboxbody,
+#abone-ex listbox{
+    overflow-x: hidden;
+    overflow-y: auto;
+    resize: vertical;
+}
+
 #ngex-editor{
     -moz-binding: url(chrome://chaika/content/settings/abone-manager-ngex-editor.xml#editor);
 }
