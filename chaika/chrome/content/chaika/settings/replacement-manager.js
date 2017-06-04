@@ -110,10 +110,14 @@ var gReplacementManager = {
      */
     update: function(updatedData){
         this._initList();
-        this._listbox.value = updatedData;
 
-        if(this._listbox.selectedIndex === -1)
-            this._listbox.selectedIndex = 0;
+        // see AboneManagerView.prototype.update in ./abone-manager.js
+
+        let items = this._listbox.getElementsByAttribute("value", updatedData);
+        let index = items[0] ? this._listbox.getIndexOfItem(items[0]) : 0;
+
+        this._listbox.ensureIndexIsVisible(index);
+        this._listbox.selectedIndex = index;
     },
 
 
