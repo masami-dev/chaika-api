@@ -203,10 +203,16 @@ AboneManagerView.prototype = {
     update: function(updatedData){
         this._initList();
 
-        this._listbox.value = updatedData;
+        // workaround: 見えない状態のアイテムを選択すると、
+        // 後でそのアイテムをクリックしても反転表示にならなかったり、
+        // selectedItem.value が undefined を返したりする（Fx 38,55 にて確認）
+        // なので、対象のアイテムが見える状態にした後に選択する
 
-        if(this._listbox.selectedIndex === -1)
-            this._listbox.selectedIndex = 0;
+        let items = this._listbox.getElementsByAttribute("value", updatedData);
+        let index = items[0] ? this._listbox.getIndexOfItem(items[0]) : 0;
+
+        this._listbox.ensureIndexIsVisible(index);
+        this._listbox.selectedIndex = index;
     },
 
 
