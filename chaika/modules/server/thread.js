@@ -1077,6 +1077,11 @@ Thread2ch.prototype = {
         }catch(ex){}
 
         if(this.thread.lineCount > tmpLineCount){
+                // 重複範囲が既にセーブされているとき
+            if(tmpLineCount > this._logLineCount){
+                aDatContent = aDatContent.split("\n")
+                    .slice(tmpLineCount - this._logLineCount).join("\n");
+            }
                 // .dat の追記書き込み
             this.thread.appendContent(aDatContent);
 
