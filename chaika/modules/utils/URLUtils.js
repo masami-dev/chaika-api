@@ -8,7 +8,6 @@ const { interfaces: Ci, classes: Cc, results: Cr, utils: Cu } = Components;
 
 let { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
 let { Range } = Cu.import("resource://chaika-modules/utils/Range.js", {});
-let { ChaikaServer } = Cu.import("resource://chaika-modules/ChaikaServer.js", {});
 
 
 /**
@@ -167,7 +166,11 @@ this.URLUtils = {
      * @example http://127.0.0.1:8823/
      */
     get serverURL(){
-        return ChaikaServer.serverURL.spec;
+        if(!this._serverURL){
+            let port = Services.prefs.getIntPref('extensions.chaika.server.port');
+            this._serverURL = 'http://127.0.0.1:' + port + '/';
+        }
+        return this._serverURL;
     },
 
 
