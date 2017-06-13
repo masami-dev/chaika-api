@@ -201,6 +201,7 @@ this.URLUtils = {
         }
 
         let url = aURL.replace(/[\?#].*$/, '')
+                      .replace(/\/index[^/]*\.html?$/, '/')
                       .replace(/\/(?:test|bbs)\/read\.cgi\/(.+?)\/\d{9,}.*$/, '/$1/');
 
         return includes.board.some((regexp) => regexp.test(url)) &&
