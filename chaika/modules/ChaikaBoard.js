@@ -98,8 +98,12 @@ ChaikaBoard.prototype = {
 		this.url = aBoardURL;
 		if(this.url.fileName){ // URL の最後が "/" で終わっていないなら追加
 			ChaikaCore.logger.warning("Fixed URL: " + this.url.spec);
-			this.url = ioService.newURI(this.url.spec + "/", null, null)
-							.QueryInterface(Ci.nsIURL);
+			if(/^index.*\.html?$/.test(this.url.fileName)){
+				this.url = ioService.newURI("./", null, this.url).QueryInterface(Ci.nsIURL);
+			}else{
+				this.url = ioService.newURI(this.url.spec + "/", null, null)
+								.QueryInterface(Ci.nsIURL);
+			}
 		}
 
 		this.id = ChaikaBoard.getBoardID(this.url);
