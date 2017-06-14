@@ -18,6 +18,7 @@ ChaikaService.prototype = {
 
     _startup: function ChaikaService__startup(){
         Components.utils.import("resource://chaika-modules/utils/Logger.js");
+        Components.utils.import("resource://chaika-modules/utils/URLUtils.js");
 
         Components.utils.import("resource://chaika-modules/ChaikaCore.js");
         ChaikaCore._startup();

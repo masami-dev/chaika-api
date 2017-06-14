@@ -9,6 +9,7 @@ pref("extensions.chaika.redirect_https_to_http", false);
 pref("extensions.chaika.tab_load_in_foreground", false);
 pref("extensions.chaika.appoint_data_dir", false);
 pref("extensions.chaika.data_dir", "");
+pref('extensions.chaika.additionalBoardDef.enabled', false);
 
 // local server
 pref("extensions.chaika.server.port", 8823);
