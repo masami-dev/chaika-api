@@ -112,11 +112,8 @@ var ChaikaAboneManager = {
 		if(!ngFile.exists()) return new Array();
 
 		var contentLine = ChaikaCore.io.readData(ngFile).split(/[\r\n]+/);
-		var resultArray = new Array();
-			// 空白行は読み込まない
-		for(let [i, line] in Iterator(contentLine)){
-			if(line) resultArray.push(line);
-		}
+		var resultArray = contentLine.filter(function(line){ return line; });
+
 		return resultArray;
 	},
 
