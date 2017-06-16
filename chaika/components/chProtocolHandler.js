@@ -52,13 +52,17 @@ chProtocolHandler.prototype = {
 		var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 		var channelURI = ioService.newURI(aURISpec, null, null);
 
-		return (ioService.newChannelFromURIWithLoadInfo) ?	// Firefox 37+
-				ioService.newChannelFromURIWithLoadInfo(channelURI, aLoadinfo) :
-			   (!aLoadinfo) ? ioService.newChannelFromURI(channelURI) : Cr.NS_ERROR_NO_CONTENT;
+		if(ioService.newChannelFromURIWithLoadInfo){	// Firefox 37+
+			return ioService.newChannelFromURIWithLoadInfo(channelURI, aLoadinfo);
+		}else{
+			var channel = ioService.newChannelFromURI(channelURI);
+			if("loadInfo" in channel && aLoadinfo) channel.loadInfo = aLoadinfo;
+			return channel;
+		}
 	},
 
 
-	_getCommandChannel: function chProtocolHandler__getCommandChannel(aURI){
+	_getCommandChannel: function chProtocolHandler__getCommandChannel(aURI, aLoadinfo){
 		var content = aURI.spec;
 		var stream = Cc["@mozilla.org/io/string-input-stream;1"]
 				.createInstance(Ci.nsIStringInputStream);
@@ -70,6 +74,7 @@ chProtocolHandler.prototype = {
 		channel.contentStream = stream;
 		channel.contentType = "application/x-chaika-command";
 		channel.contentCharset = "UTF-8";
+		if("loadInfo" in channel && aLoadinfo) channel.loadInfo = aLoadinfo;
 		return channel;
 	},
 
@@ -120,11 +125,11 @@ chProtocolHandler.prototype = {
 				channel = this._getRedirectChannel("chrome://chaika/content/releasenotes.html", aLoadinfo);
 				break;
 			default:
-				channel = (!aLoadinfo) ? this._getCommandChannel(aURI) : Cr.NS_ERROR_NO_CONTENT;
+				channel = this._getCommandChannel(aURI, aLoadinfo);
 				break;
 		}
 
-		if(channel instanceof Ci.nsIChannel) channel.originalURI = aURI;
+		channel.originalURI = aURI;
 
 		return channel;
 	},
