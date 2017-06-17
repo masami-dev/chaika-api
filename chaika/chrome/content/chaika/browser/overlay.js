@@ -899,7 +899,7 @@ ChaikaBrowserOverlay.aboneEvent = {
 			default:
 				return;
 		}
-		for(var i = 0; i < gBrowser.mPanelContainer.childNodes.length; i++){
+		for(var i = 0; i < gBrowser.browsers.length; i++){
 			var currentURI = gBrowser.getBrowserAtIndex(i).currentURI;
 			if((currentURI.scheme=="http") && (currentURI.host=="127.0.0.1")){
 				var doc = gBrowser.getBrowserAtIndex(i).contentDocument;
