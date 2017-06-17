@@ -351,7 +351,7 @@ ChaikaImageViewURLReplace.prototype = {
 
                     request.fetchCookie().then((cookieStr) => {
                         this._replaceMap[url].cookie.str = cookieStr;
-                    }).catch((err) => {
+                    }).then(undefined, (err) => {
                         ChaikaCore.logger.error('Fail to fetch cookie.', err, JSON.stringify(ivurObj));
                     });
                 }
@@ -370,7 +370,7 @@ ChaikaImageViewURLReplace.prototype = {
 
                     this._replaceMap[url].image =
                         this._resolveBackReference(this._replaceMap[url].image, match, extractMatch);
-                }).catch((err) => {
+                }).then(undefined, (err) => {
                     ChaikaCore.logger.error('Fail to fetch $EXTRACT.', err, JSON.stringify(ivurObj));
                 });
             }
