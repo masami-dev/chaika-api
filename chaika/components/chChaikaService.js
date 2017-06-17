@@ -86,7 +86,6 @@ ChaikaService.prototype = {
 
 	_quitApp: function ChaikaService__quitApp(){
 		ChaikaAboneManager._quit();
-		ChaikaNGFiles._quit();
 		Chaika2chApi._quit();
 		ChaikaCore._quit();
 		Chaika2chViewer._quit();
