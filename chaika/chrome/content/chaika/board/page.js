@@ -399,9 +399,11 @@ var BoardTree = {
     },
 
     keyDown: function BoardTree_keyDown(aEvent){
-        // CapsLock の影響を打ち消す
-        let key = !aEvent.getModifierState("CapsLock") ? aEvent.key :
-            aEvent.key.replace(/^[A-Z]$/i, (c) => c < 'a' ? c.toLowerCase() : c.toUpperCase());
+        let key = (aEvent.key == "MozPrintableKey") ?   // Firefox 28-
+            String.fromCharCode(aEvent.charCode) : aEvent.key;
+
+        if(aEvent.getModifierState("CapsLock"))     // CapsLock の影響を打ち消す
+            key = key.replace(/^[A-Z]$/i, (c) => c < 'a' ? c.toLowerCase() : c.toUpperCase());
 
         switch(key){
             case 'Enter':
