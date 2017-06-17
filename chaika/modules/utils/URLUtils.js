@@ -175,7 +175,9 @@ var BoardDefinitionLoader = {
 
             // 非同期メッセージングではプロセス生成直後のURL判定に間に合わない
             try{
-                boardDef = Services.cpmm.sendSyncMessage('chaika-board-definition')[0];
+                let cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"]
+                           .getService(Ci.nsISyncMessageSender);
+                boardDef = cpmm.sendSyncMessage('chaika-board-definition')[0];
             }catch(ex){}
 
             if(boardDef){
@@ -190,7 +192,9 @@ var BoardDefinitionLoader = {
             // chrome process
             let boardDef = null;
 
-            Services.ppmm.addMessageListener('chaika-board-definition', () => boardDef);
+            let ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"]
+                       .getService(Ci.nsIMessageListenerManager);
+            ppmm.addMessageListener('chaika-board-definition', () => boardDef);
 
             let boardDefName = 'boardDef.txt';
             let boardDefFile = OS.Path.join(FileIO.Path.dataDir, boardDefName);

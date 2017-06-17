@@ -4,7 +4,6 @@ this.EXPORTED_SYMBOLS = ["ChaikaHttpController"];
 
 const { interfaces: Ci, classes: Cc, results: Cr, utils: Cu } = Components;
 
-Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://chaika-modules/ChaikaCore.js");
 Cu.import("resource://chaika-modules/ChaikaServer.js");
@@ -332,6 +331,9 @@ ChaikaImageViewURLReplace.prototype = {
             }
 
 
+            let ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"]
+                       .getService(Ci.nsIMessageBroadcaster);
+
             //コピーして ivurObj を作成する
             let ivurObj = JSON.parse(JSON.stringify(rule));
 
@@ -345,7 +347,7 @@ ChaikaImageViewURLReplace.prototype = {
                 ivurObj.cookie.referrer = this._resolveBackReference(ivurObj.cookie.referrer, match);
 
                 //ChaikaIvurSubへ画像URLを通知する
-                Services.ppmm.broadcastAsyncMessage('chaika-ivur-image-url', {
+                ppmm.broadcastAsyncMessage('chaika-ivur-image-url', {
                     url: url, image: ivurObj.image
                 });
 
@@ -376,7 +378,7 @@ ChaikaImageViewURLReplace.prototype = {
                         this._resolveBackReference(this._replaceMap[url].image, match, extractMatch);
 
                     //ChaikaIvurSubへ画像URLを通知する
-                    Services.ppmm.broadcastAsyncMessage('chaika-ivur-image-url', {
+                    ppmm.broadcastAsyncMessage('chaika-ivur-image-url', {
                         url: url, image: this._replaceMap[url].image
                     });
                 }).catch((err) => {

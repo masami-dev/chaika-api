@@ -6,7 +6,6 @@ this.EXPORTED_SYMBOLS = ["ChaikaIvurSub"];
 
 const { interfaces: Ci, classes: Cc, results: Cr, utils: Cu } = Components;
 
-let { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
 let { Logger } = Cu.import("resource://chaika-modules/utils/Logger.js", {});
 
 
@@ -30,7 +29,9 @@ this.ChaikaIvurSub = {
 
 
     init: function ChaikaIvurSub_init(){
-        Services.cpmm.addMessageListener('chaika-ivur-image-url', this);
+        let cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"]
+                   .getService(Ci.nsIMessageListenerManager);
+        cpmm.addMessageListener('chaika-ivur-image-url', this);
     },
 
     receiveMessage: function ChaikaIvurSub_receiveMessage(aMessage){
