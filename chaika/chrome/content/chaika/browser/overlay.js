@@ -404,7 +404,7 @@ ChaikaBrowserOverlay.aboneEvent = {
 
 
         //各タブに対して通知する
-        for(let i = 0, iz = gBrowser.mPanelContainer.childNodes.length; i < iz; i++){
+        for(let i = 0, iz = gBrowser.browsers.length; i < iz; i++){
             let tabBrowser = gBrowser.getBrowserAtIndex(i);
             let tabURI = tabBrowser.currentURI;
 
