@@ -19,99 +19,115 @@
   </head>
 
   <body>
-    <!-- Last Modified : 2017/04/11 14:54:30 -->
+    <!-- Last Modified : 2017/06/20 13:30:20 -->
       <div class="markdown-body">
         <h2>
-<a id="chaika-api-163-リリースノート" class="anchor" href="#chaika-api-163-%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%8E%E3%83%BC%E3%83%88"><span class="octicon octicon-link"></span></a>chaika-api 1.6.3 リリースノート</h2>
+<a id="chaika-api-163-リリースノート" class="anchor" href="#chaika-api-163-%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%8E%E3%83%BC%E3%83%88"><svg class="octicon octicon-link" height="16" width="16"><path id="octicon" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"/></svg></a>chaika-api 1.6.3 リリースノート</h2>
 <p>chaika 1.6.3 を基にして、2ch API サポートをはじめ幾つかの機能を追加したカスタム版 chaika です。そのほか、オリジナル版では未修正の不具合も幾つか修正されています。</p>
 <p>この chaika-api の制作は、オリジナル版 chaika の開発者とは全く別の者が行なっています。オリジナル版 chaika の開発者は、この chaika-api への直接的な関与はしておりません。特に 2ch API に関わる問い合わせなどをオリジナル版の開発者へは送らないでください。</p>
 <h3>
-<a id="使用上の注意" class="anchor" href="#%E4%BD%BF%E7%94%A8%E4%B8%8A%E3%81%AE%E6%B3%A8%E6%84%8F"><span class="octicon octicon-link"></span></a>使用上の注意</h3>
+<a id="使用上の注意" class="anchor" href="#%E4%BD%BF%E7%94%A8%E4%B8%8A%E3%81%AE%E6%B3%A8%E6%84%8F"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>使用上の注意</h3>
 <p>この chaika-api は、オリジナル版 chaika とは別のアドオンとして Firefox に認識され、オリジナル版との共存はできません。そのため、<strong>インストール前に必ず、アドオンマネージャにてオリジナル版 chaika を削除してください</strong>。ログや設定などは全てそのまま引き継がれます。</p>
 <p>2ch API サポートは非公式対応となっており、2ch API 機能を働かせるには所定のAPIキーを入力する必要があります。初めて 2ch API 機能を使用する際には、<a class="internal present" href="./api-readme.html">2ch API 拡張の説明</a> を参照の上、必要な初期設定を行なってください。</p>
 <h3>
-<a id="制限事項など" class="anchor" href="#%E5%88%B6%E9%99%90%E4%BA%8B%E9%A0%85%E3%81%AA%E3%81%A9"><span class="octicon octicon-link"></span></a>制限事項など</h3>
+<a id="制限事項など" class="anchor" href="#%E5%88%B6%E9%99%90%E4%BA%8B%E9%A0%85%E3%81%AA%E3%81%A9"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>制限事項など</h3>
 <p>このバージョンの chaika-api は、マルチプロセス Firefox (Electrolysis, e10s) では正常に動作しません（「アドレスのプロトコルが不明です」などのエラーが表示されます）。設定で無効にできる場合はマルチプロセスモードを無効にして使用するか、マルチプロセスでも正常に動作する chaika-api 1.8.x 以降のバージョンをお使いください。</p>
 <h3>
-<a id="公式サイト一次配布元" class="anchor" href="#%E5%85%AC%E5%BC%8F%E3%82%B5%E3%82%A4%E3%83%88%E4%B8%80%E6%AC%A1%E9%85%8D%E5%B8%83%E5%85%83"><span class="octicon octicon-link"></span></a>公式サイト（一次配布元）</h3>
+<a id="公式サイト一次配布元" class="anchor" href="#%E5%85%AC%E5%BC%8F%E3%82%B5%E3%82%A4%E3%83%88%E4%B8%80%E6%AC%A1%E9%85%8D%E5%B8%83%E5%85%83"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>公式サイト（一次配布元）</h3>
 <blockquote>
 <p>chaika-api Wiki<br>
 <a href="https://github.com/masami-dev/chaika-api/wiki">https://github.com/masami-dev/chaika-api/wiki</a></p>
 </blockquote>
 <h3>
-<a id="更新履歴" class="anchor" href="#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4"><span class="octicon octicon-link"></span></a>更新履歴</h3>
-<p>先頭の◎は、ベースとなっているオリジナル版 chaika に対する変更点であることを表します。</p>
+<a id="更新履歴" class="anchor" href="#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>更新履歴</h3>
 <h4>
-<a id="chaika-api-163123---20170411" class="anchor" href="#chaika-api-163123---20170411"><span class="octicon octicon-link"></span></a>chaika-api 1.6.3.12.3 - 2017/04/11</h4>
+<a id="chaika-api-16313---20170620" class="anchor" href="#chaika-api-16313---20170620"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>chaika-api 1.6.3.13 - 2017/06/20</h4>
 <ul>
-<li>◎https: で始まるスレッドURL・板URLを認識できるようにした</li>
-<li>◎BBSMENU の読み込みで // で始まるURLも正常に認識できるようにした</li>
-<li>◎サーバの移転先URLを正しく認識できない場合があるのを修正</li>
+<li>2ch API の設定に「API対象ドメイン」の項目を追加 (<a class="internal present" href="./api-readme.html#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4">2ch API extension v0.13</a>)</li>
+<li>https: の板URL・スレッドURLを http: に修正して開くオプションを追加</li>
+<li>chaika履歴の保存期間をデフォルトで60日に制限するようにした</li>
+<li>板のURLで index.html などで終わるものも認識するようにした</li>
+<li>新着レス取得のとき希にログが壊れることがある不具合を修正</li>
+<li>2ch.net でサーバ移転を検知できないケースが出てきたのを修正</li>
+<li>スレッド表示で日本語文字と ttp:// が隣接していると文字化けする場合があるのを修正</li>
+<li>あぼーんの設定ファイルについてLF以外の改行コードでも正常に認識するようにした</li>
+<li>ログマネージャにてダブルクリックでスレッドを開けるようにした</li>
+<li>ログマネージャにてキーボードでスレッドを開けるようにした（Enter，Ctrl+Enter）</li>
+<li>スレ一覧・ログマネージャのリストを昇順降順交互にソート順が切り替わる一般的な形式にした</li>
+<li>スレ一覧で Ctrl+Enter を押し続けると同じスレッドがいくつも開かれる現象を修正</li>
+<li>Firefox 55 以降でスキンから書き込みウィザードを開けない不具合を修正</li>
 </ul>
 <h4>
-<a id="chaika-api-163122---20170315" class="anchor" href="#chaika-api-163122---20170315"><span class="octicon octicon-link"></span></a>chaika-api 1.6.3.12.2 - 2017/03/15</h4>
+<a id="chaika-api-163123---20170411" class="anchor" href="#chaika-api-163123---20170411"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>chaika-api 1.6.3.12.3 - 2017/04/11</h4>
 <ul>
-<li>◎まちBBSの <a href="http://machi.to/">http://machi.to/</a> で始まる URL を認識できるようにした</li>
-<li>◎まちBBSのスレッドURLに対してスレッドリダイレクタが働いていなかった不具合を修正</li>
-<li>◎Firefox 50 以降でスレ一覧・ログマネージャからの drag&amp;drop ができない不具合を修正</li>
-<li>◎Firefox 53 以降でスレッドリダイレクタの回避ができなくなる不具合を修正</li>
-<li>◎Firefox 53 以降でスキンから書き込みウィザードを開けない不具合を修正</li>
-<li>◎Firefox 54 以降で chaika 独自のプロキシ設定をするとネットワークエラーになるのを修正</li>
-<li>◎そのほか、通常の使用状態では表面化しにくい細かな不具合をいくつか修正</li>
+<li>https: で始まるスレッドURL・板URLを認識できるようにした</li>
+<li>BBSMENU の読み込みで // で始まるURLも正常に認識できるようにした</li>
+<li>サーバの移転先URLを正しく認識できない場合があるのを修正</li>
 </ul>
 <h4>
-<a id="chaika-api-163121---20160316" class="anchor" href="#chaika-api-163121---20160316"><span class="octicon octicon-link"></span></a>chaika-api 1.6.3.12.1 - 2016/03/16</h4>
+<a id="chaika-api-163122---20170315" class="anchor" href="#chaika-api-163122---20170315"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>chaika-api 1.6.3.12.2 - 2017/03/15</h4>
 <ul>
-<li>◎chaikaサイドバー板一覧リストを複数選択動作できるようにした</li>
-<li>◎2ch.netの新サーバでdat落ちしたスレッドへのアクセスが「エラー:404」と表示されるのを修正</li>
-<li>◎Firefox 48 以降で板やスレッドの読み込みが全くできなくなる不具合を修正</li>
+<li>まちBBSの <a href="http://machi.to/">http://machi.to/</a> で始まる URL を認識できるようにした</li>
+<li>まちBBSのスレッドURLに対してスレッドリダイレクタが働いていなかった不具合を修正</li>
+<li>Firefox 50 以降でスレ一覧・ログマネージャからの drag&amp;drop ができない不具合を修正</li>
+<li>Firefox 53 以降でスレッドリダイレクタの回避ができなくなる不具合を修正</li>
+<li>Firefox 53 以降でスキンから書き込みウィザードを開けない不具合を修正</li>
+<li>Firefox 54 以降で chaika 独自のプロキシ設定をするとネットワークエラーになるのを修正</li>
+<li>そのほか、通常の使用状態では表面化しにくい細かな不具合をいくつか修正</li>
 </ul>
 <h4>
-<a id="chaika-api-16312---20160308" class="anchor" href="#chaika-api-16312---20160308"><span class="octicon octicon-link"></span></a>chaika-api 1.6.3.12 - 2016/03/08</h4>
+<a id="chaika-api-163121---20160316" class="anchor" href="#chaika-api-163121---20160316"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>chaika-api 1.6.3.12.1 - 2016/03/16</h4>
+<ul>
+<li>chaikaサイドバー板一覧リストを複数選択動作できるようにした</li>
+<li>2ch.netの新サーバでdat落ちしたスレッドへのアクセスが「エラー:404」と表示されるのを修正</li>
+<li>Firefox 48 以降で板やスレッドの読み込みが全くできなくなる不具合を修正</li>
+</ul>
+<h4>
+<a id="chaika-api-16312---20160308" class="anchor" href="#chaika-api-16312---20160308"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>chaika-api 1.6.3.12 - 2016/03/08</h4>
 <ul>
 <li>2ch API 拡張部分について、機能の見直しと修正を行いました (<a class="internal present" href="./api-readme.html#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4">2ch API extension v0.12</a>)</li>
-<li>◎chaikaサイドバー板一覧にてキーボードで板を開けるようにした（Enter，Ctrl+Enter）</li>
-<li>◎サイドバー板一覧リストを複数選択できないタイプへ変更（複数選択できても動作しないため）</li>
-<li>◎スレ一覧で「シングルクリックで開く」が有効の時はカーソルをリンクポインタにするようにした</li>
-<li>◎スレ一覧・ログマネージャにてフォーカスのあるスレッドが選択状態として扱われる不具合を修正</li>
-<li>◎スレ一覧・ログマネージャにてキーボードでコンテキストメニューを開けない場合があるのを修正</li>
-<li>◎板・スレッドに対するコンテキストメニューが上下矢印キーで項目を選択できなかったのを修正</li>
-<li>◎板一覧・スレ一覧のフォントサイズを変更したとき即座に反映されない場合があるのを修正</li>
-<li>◎「常に最前面にする」が有効のときに書き込みウィザードを複数開くと競合状態になる現象を修正</li>
-<li>◎将来的に廃止予定とされている Javascript の要素（構文・メソッドなど）を除去</li>
-<li>◎そのほか、通常の使用状態では表面化しにくい細かな不具合をいくつか修正</li>
+<li>chaikaサイドバー板一覧にてキーボードで板を開けるようにした（Enter，Ctrl+Enter）</li>
+<li>サイドバー板一覧リストを複数選択できないタイプへ変更（複数選択できても動作しないため）</li>
+<li>スレ一覧で「シングルクリックで開く」が有効の時はカーソルをリンクポインタにするようにした</li>
+<li>スレ一覧・ログマネージャにてフォーカスのあるスレッドが選択状態として扱われる不具合を修正</li>
+<li>スレ一覧・ログマネージャにてキーボードでコンテキストメニューを開けない場合があるのを修正</li>
+<li>板・スレッドに対するコンテキストメニューが上下矢印キーで項目を選択できなかったのを修正</li>
+<li>板一覧・スレ一覧のフォントサイズを変更したとき即座に反映されない場合があるのを修正</li>
+<li>「常に最前面にする」が有効のときに書き込みウィザードを複数開くと競合状態になる現象を修正</li>
+<li>将来的に廃止予定とされている Javascript の要素（構文・メソッドなど）を除去</li>
+<li>そのほか、通常の使用状態では表面化しにくい細かな不具合をいくつか修正</li>
 </ul>
 <h4>
-<a id="chaika-api-163112---20160124" class="anchor" href="#chaika-api-163112---20160124"><span class="octicon octicon-link"></span></a>chaika-api 1.6.3.11.2 - 2016/01/24</h4>
+<a id="chaika-api-163112---20160124" class="anchor" href="#chaika-api-163112---20160124"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>chaika-api 1.6.3.11.2 - 2016/01/24</h4>
 <ul>
-<li>◎Firefox 46 以降でスレッド表示が 404 Not Found となり動作しない不具合を修正</li>
-<li>◎トリップキーに&amp;&lt;&gt;◆などがあると正しいトリップがプレビューに表示されない現象を修正</li>
+<li>Firefox 46 以降でスレッド表示が 404 Not Found となり動作しない不具合を修正</li>
+<li>トリップキーに&amp;&lt;&gt;◆などがあると正しいトリップがプレビューに表示されない現象を修正</li>
 <li>Firefox 17 で書き込みウィザードが動かなくなっていたのを修復</li>
 </ul>
 <h4>
-<a id="chaika-api-163111---20151224" class="anchor" href="#chaika-api-163111---20151224"><span class="octicon octicon-link"></span></a>chaika-api 1.6.3.11.1 - 2015/12/24</h4>
+<a id="chaika-api-163111---20151224" class="anchor" href="#chaika-api-163111---20151224"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>chaika-api 1.6.3.11.1 - 2015/12/24</h4>
 <ul>
 <li>アドオンマネージャによるアドオン自動更新が有効になりました（自動更新は次バージョンから）</li>
-<li>◎サイドバーのメニューに chaika-api の組み込みリリースノートを開くリンクを追加</li>
-<li>◎Firefox 40 以降であぼーんマネージャのリスト内容が表示されなくなっていたのを修正</li>
-<li>◎Firefox 44 以降でスレ一覧などのコンテキストメニューが効かなくなっていたのを修正</li>
+<li>サイドバーのメニューに chaika-api の組み込みリリースノートを開くリンクを追加</li>
+<li>Firefox 40 以降であぼーんマネージャのリスト内容が表示されなくなっていたのを修正</li>
+<li>Firefox 44 以降でスレ一覧などのコンテキストメニューが効かなくなっていたのを修正</li>
 </ul>
 <h4>
-<a id="chaika-api-16311---20151210" class="anchor" href="#chaika-api-16311---20151210"><span class="octicon octicon-link"></span></a>chaika-api 1.6.3.11 - 2015/12/10</h4>
+<a id="chaika-api-16311---20151210" class="anchor" href="#chaika-api-16311---20151210"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>chaika-api 1.6.3.11 - 2015/12/10</h4>
 <p>chaika-api 1.6.3 系最初のバージョン。chaika 1.6.3 ベース。<br>
 末尾の (XXX.zip) という表記は、<a href="http://bbs2ch.osdn.jp/uploader/upload.php">公式アップローダー</a> にあるパッチが元になっていることを表します。</p>
 <ul>
-<li>◎2ch API サポートの追加 (2ch API extension v0.11a)</li>
-<li>◎サイドバーのスレッド検索に ff2ch.syoboi.jp を追加 (<a href="http://bbs2ch.osdn.jp/uploader/img/767.zip">767.zip</a>)</li>
-<li>◎2ch.net と bbspink.com ドメインの BE 2.0 ログインに対応 (<a href="http://bbs2ch.osdn.jp/uploader/img/818.zip">818.zip</a>)</li>
-<li>◎外部板に対する動作を2chと同等にできる機能を追加 (<a href="http://bbs2ch.osdn.jp/uploader/img/819.zip">819.zip</a>)</li>
-<li>◎スレタイの [転載禁止] ©2ch.net などを消去して表示できる機能を追加 (<a href="http://bbs2ch.osdn.jp/uploader/img/833.zip">833.zip</a>)</li>
-<li>◎defaultmail.txt/defaultname.txt で適用対象を指定できるようにした (<a href="http://bbs2ch.osdn.jp/uploader/img/833.zip">833.zip</a>)</li>
-<li>◎スレッドタイトルの©マークが正常に表示されない現象を修正 (<a href="http://bbs2ch.osdn.jp/uploader/img/833.zip">833.zip</a>)</li>
-<li>◎スレ一覧などの右メニューから「ブラウザで開く」を選んでもchaikaで開いてしまう不具合を修正</li>
-<li>◎板URLリンクを右クリックして「リンク先を chaika で開く」を選んでも反応しない不具合を修正</li>
-<li>◎スレ一覧上部の板名表示が一部の2ch実況板では「実況せんかいｺﾞﾙｧ！」となるのを修正</li>
-<li>◎サーバーによってdat落ちを認識できず正しく過去ログを取得できない問題を修正</li>
+<li>2ch API サポートの追加 (2ch API extension v0.11a)</li>
+<li>サイドバーのスレッド検索に ff2ch.syoboi.jp を追加 (<a href="http://bbs2ch.osdn.jp/uploader/img/767.zip">767.zip</a>)</li>
+<li>2ch.net と bbspink.com ドメインの BE 2.0 ログインに対応 (<a href="http://bbs2ch.osdn.jp/uploader/img/818.zip">818.zip</a>)</li>
+<li>外部板に対する動作を2chと同等にできる機能を追加 (<a href="http://bbs2ch.osdn.jp/uploader/img/819.zip">819.zip</a>)</li>
+<li>スレタイの [転載禁止] ©2ch.net などを消去して表示できる機能を追加 (<a href="http://bbs2ch.osdn.jp/uploader/img/833.zip">833.zip</a>)</li>
+<li>defaultmail.txt/defaultname.txt で適用対象を指定できるようにした (<a href="http://bbs2ch.osdn.jp/uploader/img/833.zip">833.zip</a>)</li>
+<li>スレッドタイトルの©マークが正常に表示されない現象を修正 (<a href="http://bbs2ch.osdn.jp/uploader/img/833.zip">833.zip</a>)</li>
+<li>スレ一覧などの右メニューから「ブラウザで開く」を選んでもchaikaで開いてしまう不具合を修正</li>
+<li>板URLリンクを右クリックして「リンク先を chaika で開く」を選んでも反応しない不具合を修正</li>
+<li>スレ一覧上部の板名表示が一部の2ch実況板では「実況せんかいｺﾞﾙｧ！」となるのを修正</li>
+<li>サーバーによってdat落ちを認識できず正しく過去ログを取得できない問題を修正</li>
 </ul>
 
       </div>
