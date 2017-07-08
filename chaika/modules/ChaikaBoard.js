@@ -74,8 +74,12 @@ ChaikaBoard.prototype = {
         this.url = aBoardURL;
         if(this.url.fileName){ // URL の最後が "/" で終わっていないなら追加
             ChaikaCore.logger.warning("Fixed URL: " + this.url.spec);
-            this.url = ioService.newURI(this.url.spec + "/", null, null)
-                            .QueryInterface(Ci.nsIURL);
+            if(/^index.*\.html?$/.test(this.url.fileName)){
+                this.url = ioService.newURI("./", null, this.url).QueryInterface(Ci.nsIURL);
+            }else{
+                this.url = ioService.newURI(this.url.spec + "/", null, null)
+                                .QueryInterface(Ci.nsIURL);
+            }
         }
 
         this.id = ChaikaBoard.getBoardID(this.url);
@@ -684,13 +688,13 @@ ChaikaBoard.prototype = {
                 }
 
 
-                statement.bindStringParameter(0, threadID);
-                statement.bindStringParameter(1, boardID);
-                statement.bindStringParameter(2, datID);
-                statement.bindStringParameter(3, title);
-                statement.bindStringParameter(4, "");
-                statement.bindInt32Parameter(5, count);
-                statement.bindInt32Parameter(6, ordinal);
+                statement.params[0] = threadID;
+                statement.params[1] = boardID;
+                statement.params[2] = datID;
+                statement.params[3] = title;
+                statement.params[4] = "";
+                statement.params[5] = count;
+                statement.params[6] = ordinal;
                 statement.execute();
 
                 ordinal++;
@@ -721,7 +725,7 @@ ChaikaBoard.prototype = {
         database.beginTransaction();
         var statement = database.createStatement("SELECT _rowid_ FROM board_data WHERE board_id=?1;");
         try{
-            statement.bindStringParameter(0, boardID);
+            statement.params[0] = boardID;
             var boardRowID = 0;
             if(statement.executeStep()){
                 boardRowID = statement.getInt64(0);
@@ -732,18 +736,18 @@ ChaikaBoard.prototype = {
             if(boardRowID){
                 statement = database.createStatement(
                     "UPDATE board_data SET url=?1, type=?2, last_modified=?3 WHERE _rowid_=?4;");
-                statement.bindStringParameter(0, this.url.spec);
-                statement.bindInt32Parameter(1, type);
-                statement.bindInt64Parameter(2, this.subjectFile.clone().lastModifiedTime);
-                statement.bindInt64Parameter(3, boardRowID);
+                statement.params[0] = this.url.spec;
+                statement.params[1] = type;
+                statement.params[2] = this.subjectFile.clone().lastModifiedTime;
+                statement.params[3] = boardRowID;
                 statement.execute();
             }else{
                 statement = database.createStatement(
                     "INSERT OR REPLACE INTO board_data(board_id, url, type, last_modified) VALUES(?1,?2,?3,?4);");
-                 statement.bindStringParameter(0, boardID);
-                statement.bindStringParameter(1, this.url.spec);
-                statement.bindInt32Parameter(2, type);
-                statement.bindInt64Parameter(3, this.subjectFile.clone().lastModifiedTime);
+                statement.params[0] = boardID;
+                statement.params[1] = this.url.spec;
+                statement.params[2] = type;
+                statement.params[3] = this.subjectFile.clone().lastModifiedTime;
                 statement.execute();
             }
         }catch(ex){
@@ -766,7 +770,7 @@ ChaikaBoard.prototype = {
         var storage  = ChaikaCore.storage;
         var statement = storage.createStatement(
                 "SELECT count(_rowid_) FROM board_subject WHERE board_id=?1;");
-        statement.bindStringParameter(0, this.id);
+        statement.params[0] = this.id;
 
         storage.beginTransaction();
         try{

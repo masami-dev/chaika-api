@@ -60,6 +60,8 @@ this.ChaikaBBSMenu = {
 
 
     _save: function(){
+        if(!this._xml) return;
+
         let serializer = Cc["@mozilla.org/xmlextras/xmlserializer;1"].createInstance(Ci.nsIDOMSerializer);
 
         ChaikaCore.io.writeString(this._bbsmenuFile, 'UTF-8', false, serializer.serializeToString(this._xml));

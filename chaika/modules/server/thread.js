@@ -34,6 +34,16 @@ function ThreadServerScript(){
 ThreadServerScript.prototype  = {
 
     start: function(aServerHandler){
+        // https:のスレッドURLをhttp:へリダイレクトする（変換プロキシを併用する場合への対策）
+        if(ChaikaCore.pref.getBool("redirect_https_to_http") &&
+           aServerHandler.request.url.path.startsWith("/thread/https:")){
+            aServerHandler.response.setHeader("Location",
+                aServerHandler.request.url.spec.replace("/thread/https:", "/thread/http:"));
+            aServerHandler.response.writeHeaders(302);
+            aServerHandler.close();
+            return;
+        }
+
         aServerHandler.response.setHeader("Content-Type", "text/html; charset=Shift_JIS");
         aServerHandler.response.writeHeaders(200);
 
@@ -736,17 +746,17 @@ Thread2ch.prototype = {
 
         // 通常リンク処理
         if(resMes.includes("ttp")){
-            var regUrlLink = /(h?ttp)(s)?\:([\-_\.\!\~\*\'\(\)a-zA-Z0-9\;\/\?\:\@\&\=\+\$\,\%\#\|]+)/g;
+            var regUrlLink = /((?:^|[^\x81-\x9f\xe0-\xfc])(?:[\x81-\x9f\xe0-\xfc][\x40-\x7e\x80-\xfc])*)(h?ttp)(s)?\:([\-_\.\!\~\*\'\(\)a-zA-Z0-9\;\/\?\:\@\&\=\+\$\,\%\#\|]+)/g;
 
             if(ChaikaHttpController.ivur.enabled){
-                resMes = resMes.replace(regUrlLink, function(aStr, aScheme, aSecure, aSpec){
+                resMes = resMes.replace(regUrlLink, function(aStr, aPrefix, aScheme, aSecure, aSpec){
                     const url = 'http' + (aSecure || '') + ':' + aSpec;
                     const image_url = ChaikaHttpController.ivur.replaceURL(url);
 
-                    return '<a href="' + image_url + '" class="outLink">' + aStr + '</a>';
+                    return aPrefix + '<a href="' + image_url + '" class="outLink">' + aStr.slice(aPrefix.length) + '</a>';
                 });
             }else{
-                resMes = resMes.replace(regUrlLink, '<a href="http$2:$3" class="outLink">$1$2:$3</a>');
+                resMes = resMes.replace(regUrlLink, '$1<a href="http$3:$4" class="outLink">$2$3:$4</a>');
             }
         }
 
@@ -1074,6 +1084,11 @@ Thread2ch.prototype = {
         }catch(ex){}
 
         if(this.thread.lineCount > tmpLineCount){
+                // 重複範囲が既にセーブされているとき
+            if(tmpLineCount > this._logLineCount){
+                aDatContent = aDatContent.split("\n")
+                    .slice(tmpLineCount - this._logLineCount).join("\n");
+            }
                 // .dat の追記書き込み
             this.thread.appendContent(aDatContent);
 

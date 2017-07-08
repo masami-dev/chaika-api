@@ -7,8 +7,10 @@ this.EXPORTED_SYMBOLS = ["URLUtils"];
 const { interfaces: Ci, classes: Cc, results: Cr, utils: Cu } = Components;
 
 let { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
+let { OS } = Cu.import("resource://gre/modules/osfile.jsm", {});
+let { Logger } = Cu.import("resource://chaika-modules/utils/Logger.js", {});
+let { FileIO } = Cu.import("resource://chaika-modules/utils/FileIO.js", {});
 let { Range } = Cu.import("resource://chaika-modules/utils/Range.js", {});
-let { ChaikaServer } = Cu.import("resource://chaika-modules/ChaikaServer.js", {});
 
 
 /**
@@ -157,6 +159,133 @@ let excludes = {
 
 
 /**
+ * 外部ファイルからBBS定義リストを読み込む
+ */
+var BoardDefinitionLoader = {
+
+    init: function(){
+        if(!Services.prefs.getBoolPref('extensions.chaika.additionalBoardDef.enabled') ||
+           this._initialized){
+            return;
+        }
+
+        if(Services.appinfo.processType == Services.appinfo.PROCESS_TYPE_CONTENT){
+            // content process
+            let boardDef = null;
+
+            // 非同期メッセージングではプロセス生成直後のURL判定に間に合わない
+            try{
+                let cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"]
+                           .getService(Ci.nsISyncMessageSender);
+                boardDef = cpmm.sendSyncMessage('chaika-board-definition')[0];
+            }catch(ex){}
+
+            if(boardDef){
+                this._mergeUnique(includes.board, boardDef.includes);
+                this._mergeUnique(excludes.board, boardDef.excludes);
+                Logger.debug('Load BoardDef (' + boardDef.includes.length +
+                             '/' + boardDef.excludes.length + ') (content process)');
+            }else{
+                Logger.warn('Cannot retrieve BoardDef (content process)');
+            }
+        }else{
+            // chrome process
+            let boardDef = null;
+
+            let ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"]
+                       .getService(Ci.nsIMessageListenerManager);
+            ppmm.addMessageListener('chaika-board-definition', () => boardDef);
+
+            let boardDefName = 'boardDef.txt';
+            let boardDefFile = OS.Path.join(FileIO.Path.dataDir, boardDefName);
+
+            OS.File.read(boardDefFile, { encoding: 'UTF-8' }).then((content) => {
+                boardDef = this._parseBoardDef(content);
+
+                this._mergeUnique(includes.board, boardDef.includes);
+                this._mergeUnique(excludes.board, boardDef.excludes);
+                Logger.debug('Load BoardDef (' + boardDef.includes.length +
+                             '/' + boardDef.excludes.length + ') (chrome process)');
+
+            }).catch((ex) => {
+                Logger.warn(ex);
+                if(!ex.becauseNoSuchFile) return;
+
+                let defaultsFile = OS.Path.join(__LOCATION__.parent.parent.parent.path,
+                                    'chrome','content','chaika','defaults', boardDefName);
+
+                OS.File.copy(defaultsFile, boardDefFile, { noOverwrite: true })
+                    .then(() => Logger.info('Copied', defaultsFile +' -> '+ boardDefFile))
+                    .catch((ex) => Logger.warn(ex));
+            });
+        }
+
+        this._initialized = true;
+    },
+
+
+    /**
+     * @private
+     * @param {String} aContent
+     * @return {Object}
+     */
+    _parseBoardDef: function(aContent){
+        let result = { includes: [], excludes: [] };
+        let section = 'includes';   // default section
+
+        aContent.split(/[\n\r]+/).forEach((line) => {
+            line = line.replace(/[;'#].*$/, '').trim();
+            if(!line) return;
+            let newSection = line.match(/^\[(.+?)\]/);
+            if(newSection){
+                section = newSection[1];
+                return;
+            }
+            if(!/^\^?http/.test(line) || !result[section]) return;
+
+            // ^http で始まる行は正規表現での板定義と解釈しそのまま追加する
+            if(line.charAt(0) != '^'){
+                line = line.replace(/[.*+?|^$(){}[\]\\]/g, '\\$&');
+                line = line.replace(/^https?:/, '^https?:');
+                if(section == 'includes'){
+                    line = line.replace(/^(.+\/).*/, '$1$$');
+                }
+            }
+            try{
+                result[section].push(new RegExp(line));
+            }catch(ex){
+                Logger.warn(ex.message + " - " + line);
+            }
+        });
+
+        return result;
+    },
+
+
+    /**
+     * @private
+     * @param {Array} aDst
+     * @param {Array} aSrc
+     */
+    _mergeUnique: function(aDst, aSrc){
+        if(aSrc.length == 0) return;
+        let uniq = {};
+
+        aDst.forEach((rxp) => {
+            uniq[rxp.toString()] = true;
+        });
+        aSrc.forEach((rxp) => {
+            let rxpStr = rxp.toString();
+            if(uniq[rxpStr]) return;
+            uniq[rxpStr] = true;
+            aDst.push(rxp);
+        });
+    }
+
+};
+
+
+/**
  * URL に対し, chaika が絡む処理をまとめる
  */
 this.URLUtils = {
@@ -167,7 +296,11 @@ this.URLUtils = {
      * @example http://127.0.0.1:8823/
      */
     get serverURL(){
-        return ChaikaServer.serverURL.spec;
+        if(!this._serverURL){
+            let port = Services.prefs.getIntPref('extensions.chaika.server.port');
+            this._serverURL = 'http://127.0.0.1:' + port + '/';
+        }
+        return this._serverURL;
     },
 
 
@@ -198,6 +331,7 @@ this.URLUtils = {
         }
 
         let url = aURL.replace(/[\?#].*$/, '')
+                      .replace(/\/index[^/]*\.html?$/, '/')
                       .replace(/\/(?:test|bbs)\/read\.cgi\/(.+?)\/\d{9,}.*$/, '/$1/');
 
         return includes.board.some((regexp) => regexp.test(url)) &&
@@ -363,3 +497,6 @@ ThreadFilter.prototype = {
     }
 
 };
+
+
+BoardDefinitionLoader.init();

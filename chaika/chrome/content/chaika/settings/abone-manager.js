@@ -91,7 +91,7 @@ var gAboneManager = {
 
 
     listener: function(message){
-        gAboneManager[message.data.type].update(message.data.data);
+        gAboneManager[message.data.type].updateDelay(message.data.data);
     },
 
 
@@ -137,6 +137,9 @@ AboneManagerView.prototype = {
     _initList: function(){
         let ngData = ChaikaAboneManager[this._type].getNgData();
 
+        // 選択状態では removeItemAt が非常に遅くなる
+        this._listbox.clearSelection();
+
         while(this._listbox.getRowCount() > 0){
             this._listbox.removeItemAt(0);
         }
@@ -170,16 +173,37 @@ AboneManagerView.prototype = {
 
 
     /**
+     * オブザーバから短時間に多数の通知が来るとき、
+     * 通知を集約して一つのみを適用する
+     */
+    updateDelay: function(updatedData){
+        if(this._timer){
+            clearTimeout(this._timer);
+        }
+        this._timer = setTimeout((data) => {
+            this._timer = 0;
+            this.update(data);
+        }, 50, updatedData);
+    },
+
+
+    /**
      * あぼーんデータが更新された時に呼ばれる
      * (オブザーバから通知された時に表示を更新する)
      */
     update: function(updatedData){
         this._initList();
 
-        this._listbox.value = updatedData;
+        // workaround: 見えない状態のアイテムを選択すると、
+        // 後でそのアイテムをクリックしても反転表示にならなかったり、
+        // selectedItem.value が undefined を返したりする（Fx 38,55 にて確認）
+        // なので、対象のアイテムが見える状態にした後に選択する
 
-        if(this._listbox.selectedIndex === -1)
-            this._listbox.selectedIndex = 0;
+        let items = this._listbox.getElementsByAttribute("value", updatedData);
+        let index = items[0] ? this._listbox.getIndexOfItem(items[0]) : 0;
+
+        this._listbox.ensureIndexIsVisible(index);
+        this._listbox.selectedIndex = index;
     },
 
 
@@ -261,6 +285,9 @@ NGExAboneManagerView.prototype = Object.create(AboneManagerView.prototype, {
     _initList: {
         value: function(){
             let ngData = ChaikaAboneManager[this._type].getNgData();
+
+            // 選択状態では removeItemAt が非常に遅くなる
+            this._listbox.clearSelection();
 
             while(this._listbox.getRowCount() > 0){
                 this._listbox.removeItemAt(0);

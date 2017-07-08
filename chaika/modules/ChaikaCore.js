@@ -1009,14 +1009,14 @@ ChaikaIO.prototype = {
         //U+FFFD = REPLACEMENT CHARACTER
         if(fileString.includes('\uFFFD')){
             if(suspects.length > 0){
-                fileString = this.readUnknownEncodingString(file, overrideOrigFile, suspects);
+                return this.readUnknownEncodingString(file, overrideOrigFile, ...suspects);
             }else{
                 ChaikaCore_.logger.error('Unable to read string from ' + file.leafName + ': Unknown Encoding');
                 return null;
             }
         }
 
-        if(fileString !== null && overrideOrigFile){
+        if(overrideOrigFile && encoding.toLowerCase() != 'utf-8'){
             this.writeString(file, 'utf-8', false, fileString);
         }
 
@@ -1229,6 +1229,8 @@ ChaikaHistory.prototype = {
 
 
     _quit: function ChaikaHistory__startup(){
+        this.truncateHistory();
+
         this._statement["visitPage_SelectID"].finalize();
         this._statement["visitPage_UpdateHistory"].finalize();
         this._statement["visitPage_InsertHistory"].finalize();
@@ -1251,28 +1253,28 @@ ChaikaHistory.prototype = {
             // ID で指定されたレコードがあるかチェック
             var rowID = 0;
             var statement = this._statement["visitPage_SelectID"];
-            statement.bindStringParameter(0, aID);
+            statement.params[0] = aID;
             if(statement.executeStep()){
                 rowID = statement.getInt32(0);
             }
             statement.reset();
 
-            var now = Date.now()/1000;
+            var now = Math.floor(Date.now() / 1000);
             if(rowID){ // レコードがあれば更新
                 statement = this._statement["visitPage_UpdateHistory"];
-                statement.bindStringParameter(0, aURL.spec);// url
-                statement.bindStringParameter(1, title);    // title
-                statement.bindInt32Parameter(2, now);        // last_visited
-                statement.bindStringParameter(3, rowID);    // id
+                statement.params[0] = aURL.spec;// url
+                statement.params[1] = title;    // title
+                statement.params[2] = now;      // last_visited
+                statement.params[3] = rowID;    // id
                 statement.execute();
             }else{ // レコードがなければ新規作成
                 statement = this._statement["visitPage_InsertHistory"];
-                statement.bindStringParameter(0, aID);        // id
-                statement.bindStringParameter(1, aURL.spec);// url
-                statement.bindStringParameter(2, title);    // title
-                statement.bindInt32Parameter(3, now);        // last_visited
-                statement.bindInt32Parameter(4, 1);            // visit_count
-                statement.bindInt32Parameter(5, aType);        // type
+                statement.params[0] = aID;      // id
+                statement.params[1] = aURL.spec;// url
+                statement.params[2] = title;    // title
+                statement.params[3] = now;      // last_visited
+                statement.params[4] = 1;        // visit_count
+                statement.params[5] = aType;    // type
                 statement.execute();
             }
 
@@ -1285,6 +1287,31 @@ ChaikaHistory.prototype = {
         }
 
         return true;
+    },
+
+
+    truncateHistory: function ChaikaHistory_truncateHistory(){
+        var expireDays = ChaikaCore_.pref.getInt("history_expire_days");
+        if(expireDays < 0) expireDays = 0;
+
+        // 現在日時から1日24時間で単純計算する
+        var expireTime = Math.floor(Date.now() / 1000) - expireDays * 86400;
+
+        var storage = ChaikaCore_.storage;
+        storage.beginTransaction();
+        try{
+            var statement = storage.createStatement(
+                "DELETE FROM history WHERE last_visited < ?1;");
+            statement.params[0] = expireTime;
+            statement.execute();
+
+        }catch(ex){
+            ChaikaCore_.logger.error(storage.lastErrorString);
+            ChaikaCore_.logger.error(ex);
+        }finally{
+            statement.finalize();
+            storage.commitTransaction();
+        }
     },
 
 

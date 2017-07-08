@@ -76,6 +76,12 @@ function startup(){
                         .replace(/%(2F|3A)/ig, (match, p1) => String.fromCharCode('0x' + p1));
         return;
     }
+    // https:の板URLをhttp:でリロードする（変換プロキシを併用する場合への対策）
+    if(ChaikaCore.pref.getBool("redirect_https_to_http") &&
+       /\burl=https\b/.test(location.search)){
+        location.replace(location.href.replace(/\burl=https\b/, "url=http"));
+        return;
+    }
     gPageReloaded = true;
 
     PrefObserver.start();
@@ -748,7 +754,8 @@ function subjectUpdate(aForceUpdate){
         var subjectFile = gBoard.subjectFile.clone();
         var settingFile = gBoard.settingFile.clone();
 
-        if(aStatus === 302 || !subjectFile.exists() || subjectFile.fileSize === 0){
+        if(aStatus === 301 || aStatus === 302 ||
+           !subjectFile.exists() || subjectFile.fileSize === 0){
             setStatus("スレッド一覧を取得できませんでした。板の移転を確認しています...");
             return checkBoardRelocation();
         }

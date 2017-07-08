@@ -53,7 +53,14 @@
                        type="menu-button"
                        contextmenu="chaika-browsermenu-popup"
                        oncommand="SidebarUI.toggle('viewChaikaSidebar');">
-            <menupopup style="-moz-binding:url(chrome://chaika/content/browser/browserMenu.xml#browserMenu)" />
+            <!--
+             * workaround: <menupopup> が空要素だと、Menu Wizard を併用したとき
+             * 内容の無いメニューと解釈されて chaika メニューが表示されなくなる。
+             * 動作に影響を与えないダミーの要素として <spacer/> を使っている。
+            -->
+            <menupopup style="-moz-binding:url(chrome://chaika/content/browser/browserMenu.xml#browserMenu)" >
+                <spacer/>
+            </menupopup>
         </toolbarbutton>
     </toolbarpalette>
 
@@ -68,7 +75,9 @@
               class="menu-iconic"
               image="chrome://chaika/content/icon.png"
               insertafter="context-sep-stop">
-            <menupopup style="-moz-binding:url(chrome://chaika/content/browser/browserMenu.xml#browserMenu)" />
+            <menupopup style="-moz-binding:url(chrome://chaika/content/browser/browserMenu.xml#browserMenu)" >
+                <spacer/>
+            </menupopup>
         </menu>
     </popup>
 

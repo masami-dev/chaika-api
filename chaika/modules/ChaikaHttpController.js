@@ -331,6 +331,9 @@ ChaikaImageViewURLReplace.prototype = {
             }
 
 
+            let ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"]
+                       .getService(Ci.nsIMessageBroadcaster);
+
             //コピーして ivurObj を作成する
             let ivurObj = JSON.parse(JSON.stringify(rule));
 
@@ -342,6 +345,11 @@ ChaikaImageViewURLReplace.prototype = {
                 ivurObj.image = this._resolveBackReference(ivurObj.image, match);
                 ivurObj.referrer = this._resolveBackReference(ivurObj.referrer, match);
                 ivurObj.cookie.referrer = this._resolveBackReference(ivurObj.cookie.referrer, match);
+
+                //ChaikaIvurSubへ画像URLを通知する
+                ppmm.broadcastAsyncMessage('chaika-ivur-image-url', {
+                    url: url, image: ivurObj.image
+                });
 
                 //Cookieの取得
                 if(ivurObj.cookie.shouldGet){
@@ -368,6 +376,11 @@ ChaikaImageViewURLReplace.prototype = {
 
                     this._replaceMap[url].image =
                         this._resolveBackReference(this._replaceMap[url].image, match, extractMatch);
+
+                    //ChaikaIvurSubへ画像URLを通知する
+                    ppmm.broadcastAsyncMessage('chaika-ivur-image-url', {
+                        url: url, image: this._replaceMap[url].image
+                    });
                 }).catch((err) => {
                     ChaikaCore.logger.error('Fail to fetch $EXTRACT.', err, JSON.stringify(ivurObj));
                 });

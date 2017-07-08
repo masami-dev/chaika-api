@@ -380,7 +380,10 @@ Post.prototype = {
                     }
                 }
                     // 文字実体参照にない文字は数値文字参照化
-                return "&#" + aElement.charCodeAt(0) + ";";
+                    // Unicode 絵文字など、コードポイントが65536以上になる
+                    // 文字は UTF-16 ではサロゲートペアとなるため、
+                    // charCodeAt() では正しいコードポイントが得られない
+                return "&#" + aElement.codePointAt(0) + ";";
             }
             return aElement;
         });
