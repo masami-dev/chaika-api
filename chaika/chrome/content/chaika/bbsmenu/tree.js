@@ -124,6 +124,38 @@
         },
 
 
+        showTooltip: function Tree_showTooltip(event){
+            let row = {};
+            let col = {};
+
+            this._treeBoxObject.getCellAt(event.clientX, event.clientY, row, col, {});
+            if(row.value === -1) return false;
+
+            let node = this._visibleNodes[row.value];
+            let cropped = this._treeBoxObject.isCellCropped(row.value, col.value);
+
+            let title = node.getAttribute('title');
+            let url = node.getAttribute('url');
+            let info = node.getAttribute('info');
+
+            if(!cropped && !url && !info) return false;
+
+            let tooltipTitle = document.getElementById("treeTooltipTitleText");
+            tooltipTitle.hidden = (!title || (title == url));
+            if(!tooltipTitle.hidden) tooltipTitle.textContent = title;
+
+            let tooltipUrl = document.getElementById("treeTooltipUrlText");
+            tooltipUrl.hidden = !url;
+            if(!tooltipUrl.hidden) tooltipUrl.value = url;
+
+            let tooltipInfo = document.getElementById("treeTooltipInfoText");
+            tooltipInfo.hidden = !info;
+            if(!tooltipInfo.hidden) tooltipInfo.textContent = info;
+
+            return true;
+        },
+
+
         _getURLItem: function Tree_getURLItem(aRowIndex){
             let node = this._visibleNodes[aRowIndex];
             let title = node.getAttribute("title");

@@ -11,7 +11,7 @@ var Refind2ch = {
 
     name: 'スレッド検索 (refind2ch.org)',
 
-    version: '1.0.0',
+    version: '1.0.1',
 
     charset: 'utf-8',
 
@@ -54,6 +54,13 @@ var Refind2ch = {
                     let thread_url = thread.getAttribute('href');
                     let thread_posts = Number.parseInt(thread.querySelector('.res_num').textContent);
                     let board_title = thread.querySelector('.board_title').textContent;
+                    let created = thread_url.match(/\/(\d{9,10})/)[1];
+                    let rate_cnt = Number.parseFloat(thread.querySelector('.rate_cnt').textContent);
+
+                    let options = { year: 'numeric', month: '2-digit', day: '2-digit',
+                                    hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                    let infoText = '作成日時: ' + new Date(1000 * created).toLocaleString('ja-JP', options) +
+                                   '  勢い: ' + rate_cnt;
 
                     let board = boards.find((board) => board.title === board_title);
 
@@ -70,6 +77,7 @@ var Refind2ch = {
                         url: thread_url,
                         title: thread_title,
                         post: thread_posts,
+                        info: infoText,
                     });
                 });
 
