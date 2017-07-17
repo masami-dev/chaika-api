@@ -161,7 +161,7 @@ this.ChaikaContentReplacer = {
      */
     _evalReplaceCode: function evalReplaceCode(rule, ...match){
         let sandbox = Cu.Sandbox(Cc["@mozilla.org/nullprincipal;1"].createInstance(Ci.nsIPrincipal),
-            { wantComponents: false, wantGlobalProperties: ['atob','btoa','URL','URLSearchParams'] });
+            { wantComponents: false, wantGlobalProperties: ['atob', 'btoa', 'URL', 'URLSearchParams'] });
 
         // Sandbox 標準の dump() は System Console へ出力するので不便
         sandbox.dump = (...args) => Services.console.logStringMessage(args.join(' '));
@@ -174,9 +174,7 @@ this.ChaikaContentReplacer = {
             let value = Cu.evalInSandbox(rule.replaceCode, sandbox);
             return /^(boolean|number|string)$/.test(typeof value) ? String(value) : '';
         }catch(ex){
-            //  msg = '置換マネージャの JavaScript コードに誤りがあります:';
-            let msg = '\u7F6E\u63DB\u30DE\u30CD\u30FC\u30B8\u30E3\u306E JavaScript ' +
-                      '\u30B3\u30FC\u30C9\u306B\u8AA4\u308A\u304C\u3042\u308A\u307E\u3059:';
+            let msg = ChaikaCore.io.fromUTF8Octets('置換マネージャの JavaScript コードに誤りがあります:');
             let info = ex.toString() + '\n(' + rule.title + ')';
             ChaikaCore.logger.error(msg, info);
 
