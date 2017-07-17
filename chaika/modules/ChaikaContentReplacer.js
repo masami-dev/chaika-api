@@ -144,13 +144,54 @@ this.ChaikaContentReplacer = {
 
                 let regexp = new RegExp(pattern, replaceFlag);
 
-                aResData[target] = aResData[target].replace(regexp, rule.replaceText);
+                aResData[target] = aResData[target].replace(regexp,
+                    (rule.replaceCode !== undefined) ?
+                        this._evalReplaceCode.bind(this, rule) : rule.replaceText);
 
                 replaced = true;
             }
         });
 
         return replaced ? aResData : null;
+    },
+
+
+    /**
+     * ユーザー定義の JavaScript コードを評価して、生成した置換文字列を返す
+     */
+    _evalReplaceCode: function evalReplaceCode(rule, ...match){
+        let sandbox = Cu.Sandbox(Cc["@mozilla.org/nullprincipal;1"].createInstance(Ci.nsIPrincipal),
+            { wantComponents: false, wantGlobalProperties: ['atob','btoa','URL','URLSearchParams'] });
+
+        // Sandbox 標準の dump() は System Console へ出力するので不便
+        sandbox.dump = (...args) => Services.console.logStringMessage(args.join(' '));
+        sandbox.input = match.pop();
+        sandbox.index = match.pop();
+        sandbox.$ = Cu.cloneInto(match, sandbox);       // $[0], $[1], $[2], ..
+        match.forEach((v, i) => void(sandbox['$' + i] = v));  // $0, $1, $2, ..
+
+        try{
+            let value = Cu.evalInSandbox(rule.replaceCode, sandbox);
+            return /^(boolean|number|string)$/.test(typeof value) ? String(value) : '';
+        }catch(ex){
+            //  msg = '置換マネージャの JavaScript コードに誤りがあります:';
+            let msg = '\u7F6E\u63DB\u30DE\u30CD\u30FC\u30B8\u30E3\u306E JavaScript ' +
+                      '\u30B3\u30FC\u30C9\u306B\u8AA4\u308A\u304C\u3042\u308A\u307E\u3059:';
+            let info = ex.toString() + '\n(' + rule.title + ')';
+            ChaikaCore.logger.error(msg, info);
+
+            if(!this._alertActive){
+                this._alertActive = true;
+                let observer = {
+                    observe: function(subject, topic, data){
+                        if(topic == 'alertfinished') ChaikaContentReplacer._alertActive = false;
+                    }
+                };
+                let alertsService = Cc["@mozilla.org/alerts-service;1"].getService(Ci.nsIAlertsService);
+                alertsService.showAlertNotification('', msg, info, false, '', observer);
+            }
+            return match[0];
+        }
     },
 
 

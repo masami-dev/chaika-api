@@ -14,6 +14,7 @@ listbox{
     -moz-binding: url(chrome://chaika/content/settings/replacement-manager-editor.xml#editor);
 }
 
+#javascript-code-evaluation-desc,
 #special-replacement-patterns-desc{
     background-color: #33dd00;
 }

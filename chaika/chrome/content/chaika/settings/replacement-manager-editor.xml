@@ -68,6 +68,10 @@
                                       label="全て置換する"
                                       checked="true"
                                       tooltiptext="OFF にすると初めに一致した文字列のみを置換します." />
+                        <xul:checkbox class="js-eval"
+                                      label="JavaScript"
+                                      checked="false"
+                                      tooltiptext="置換文字列の内容を JavaScript コードとみなして実行しその結果へ置換します." />
                     </xul:hbox>
                     <xul:textbox class="replace-text" multiline="true" flex="1" tooltip="special-replacement-patterns-desc" />
 
@@ -96,6 +100,33 @@
                             </xul:hbox>
                         </xul:vbox>
                     </xul:tooltip>
+
+                    <xul:tooltip id="javascript-code-evaluation-desc" orient="vertical">
+                        <xul:description>[JavaScript] が ON のとき, ここの内容は JavaScript コードとして解釈・実行され, 最後に評価(実行)された式の値が最終的な置換文字列になります. もしその値が 数値・文字列・真偽値 以外の場合は空文字列に置換えられます.</xul:description>
+                        <xul:description value="ここの JavaScript コードからは, 以下の定義済み変数を参照することができます:" />
+                        <xul:vbox>
+                            <xul:hbox>
+                                <xul:description value="$0" class="dt" />
+                                <xul:description value=": 検索パターンがマッチした部分の文字列を保持しています." />
+                            </xul:hbox>
+                            <xul:hbox>
+                                <xul:description value="$n" class="dt" />
+                                <xul:description value=": 正規表現の n 番目の括弧でキャプチャされた文字列を保持しています." />
+                            </xul:hbox>
+                            <xul:hbox>
+                                <xul:description value="$ " class="dt" />
+                                <xul:description value=": 上記の $0, $1, $2, .. なとど同じ内容を保持している配列です ($[1] = $1)." />
+                            </xul:hbox>
+                            <xul:hbox>
+                                <xul:description value="input" class="dt" />
+                                <xul:description value=": 置換対象となっている文字列全体を保持しています." />
+                            </xul:hbox>
+                            <xul:hbox>
+                                <xul:description value="index" class="dt" />
+                                <xul:description value=": 上記の input の中で検索パターンがマッチした位置を保持しています." />
+                            </xul:hbox>
+                        </xul:vbox>
+                    </xul:tooltip>
                 </xul:vbox>
             </xul:groupbox>
         </xul:vbox>
@@ -119,6 +150,7 @@
 
             this.setAutoNaming(true);
             this.setRulesEnabled(false);
+            this.setJsEval(false);
         ]]></constructor>
 
 
@@ -138,6 +170,10 @@
 
                             case 'enable-rules':
                                 this.toggleRulesEnabled();
+                                break;
+
+                            case 'js-eval':
+                                this.toggleJsEval();
                                 break;
                         }
                         break;
@@ -193,6 +229,30 @@
             ]]></body>
         </method>
 
+        <method name="toggleJsEval">
+            <body><![CDATA[
+                let checkbox = this._root.querySelector('.js-eval');
+                this.setJsEval(checkbox.checked);
+            ]]></body>
+        </method>
+
+        <method name="setJsEval">
+            <parameter name="enable"/>
+            <body><![CDATA[
+                let checkbox = this._root.querySelector('.js-eval');
+                checkbox.checked = enable;
+
+                let [id0, id1] = ['javascript-code-evaluation-desc',
+                                  'special-replacement-patterns-desc'];
+                if(enable) [id0, id1] = [id1, id0];
+
+                Array.from(this._root.querySelectorAll('[tooltip="' + id0 + '"]'))
+                     .forEach((node) => {
+                    node.setAttribute('tooltip', id1);
+                });
+            ]]></body>
+        </method>
+
         <method name="setLabel">
             <body><![CDATA[
                 this._labelbox.value = this.getLabelText();
@@ -232,7 +292,18 @@
                 replaceData.ignoreCase = ! this._root.querySelector('.case-sensitive').checked;
                 replaceData.global = this._root.querySelector('.global').checked;
                 replaceData.searchText = this._root.querySelector('.search-text').value;
-                replaceData.replaceText = this._root.querySelector('.replace-text').value;
+
+                // js-eval は chaika-api の独自拡張機能なので、この置換データを
+                // オリジナル版 chaika などへ持って行った場合も動作が破綻しないように、
+                // JSコードは別のプロパティへ保存し replaceText には '$&' を入れておく
+
+                if(this._root.querySelector('.js-eval').checked){
+                    replaceData.replaceText = '$&';
+                    replaceData.replaceCode = this._root.querySelector('.replace-text').value;
+                }else{
+                    replaceData.replaceText = this._root.querySelector('.replace-text').value;
+                }
+
                 replaceData.rules = this._enableRules ? ruleData.rules : [];
 
                 return replaceData;
@@ -248,7 +319,12 @@
                 this._root.querySelector('.case-sensitive').checked = ! replaceData.ignoreCase;
                 this._root.querySelector('.global').checked = replaceData.global;
                 this._root.querySelector('.search-text').value = replaceData.searchText;
-                this._root.querySelector('.replace-text').value = replaceData.replaceText;
+
+                if(replaceData.replaceCode !== undefined){
+                    this._root.querySelector('.replace-text').value = replaceData.replaceCode;
+                }else{
+                    this._root.querySelector('.replace-text').value = replaceData.replaceText;
+                }
 
                 this._ruleEditor.populateData({
                     match: replaceData.match,
@@ -256,6 +332,7 @@
                 });
 
 
+                this.setJsEval(replaceData.replaceCode !== undefined);
                 this.setRulesEnabled(replaceData.rules.length > 0);
 
                 //タイトルが設定されていないか、
