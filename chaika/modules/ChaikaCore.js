@@ -1158,8 +1158,7 @@ ChaikaIO.prototype = {
                    .replace(/</g, '&lt;')
                    .replace(/>/g, '&gt;')
                    .replace(/"/g, '&quot;')
-                   .replace(/'/g, '&#039;')
-                   .replace(/\u00a9/g, '&copy;');
+                   .replace(/'/g, '&#039;');
     },
 
 
@@ -1173,8 +1172,7 @@ ChaikaIO.prototype = {
                    .replace(/&gt;/g, '>')
                    .replace(/&quot;/g, '"')
                    .replace(/&#039;/g, "'")
-                   .replace(/&amp;/g, '&')
-                   .replace(/&copy;|&#169;/g, this.fromUTF8Octets('©'));
+                   .replace(/&amp;/g, '&');
     },
 
 
