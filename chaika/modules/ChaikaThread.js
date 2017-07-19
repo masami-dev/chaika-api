@@ -97,22 +97,27 @@ ChaikaThread.prototype = {
     get title(){
         if(!this._title) return '';
 
-        let replacedThreadData = ChaikaContentReplacer.replace({
-            title: this._title,
-            thread_url: this.plainURL ? this.plainURL.spec : '',
-            board_url: this.boardURL ? this.boardURL.spec : '',
-            isThreadList: false,
-            isSubjectTxt: true
-        });
+        if(this._titleReplaceNeeded){
+            this._titleReplaceNeeded = false;
 
-        if(replacedThreadData){
-            this._title = replacedThreadData.title;
+            let replacedThreadData = ChaikaContentReplacer.replace({
+                title: this._title,
+                thread_url: this.plainURL ? this.plainURL.spec : '',
+                board_url: this.boardURL ? this.boardURL.spec : '',
+                isThreadList: false,
+                isSubjectTxt: true
+            });
+
+            if(replacedThreadData){
+                this._title = replacedThreadData.title;
+            }
         }
 
         return this._title;
     },
 
     set title(title){
+        this._titleReplaceNeeded = !!title;
         this._title = title;
     },
 
@@ -218,6 +223,8 @@ ChaikaThread.prototype = {
                 this.lineCount    = statement.getInt32(1);
                 this.lastModified = statement.getString(2);
                 this.maruGetted   = (statement.getInt32(3)==1);
+                // ChaikaContentReplacer のスレタイ置換をバイパスする
+                this._titleReplaceNeeded = false;
             }else{
                 this.title        = "";
                 this.lineCount    = 0;
