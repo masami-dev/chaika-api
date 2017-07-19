@@ -1149,6 +1149,21 @@ ChaikaIO.prototype = {
 
 
     /**
+     * HTML断片をPlainTextへ変換する
+     * HTMLのブラウザ表示をテキストコピーしたのとほぼ同じ結果となり、
+     * 実体参照・文字参照は全て実文字へデコードされる
+     * @param {String} aStr 対象のHTML文字列
+     * @return {String} 変換結果のPlainText文字列
+     */
+    convertToPlainText: function ChaikaCore_convertToPlainText(aStr){
+        // parserUtils.convertToPlainText は <body> の内側しか変換しないので念のため囲む
+        var parserUtils = Cc["@mozilla.org/parserutils;1"].getService(Ci.nsIParserUtils);
+        return parserUtils.convertToPlainText('<html><body>' + aStr + '</body></html>',
+                                              Ci.nsIDocumentEncoder.OutputLFLineBreak, 0);
+    },
+
+
+    /**
      * HTML実体参照にエンコードする
      * @param {String} aStr エンコードする文字列
      * @return {String} エンコード後の文字列
