@@ -247,7 +247,7 @@ Thread2ch.prototype = {
             if(this.optionsOnes && this.optionsOnes <= this._logLineCount){
                 this._headerResponded = true;
 
-                let title = UniConverter.toSJIS(ChaikaCore.io.escapeHTML(this.thread.title));
+                let title = UniConverter.toSJIS(this.thread.rawTitle);
                 let header = this.converter.getHeader(title);
                 this.write(header);
                 this.write(this.datLineParse(datLines[this.optionsOnes-1],
@@ -260,7 +260,7 @@ Thread2ch.prototype = {
             }else if(this.optionsEnd  && this.optionsEnd <= this._logLineCount){
                 this._headerResponded = true;
 
-                let title = UniConverter.toSJIS(ChaikaCore.io.escapeHTML(this.thread.title));
+                let title = UniConverter.toSJIS(this.thread.rawTitle);
                 let header = this.converter.getHeader(title);
                 this.write(header);
 
@@ -285,10 +285,10 @@ Thread2ch.prototype = {
             }else{
                 if(!this.optionsNoFirst){
                     this.write(this.datLineParse(datLines[0], 1, false) +"\n");
-                }else if(this.thread.title){
+                }else if(this.thread.rawTitle){
                     this._headerResponded = true;
 
-                    let title = UniConverter.toSJIS(ChaikaCore.io.escapeHTML(this.thread.title));
+                    let title = UniConverter.toSJIS(this.thread.rawTitle);
                     let header = this.converter.getHeader(title);
                     this.write(header);
                 }else{
@@ -430,9 +430,9 @@ Thread2ch.prototype = {
             this._headerResponded = true;
 
             // 一旦 ChaikaThread を通して ChaikaContentReplacer を反映させる
-            this.thread.title = UniConverter.fromSJIS(threadTitle);
+            this.thread.rawTitle = UniConverter.fromSJIS(threadTitle);
 
-            let header = this.converter.getHeader(UniConverter.toSJIS(this.thread.title));
+            let header = this.converter.getHeader(UniConverter.toSJIS(this.thread.rawTitle));
             this.write(header);
             this._handler.response.flush();
         }
@@ -522,7 +522,7 @@ Thread2ch.prototype = {
                 host: resHost,
                 be: resBeID + '',
                 baseBe: resBeBaseID + '',
-                title: this.thread.title,
+                title: this.thread.rawTitle,
                 thread_url: this.thread.plainURL.spec,
                 board_url: this.thread.boardURL.spec,
                 isThread: false
@@ -587,7 +587,7 @@ Thread2ch.prototype = {
             host: resHost,
             be: resBeID + '',
             baseBe: resBeBaseID + '',
-            title: this.thread.title,
+            title: this.thread.rawTitle,
             thread_url: this.thread.plainURL.spec,
             board_url: this.thread.boardURL.spec,
             isThreadList: false,
