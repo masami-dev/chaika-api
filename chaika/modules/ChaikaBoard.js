@@ -553,7 +553,8 @@ ChaikaBoard.prototype = {
                 itemNode.setAttribute("numberSort", numberSort);
                 itemNode.setAttribute("datID",      datID);
                 itemNode.setAttribute("threadID",   threadID);
-                itemNode.setAttribute("title",      ChaikaCore.io.unescapeHTML(title));
+                itemNode.setAttribute("rawTitle",   title);
+                itemNode.setAttribute("title",      ChaikaCore.io.convertToPlainText(title));
                 itemNode.setAttribute("count",      count);
                 itemNode.setAttribute("countSort",  countSort +":"+ numberReverse);
                 itemNode.setAttribute("read",       read);
@@ -663,9 +664,6 @@ ChaikaBoard.prototype = {
                 let threadID = boardID + datID;
                 let count = Number(RegExp.$3);
                 let title = RegExp.$2;
-
-
-                title = ChaikaCore.io.unescapeHTML(title);
 
 
                 // JBBS では , が ＠｀ に置換されている
