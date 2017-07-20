@@ -242,6 +242,14 @@ var ChaikaCore_ = {
             _unicodeNormalizer: Cc["@mozilla.org/intl/unicodenormalizer;1"]
                 .createInstance(Ci.nsIUnicodeNormalizer)
         });
+            // x_plaintext(文字列)
+            // HTML断片をPlainTextへ変換する
+        storage.createFunction("x_plaintext", 1, {
+            onFunctionCall: function sqlite_x_plaintext(aFunctionArguments) {
+                var arg = aFunctionArguments.getString(0);
+                return ChaikaCore_.io.convertToPlainText(arg);
+            }
+        });
 
 
         // データベースにテーブルが存在しない場合に作成する。

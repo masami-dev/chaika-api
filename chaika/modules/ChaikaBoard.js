@@ -464,7 +464,8 @@ ChaikaBoard.prototype = {
                     "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time",
                     "FROM board_subject AS bs LEFT OUTER JOIN thread_data AS td",
                     "ON bs.thread_id=td.thread_id",
-                    "WHERE bs.board_id=:board_id AND x_normalize(bs.title) LIKE x_normalize(:search_str)",
+                    "WHERE bs.board_id=:board_id",
+                    "  AND x_normalize(x_plaintext(bs.title)) LIKE x_normalize(:search_str)",
                     "UNION ALL",
                     "SELECT",
                     "    4 AS status,",
@@ -483,7 +484,7 @@ ChaikaBoard.prototype = {
                     "    SELECT dat_id FROM thread_data WHERE board_id=:board_id",
                     "    EXCEPT",
                     "    SELECT dat_id FROM board_subject WHERE board_id=:board_id",
-                    ") AND x_normalize(td.title) LIKE x_normalize(:search_str);"
+                    ") AND x_normalize(x_plaintext(td.title)) LIKE x_normalize(:search_str);"
                 ].join("\n");
                 statement = database.createStatement(sql);
                 statement.params.board_id = boardID;
