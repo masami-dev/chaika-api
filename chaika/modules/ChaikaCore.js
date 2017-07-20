@@ -1266,7 +1266,6 @@ ChaikaHistory.prototype = {
 
         ChaikaCore_.logger.debug([aURL.spec, aID, /*aTitle,*/ aType]);
 
-        var title = ChaikaCore_.io.unescapeHTML(aTitle);
         var storage = ChaikaCore_.storage;
 
         storage.beginTransaction();
@@ -1284,7 +1283,7 @@ ChaikaHistory.prototype = {
             if(rowID){ // レコードがあれば更新
                 statement = this._statement["visitPage_UpdateHistory"];
                 statement.params[0] = aURL.spec;// url
-                statement.params[1] = title;    // title
+                statement.params[1] = aTitle;   // title
                 statement.params[2] = now;      // last_visited
                 statement.params[3] = rowID;    // id
                 statement.execute();
@@ -1292,7 +1291,7 @@ ChaikaHistory.prototype = {
                 statement = this._statement["visitPage_InsertHistory"];
                 statement.params[0] = aID;      // id
                 statement.params[1] = aURL.spec;// url
-                statement.params[2] = title;    // title
+                statement.params[2] = aTitle;   // title
                 statement.params[3] = now;      // last_visited
                 statement.params[4] = 1;        // visit_count
                 statement.params[5] = aType;    // type
