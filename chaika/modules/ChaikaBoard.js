@@ -123,11 +123,13 @@ ChaikaBoard.prototype = {
      * @return {String}
      */
     getTitle: function ChaikaBoard_getTitle(){
-        return this.getSetting("BBS_TITLE") ||
-               this._getMachiTitle() ||
-               this._getBoardTitle() ||
-               this._fetchPageTitle() ||
-               this.url.spec;
+        // 一部の外部板では BBS_TITLE に実体参照を含んでいる場合がある
+        return ChaikaCore.io.unescapeHTML(
+                this.getSetting("BBS_TITLE") ||
+                this._getMachiTitle() ||
+                this._getBoardTitle() ||
+                this._fetchPageTitle() ||
+                this.url.spec);
     },
 
 
