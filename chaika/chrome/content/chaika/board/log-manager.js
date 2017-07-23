@@ -544,20 +544,17 @@ function getThreadDataFromDAT(aThread){
         throw new Error(aThread.datFile.leafName + " ファイルが存在しません");
     }
 
-    let threadTitle = aThread.title;
     let encode = (aThread.type === ChaikaBoard.BOARD_TYPE_JBBS) ? "EUC-JP" : "Shift_JIS";
     let datLines = ChaikaCore.io.readString(aThread.datFile, encode).split("\n");
     datLines.pop();
 
-    //スレッド情報が保存されていなければ DAT からタイトルを取得
-    if(threadTitle === ""){
-        let col = (aThread.type === ChaikaBoard.BOARD_TYPE_JBBS ||
-                   aThread.type === ChaikaBoard.BOARD_TYPE_MACHI) ? 5 : 4;
-        datLines.some((line) => {
-            threadTitle = line.split("<>")[col] || "";
-            return (threadTitle !== "");
-        });
-    }
+    let threadTitle = "";
+    let col = (aThread.type === ChaikaBoard.BOARD_TYPE_JBBS ||
+               aThread.type === ChaikaBoard.BOARD_TYPE_MACHI) ? 5 : 4;
+    datLines.some((line) => {
+        threadTitle = line.split("<>")[col] || "";
+        return (threadTitle !== "");
+    });
 
     //古いスレッドの場合、最新の(サーバー移転後の) URL だとブラウザで開けなくなる
     //場合があるので DAT の中身から当時のスレッド URL を推測すべき?
@@ -565,8 +562,6 @@ function getThreadDataFromDAT(aThread){
     return {
         title: (threadTitle !== "") ? threadTitle : aThread.threadID,
         lineCount: datLines.length,
-        lastModified: aThread.lastModified || "",
-        maruGetted: aThread.maruGetted || false
     };
 }
 
@@ -583,13 +578,18 @@ function importDAT(aThreadID){
         let dat = getThreadDataFromDAT(thread);
 
         //スレッド情報が保存されていなければ DAT をインポートする or
-        //スレッド情報と DAT が一致しない場合は修復する(今のところ行数のみ修復)
+        //スレッド情報と DAT が一致しない場合は修復する(今のところ行数・スレタイのみ修復)
+        //スレタイは ChaikaContentReplacer を通ったものがデータベースに保存されていて
+        //置換設定によって変わりうるので、現在の置換結果と一致しない場合は修復する
+
         let recordedLines = thread.lineCount;
-        if(dat.lineCount > 0 && dat.lineCount !== recordedLines){
-            thread.title = dat.title;
-            thread.lineCount = dat.lineCount;
-            thread.lastModified = dat.lastModified;
-            thread.maruGetted = dat.maruGetted;
+        let recordedTitle = thread.rawTitle;
+
+        thread.lineCount = dat.lineCount;
+        thread.rawTitle  = dat.title;       // ChaikaContentReplacer を反映させる
+
+        if(dat.lineCount > 0 && (dat.lineCount !== recordedLines ||
+                                 thread.rawTitle !== recordedTitle)){
             thread.setThreadData();
 
             resolve({
