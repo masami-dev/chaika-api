@@ -282,13 +282,14 @@ ChaikaThread.prototype = {
             statement.finalize();
             if(threadRowID){
                 statement = storage.createStatement(
-                    "UPDATE thread_data SET url=?1, line_count=?2, http_last_modified=?3, " +
-                        "maru_getted=?4 WHERE _rowid_=?5;");
+                    "UPDATE thread_data SET url=?1, title=?2, line_count=?3, " +
+                        "http_last_modified=?4, maru_getted=?5 WHERE _rowid_=?6;");
                 statement.params[0] = this.url.spec;
-                statement.params[1] = this.lineCount;
-                statement.params[2] = this.lastModified;
-                statement.params[3] = this.maruGetted ? 1 : 0;
-                statement.params[4] = threadRowID;
+                statement.params[1] = this.rawTitle;
+                statement.params[2] = this.lineCount;
+                statement.params[3] = this.lastModified;
+                statement.params[4] = this.maruGetted ? 1 : 0;
+                statement.params[5] = threadRowID;
                 statement.execute();
             }else{
                 statement = storage.createStatement(
