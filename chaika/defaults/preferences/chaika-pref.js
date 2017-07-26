@@ -35,6 +35,7 @@ pref('extensions.chaika.browser.redirector.ivur.behavior', 0);
 pref('extensions.chaika.browser.browsermenu.open_in_new_tab', false);
 pref('extensions.chaika.browser.browsermenu.disregard_url_limit', false);
 pref('extensions.chaika.browser.browsermenu.remove_limit_when_copy', false);
+pref('extensions.chaika.browser.browsermenu.escape_unicode_when_copy', false);
 pref('extensions.chaika.browser.browsermenu.confirm_add_abone', true);
 pref('extensions.chaika.browser.browsermenu.reload_when_skin_changed', false);
 pref('extensions.chaika.browser.browsermenu.find_2ch_in_sidebar', false);

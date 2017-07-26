@@ -83,6 +83,9 @@
             var osName = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
             const NEWLINE = (osName == "Darwin") ? "\n" : "\r\n";
 
+            var escapeUnicode = this.ChaikaCore.pref.getBool('browser.browsermenu.escape_unicode_when_copy') ?
+                (str) => this.ChaikaCore.io.escapeUnicode(str, false) : (str) => (str);
+
             switch(target.getAttribute("anonid")){
                 case "open":
                     if(isBoard){
@@ -130,7 +133,7 @@
 
                 case "copyTitle":
                     var titles = this.items.map(function(aElement, aIndex, aArray){
-                        return aElement.title;
+                        return escapeUnicode(aElement.title);
                     }).join(NEWLINE);
 
                     var clipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"]
@@ -150,7 +153,7 @@
 
                 case "copyTitleAndURL":
                     var urls = this.items.map(function(aElement, aIndex, aArray){
-                        return aElement.title + NEWLINE + aElement.urlSpec;
+                        return escapeUnicode(aElement.title) + NEWLINE + aElement.urlSpec;
                     }).join(NEWLINE);
 
                     var clipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"]
