@@ -120,6 +120,10 @@ var UniConverter = {
     _unicodeConverter: Cc["@mozilla.org/intl/scriptableunicodeconverter"]
             .createInstance(Ci.nsIScriptableUnicodeConverter),
 
+    toSJISWithEscape: function uniConverter_toSJISWithEscape(aString){
+        return ChaikaCore.io.escapeUnicode(aString, true);
+    },
+
     toSJIS: function uniConverter_toSJIS(aString){
         this._unicodeConverter.charset = "Shift_JIS";
         return this._unicodeConverter.ConvertFromUnicode(aString);
@@ -1626,7 +1630,7 @@ ThreadConverter.prototype = {
                 }
             }
 
-            let ngData = UniConverter.toSJIS(ChaikaCore.io.escapeHTML(aNGData.title || aNGData));
+            let ngData = UniConverter.toSJISWithEscape(ChaikaCore.io.escapeHTML(aNGData.title || aNGData));
 
             //タグを置換する
             return aRes.replace(/<PLAINNUMBER\/>/g, aNumber)

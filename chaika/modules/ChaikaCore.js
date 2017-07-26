@@ -1157,6 +1157,33 @@ ChaikaIO.prototype = {
 
 
     /**
+     * Shift_JIS へ変換できない Unicode 文字を数値文字参照にエンコードする
+     * @param {String} aStr エンコードする文字列
+     * @param {Boolean} aConv true なら Shift_JIS への変換結果を返す
+                              false ならエスケープ処理のみを行う
+     * @return {String} エンコード後の文字列
+     */
+    escapeUnicode: function ChaikaCore_escapeUnicode(aStr, aConv){
+        let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                        .createInstance(Ci.nsIScriptableUnicodeConverter);
+        converter.charset = 'Shift_JIS';
+
+        // Array#slice などではサロゲートペアを別々に分けてしまうようである
+        let result = Array.from(aStr, (uc) => {
+            let sc = converter.ConvertFromUnicode(uc);
+
+            // uc がサロゲートペアのとき sc は '??' となる
+            if(sc.startsWith('?') && uc != '?'){
+                return '&#' + uc.codePointAt(0) + ';';
+            }
+            return aConv ? sc : uc;
+        });
+
+        return result.join('');
+    },
+
+
+    /**
      * HTML断片をPlainTextへ変換する
      * HTMLのブラウザ表示をテキストコピーしたのとほぼ同じ結果となり、
      * 実体参照・文字参照は全て実文字へデコードされる
