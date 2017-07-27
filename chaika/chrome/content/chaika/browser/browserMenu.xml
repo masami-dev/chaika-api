@@ -629,7 +629,7 @@
 
                 if(!sidebarMode){
                     let plugin = this.ChaikaSearch.getPlugin(aID);
-                    let term = aTerm;
+                    let term = encodeURIComponent(aTerm);
 
                     if(plugin.charset.toUpperCase() !== 'UTF-8'){
                         let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].getService(Ci.nsIScriptableUnicodeConverter);

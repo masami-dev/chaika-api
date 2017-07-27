@@ -1,5 +1,7 @@
 /* See license.txt for terms of usage */
 
+Components.utils.import("resource://chaika-modules/ChaikaCore.js");
+
 
 var Ff2ch = {
 
@@ -15,7 +17,8 @@ var Ff2ch = {
 
     search: function(query){
         return new Promise((resolve, reject) => {
-            const url = 'http://ff2ch.syoboi.jp/?alt=rss&q=' + encodeURIComponent(query);
+            const url = 'http://ff2ch.syoboi.jp/?alt=rss&q=' +
+                        encodeURIComponent(ChaikaCore.io.unescapeHTML(query));
             const XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1");
             let req = XMLHttpRequest();
 

@@ -1,5 +1,6 @@
 /* See license.txt for terms of usage */
 
+Components.utils.import("resource://chaika-modules/ChaikaCore.js");
 Components.utils.import("resource://chaika-modules/ChaikaBBSMenu.js");
 
 
@@ -19,14 +20,14 @@ var BoardFilter = {
 
     name: '板名フィルタ',
 
-    version: '2.0.1',
+    version: '2.0.2',
 
     charset: 'utf-8',
 
     url: null,
 
     search: function(query){
-        query = query.toLowerCase().normalize('NFKC');
+        query = ChaikaCore.io.unescapeHTML(query).toLowerCase().normalize('NFKC');
 
         return ChaikaBBSMenu.getXML().then((xml) => {
             let results = Array.from(xml.querySelectorAll('board[title]')).filter((node) => {

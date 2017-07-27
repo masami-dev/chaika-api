@@ -19,7 +19,8 @@ var Refind2ch = {
 
     search: function(query){
         return new Promise((resolve, reject) => {
-            const url = 'http://refind2ch.org/search?q=' + encodeURIComponent(query);
+            const url = 'http://refind2ch.org/search?q=' +
+                        encodeURIComponent(ChaikaCore.io.unescapeHTML(query));
             const XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1");
             let req = XMLHttpRequest();
 

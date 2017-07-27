@@ -1,5 +1,8 @@
 /* See license.txt for terms of usage */
 
+Components.utils.import("resource://chaika-modules/ChaikaCore.js");
+
+
 var Dig2ch = {
 
     id: '00.dig.2ch.net',
@@ -14,7 +17,8 @@ var Dig2ch = {
 
     search: function(query){
         return new Promise((resolve, reject) => {
-            const url = 'http://dig.2ch.net/?json=1&keywords=' + encodeURIComponent(query);
+            const url = 'http://dig.2ch.net/?json=1&keywords=' +
+                        encodeURIComponent(ChaikaCore.io.unescapeHTML(query));
             const XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1");
             let req = XMLHttpRequest();
 
