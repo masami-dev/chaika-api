@@ -916,6 +916,9 @@ NewBoardURLFinder.prototype = {
 
         this._httpReq.onreadystatechange = this._onreadystatechange.bind(this);
         this._httpReq.open("GET", aBoardURLSpec);
+        this._httpReq.channel.QueryInterface(Ci.nsIHttpChannel);
+        this._httpReq.channel.redirectionLimit = 0; // 302 等のリダイレクトを行わない
+        this._httpReq.channel.loadFlags |= Ci.nsIHttpChannel.LOAD_BYPASS_CACHE;
         this._httpReq.send(null);
     },
 
@@ -931,7 +934,12 @@ NewBoardURLFinder.prototype = {
 
         var responseText = this._httpReq.responseText;
 
-        if(/Change your bookmark/m.test(responseText)){
+        if(this._httpReq.channel.status == Cr.NS_ERROR_REDIRECT_LOOP){
+            // 301 or 302 で直接移転先へリダイレクトする場合(2017/7～)
+            var location = this._httpReq.getResponseHeader("Location");
+            if(location != null) this.onSuccess(location);
+
+        }else if(/Change your bookmark/m.test(responseText)){
             if(responseText.match(/<a href=\"([^\"]+)\">/m)){
                 // //hawk.2ch.net/livejupiter/ のような相対URLが書かれている場合もある(2017/3/24)
                 this.onSuccess(this._httpReq.channel.URI.resolve(RegExp.$1));
