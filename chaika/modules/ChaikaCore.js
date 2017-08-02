@@ -242,6 +242,14 @@ var ChaikaCore_ = {
             _unicodeNormalizer: Cc["@mozilla.org/intl/unicodenormalizer;1"]
                 .createInstance(Ci.nsIUnicodeNormalizer)
         });
+            // x_plaintext(文字列)
+            // HTML断片をPlainTextへ変換する
+        storage.createFunction("x_plaintext", 1, {
+            onFunctionCall: function sqlite_x_plaintext(aFunctionArguments) {
+                var arg = aFunctionArguments.getString(0);
+                return ChaikaCore_.io.convertToPlainText(arg);
+            }
+        });
 
 
         // データベースにテーブルが存在しない場合に作成する。
@@ -1149,6 +1157,48 @@ ChaikaIO.prototype = {
 
 
     /**
+     * Shift_JIS へ変換できない Unicode 文字を数値文字参照にエンコードする
+     * @param {String} aStr エンコードする文字列
+     * @param {Boolean} aConv true なら Shift_JIS への変換結果を返す
+                              false ならエスケープ処理のみを行う
+     * @return {String} エンコード後の文字列
+     */
+    escapeUnicode: function ChaikaCore_escapeUnicode(aStr, aConv){
+        let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                        .createInstance(Ci.nsIScriptableUnicodeConverter);
+        converter.charset = 'Shift_JIS';
+
+        // Array#slice などではサロゲートペアを別々に分けてしまうようである
+        let result = Array.from(aStr, (uc) => {
+            let sc = converter.ConvertFromUnicode(uc);
+
+            // uc がサロゲートペアのとき sc は '??' となる
+            if(sc.startsWith('?') && uc != '?'){
+                return '&#' + uc.codePointAt(0) + ';';
+            }
+            return aConv ? sc : uc;
+        });
+
+        return result.join('');
+    },
+
+
+    /**
+     * HTML断片をPlainTextへ変換する
+     * HTMLのブラウザ表示をテキストコピーしたのとほぼ同じ結果となり、
+     * 実体参照・文字参照は全て実文字へデコードされる
+     * @param {String} aStr 対象のHTML文字列
+     * @return {String} 変換結果のPlainText文字列
+     */
+    convertToPlainText: function ChaikaCore_convertToPlainText(aStr){
+        // parserUtils.convertToPlainText は <body> の内側しか変換しないので念のため囲む
+        var parserUtils = Cc["@mozilla.org/parserutils;1"].getService(Ci.nsIParserUtils);
+        return parserUtils.convertToPlainText('<html><body>' + aStr + '</body></html>',
+                                              Ci.nsIDocumentEncoder.OutputLFLineBreak, 0);
+    },
+
+
+    /**
      * HTML実体参照にエンコードする
      * @param {String} aStr エンコードする文字列
      * @return {String} エンコード後の文字列
@@ -1158,8 +1208,7 @@ ChaikaIO.prototype = {
                    .replace(/</g, '&lt;')
                    .replace(/>/g, '&gt;')
                    .replace(/"/g, '&quot;')
-                   .replace(/'/g, '&#039;')
-                   .replace(/\u00a9/g, '&copy;');
+                   .replace(/'/g, '&#039;');
     },
 
 
@@ -1173,8 +1222,7 @@ ChaikaIO.prototype = {
                    .replace(/&gt;/g, '>')
                    .replace(/&quot;/g, '"')
                    .replace(/&#039;/g, "'")
-                   .replace(/&amp;/g, '&')
-                   .replace(/&copy;|&#169;/g, this.fromUTF8Octets('©'));
+                   .replace(/&amp;/g, '&');
     },
 
 
@@ -1245,7 +1293,6 @@ ChaikaHistory.prototype = {
 
         ChaikaCore_.logger.debug([aURL.spec, aID, /*aTitle,*/ aType]);
 
-        var title = ChaikaCore_.io.unescapeHTML(aTitle);
         var storage = ChaikaCore_.storage;
 
         storage.beginTransaction();
@@ -1263,7 +1310,7 @@ ChaikaHistory.prototype = {
             if(rowID){ // レコードがあれば更新
                 statement = this._statement["visitPage_UpdateHistory"];
                 statement.params[0] = aURL.spec;// url
-                statement.params[1] = title;    // title
+                statement.params[1] = aTitle;   // title
                 statement.params[2] = now;      // last_visited
                 statement.params[3] = rowID;    // id
                 statement.execute();
@@ -1271,7 +1318,7 @@ ChaikaHistory.prototype = {
                 statement = this._statement["visitPage_InsertHistory"];
                 statement.params[0] = aID;      // id
                 statement.params[1] = aURL.spec;// url
-                statement.params[2] = title;    // title
+                statement.params[2] = aTitle;   // title
                 statement.params[3] = now;      // last_visited
                 statement.params[4] = 1;        // visit_count
                 statement.params[5] = aType;    // type

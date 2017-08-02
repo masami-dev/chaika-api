@@ -123,11 +123,13 @@ ChaikaBoard.prototype = {
      * @return {String}
      */
     getTitle: function ChaikaBoard_getTitle(){
-        return this.getSetting("BBS_TITLE") ||
-               this._getMachiTitle() ||
-               this._getBoardTitle() ||
-               this._fetchPageTitle() ||
-               this.url.spec;
+        // 一部の外部板では BBS_TITLE に実体参照を含んでいる場合がある
+        return ChaikaCore.io.unescapeHTML(
+                this.getSetting("BBS_TITLE") ||
+                this._getMachiTitle() ||
+                this._getBoardTitle() ||
+                this._fetchPageTitle() ||
+                this.url.spec);
     },
 
 
@@ -464,7 +466,8 @@ ChaikaBoard.prototype = {
                     "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time",
                     "FROM board_subject AS bs LEFT OUTER JOIN thread_data AS td",
                     "ON bs.thread_id=td.thread_id",
-                    "WHERE bs.board_id=:board_id AND x_normalize(bs.title) LIKE x_normalize(:search_str)",
+                    "WHERE bs.board_id=:board_id",
+                    "  AND x_normalize(x_plaintext(bs.title)) LIKE x_normalize(:search_str)",
                     "UNION ALL",
                     "SELECT",
                     "    4 AS status,",
@@ -483,7 +486,7 @@ ChaikaBoard.prototype = {
                     "    SELECT dat_id FROM thread_data WHERE board_id=:board_id",
                     "    EXCEPT",
                     "    SELECT dat_id FROM board_subject WHERE board_id=:board_id",
-                    ") AND x_normalize(td.title) LIKE x_normalize(:search_str);"
+                    ") AND x_normalize(x_plaintext(td.title)) LIKE x_normalize(:search_str);"
                 ].join("\n");
                 statement = database.createStatement(sql);
                 statement.params.board_id = boardID;
@@ -553,7 +556,8 @@ ChaikaBoard.prototype = {
                 itemNode.setAttribute("numberSort", numberSort);
                 itemNode.setAttribute("datID",      datID);
                 itemNode.setAttribute("threadID",   threadID);
-                itemNode.setAttribute("title",      ChaikaCore.io.unescapeHTML(title));
+                itemNode.setAttribute("rawTitle",   title);
+                itemNode.setAttribute("title",      ChaikaCore.io.convertToPlainText(title));
                 itemNode.setAttribute("count",      count);
                 itemNode.setAttribute("countSort",  countSort +":"+ numberReverse);
                 itemNode.setAttribute("read",       read);
@@ -663,9 +667,6 @@ ChaikaBoard.prototype = {
                 let threadID = boardID + datID;
                 let count = Number(RegExp.$3);
                 let title = RegExp.$2;
-
-
-                title = ChaikaCore.io.unescapeHTML(title);
 
 
                 // JBBS では , が ＠｀ に置換されている

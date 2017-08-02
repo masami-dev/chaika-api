@@ -324,7 +324,7 @@ var BoardTree = {
 
             //スレッドあぼーん処理
             let hitAboneData = ChaikaAboneManager.shouldAbone({
-                title: thread.getAttribute('title'),
+                title: thread.getAttribute('rawTitle'),
                 date: thread.getAttribute('created'),
                 thread_url: thread.getAttribute('url'),
                 board_url: gBoard.url.spec,
@@ -343,14 +343,16 @@ var BoardTree = {
                 if(hitAboneData.highlight){
                     thread.setAttribute('highlighted', 'true');
                 }else{
-                    thread.setAttribute('title', '***** ABONE ***** (' + hitAboneData.title + ')');
+                    let aboneTitle = '***** ABONE ***** (' + hitAboneData.title + ')';
+                    thread.setAttribute('rawTitle', ChaikaCore.io.escapeHTML(aboneTitle));
+                    thread.setAttribute('title', aboneTitle);
                 }
             }
 
 
             //スレタイ置換処理
             let replacedThreadData = ChaikaContentReplacer.replace({
-                title: thread.getAttribute('title'),
+                title: thread.getAttribute('rawTitle'),
                 date: thread.getAttribute('created'),
                 thread_url: thread.getAttribute('url'),
                 board_url: gBoard.url.spec,
@@ -359,7 +361,8 @@ var BoardTree = {
             });
 
             if(replacedThreadData){
-                thread.setAttribute('title', replacedThreadData.title);
+                thread.setAttribute('rawTitle', replacedThreadData.title);
+                thread.setAttribute('title', ChaikaCore.io.convertToPlainText(replacedThreadData.title));
             }
         }
 
