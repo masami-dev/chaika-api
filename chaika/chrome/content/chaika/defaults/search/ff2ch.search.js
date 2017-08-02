@@ -9,7 +9,7 @@ var Ff2ch = {
 
     name: '2ch検索 (ff2ch.syoboi.jp)',
 
-    version: '1.0.1',
+    version: '1.0.2',
 
     charset: 'utf-8',
 
@@ -45,6 +45,11 @@ var Ff2ch = {
                     let threadPosts = RegExp.$1;
                     let threadURL = thread.querySelector('guid').textContent.replace(/\d+-\d+$/, '');
                     let boardTitle = thread.querySelector('category').textContent;
+                    let pubDate = thread.querySelector('pubDate').textContent;
+
+                    let options = { year: 'numeric', month: '2-digit', day: '2-digit',
+                                    hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                    let infoText = '作成日時: ' + new Date(pubDate).toLocaleString('ja-JP', options);
 
                     let board = boards.find(board => board.title === boardTitle);
 
@@ -61,6 +66,7 @@ var Ff2ch = {
                         url: threadURL,
                         title: threadTitle,
                         post: threadPosts,
+                        info: infoText,
                     });
                 });
 

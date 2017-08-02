@@ -23,6 +23,15 @@
     <menupopup id="treeContextMenu"
                style="-moz-binding:url(chrome://chaika/content/pageUtils.xml#itemContext)"
                onpopupshowing="return Page._treeView.showContext(event);" />
+
+    <tooltip id="treeTooltip" noautohide="true"
+             onpopupshowing="return Page._treeView.showTooltip(event);">
+        <vbox flex="1">
+            <label id="treeTooltipTitleText" class="tooltip-label" />
+            <label id="treeTooltipUrlText" crop="center" class="tooltip-label" />
+            <label id="treeTooltipInfoText" class="tooltip-label" />
+        </vbox>
+    </tooltip>
 </popupset>
 
 <hbox align="center">
@@ -98,6 +107,7 @@
     <treechildren id="bbsmenuTree-children"
                   class="sidebar-placesTreechildren"
                   flex="1"
+                  tooltip="treeTooltip"
                   onclick="Page._treeView.handleClick(event)" />
 
 </tree>

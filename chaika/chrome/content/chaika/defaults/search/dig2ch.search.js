@@ -9,7 +9,7 @@ var Dig2ch = {
 
     name: '2ch検索 (dig.2ch.net)',
 
-    version: '2.0.0',
+    version: '2.0.1',
 
     charset: 'utf-8',
 
@@ -45,6 +45,11 @@ var Dig2ch = {
                 let boards = [];
 
                 json.result.forEach((thread) => {
+                    let options = { year: 'numeric', month: '2-digit', day: '2-digit',
+                                    hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                    let lastUpdate = new Date(1000 * thread.lastupdate).toLocaleString('ja-JP', options);
+                    let infoText = '最終更新: ' + lastUpdate + '  勢い: ' + thread.ikioi;
+
                     let board = boards.find((board) => board.id === thread.bbs);
 
                     if(!board){
@@ -61,6 +66,7 @@ var Dig2ch = {
                         url: thread.url,
                         title: thread.subject,
                         post: thread.resno,
+                        info: infoText,
                     });
                 });
 

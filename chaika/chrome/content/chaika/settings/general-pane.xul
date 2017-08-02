@@ -41,6 +41,9 @@
         <preference id="extensions.chaika.historymenu.thread_max"
                     name="extensions.chaika.historymenu.thread_max"
                     type="int"/>
+        <preference id="extensions.chaika.history_expire_days"
+                    name="extensions.chaika.history_expire_days"
+                    type="int"/>
         <preference id="extensions.chaika.http_proxy_value"
                     name="extensions.chaika.http_proxy_value"
                     type="unichar"/>
@@ -122,15 +125,21 @@
 
         <vbox align="left">
             <hbox align="center">
-                <label value="記憶する板の数:"/>
+                <label value="メニューの表示数"/>
+
+                <label value="板:"/>
                 <textbox type="number" min="0" max="20" size="1"
                          preference="extensions.chaika.historymenu.board_max"/>
+
+                <label value="スレッド:"/>
+                <textbox type="number" min="0" max="20" size="1"
+                         preference="extensions.chaika.historymenu.thread_max"/>
             </hbox>
 
             <hbox align="center">
-                <label value="記憶するスレの数:"/>
-                <textbox type="number" min="0" max="20" size="1"
-                         preference="extensions.chaika.historymenu.thread_max"/>
+                <label value="保存期間(日):"/>
+                <textbox type="number" min="0" max="999" size="2"
+                         preference="extensions.chaika.history_expire_days"/>
             </hbox>
         </vbox>
     </groupbox>

@@ -130,6 +130,7 @@
 
                 boardItem.setAttribute('title', boardTitle);
                 boardItem.setAttribute('url', board.url || '');
+                boardItem.setAttribute('info', board.info || '');
 
                 //板名フィルタの場合、threadsが空になるが、
                 //それ以外の時は板はフォルダ扱いになる
@@ -145,6 +146,7 @@
                         }
 
                         threadItem.setAttribute('url', thread.url);
+                        threadItem.setAttribute('info', thread.info || '');
                         threadItem.setAttribute('title', threadTitle);
                         threadItem.setAttribute('boardName', boardTitle);
 
