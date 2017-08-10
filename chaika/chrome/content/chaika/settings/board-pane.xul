@@ -16,6 +16,8 @@
                 name="extensions.chaika.board.open_single_click" type="bool"/>
         <preference id="extensions.chaika.board.open_new_tab"
                 name="extensions.chaika.board.open_new_tab" type="bool"/>
+        <preference id="extensions.chaika.board.mark_new_threads"
+                name="extensions.chaika.board.mark_new_threads" type="bool"/>
         <preference id="extensions.chaika.board.persist_filter_limit"
                 name="extensions.chaika.board.persist_filter_limit" type="bool"/>
         <preference id="extensions.chaika.board.thread_view_limit"
@@ -47,6 +49,8 @@
                     preference="extensions.chaika.board.open_single_click"/>
             <checkbox label="新しいタブで開く"
                     preference="extensions.chaika.board.open_new_tab"/>
+            <checkbox label="新着スレッドをマークする"
+                    preference="extensions.chaika.board.mark_new_threads"/>
             <checkbox label="表示フィルタの状態を記憶する"
                     preference="extensions.chaika.board.persist_filter_limit"
                     tooltiptext="すべて・TOP200 などの選択状態を記憶し, 次にスレッド一覧を開くときに以前の状態を復元します."/>
