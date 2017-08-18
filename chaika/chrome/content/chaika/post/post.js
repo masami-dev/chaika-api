@@ -751,6 +751,9 @@ function HttpRequest(aURL, aReferrer, aListener){
 HttpRequest.prototype = {
 
     post: function HttpRequest_post(aPostString){
+        var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
+        os.addObserver(this, "http-on-modify-request", true);
+
         this._channel = ChaikaCore.getHttpChannel(this.url);
 
             // リファラの設定
@@ -780,6 +783,31 @@ HttpRequest.prototype = {
             this.listener.onHttpError(this, 0);
         }
 
+    },
+
+
+    // ********** ********* implements nsIObserver ********** **********
+
+    /** @private */
+    observe: function HttpRequest_observe(aSubject, aTopic, aData){
+        if(aTopic != "http-on-modify-request" || aSubject != this._channel) return;
+
+        if(!this.url.host.endsWith(".2ch.net") && !this.url.host.endsWith(".bbspink.com")) return;
+
+        var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
+        var cookieStr;
+        try{
+            cookieStr = httpChannel.getRequestHeader("Cookie");
+        }catch(ex){
+            return;
+        }
+
+        // Webブラウザ向けRoninログインサービスのセッションIDを除去する
+        var filtered = cookieStr.replace(/(;\s*)?\bsid=[^;]+(;\s*)?/g, (m, a, b) => (a && b || ''));
+
+        if(filtered != cookieStr){
+            httpChannel.setRequestHeader("Cookie", filtered, false);
+        }
     },
 
 
@@ -851,7 +879,19 @@ HttpRequest.prototype = {
                 ChaikaCore.logger.error(ex);
             }
         }
+
         this._channel = null;
-    }
+
+        var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
+        os.removeObserver(this, "http-on-modify-request");
+    },
+
+
+    /** @private */
+    QueryInterface: XPCOMUtils.generateQI([
+        Ci.nsIObserver,
+        Ci.nsISupportsWeakReference,
+        Ci.nsISupports
+    ])
 
 };
