@@ -862,7 +862,13 @@ Thread2ch.prototype = {
             this._aboneChecked = false;
         }else{
             // 全取得
-            this.httpChannel.setRequestHeader("Accept-Encoding", "gzip", false);
+            // Ronin で過去ログを取得するとき、ヘッダは Content-Encoding:gzip なのに
+            // ボディを無圧縮で送ってくるサーバがある。そのようなレスポンスは
+            // Firefox では正常に扱えないので、Accept-Encoding:gzip を OFF にする必要がある
+            let urls = ChaikaCore.pref.getChar("thread_no_gzip_encoding_urls").trim();
+            let threadURL = this.thread.plainURL.spec;
+            let disableGzip = !!urls && urls.split(/\s+/).some((url) => threadURL.includes(url));
+            this.httpChannel.setRequestHeader("Accept-Encoding", disableGzip ? "" : "gzip", false);
         }
 
         this.httpChannel.asyncOpen(this, null);
