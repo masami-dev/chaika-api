@@ -397,7 +397,8 @@ ChaikaBoard.prototype = {
                     "    0 AS unread,",
                     "    0 AS force,",
                     "    STRFTIME('%Y/%m/%d', td.dat_id, 'unixepoch', 'localtime') AS created_date,",
-                    "    STRFTIME('%H:%M', td.dat_id, 'unixepoch', 'localtime') AS created_time",
+                    "    STRFTIME('%H:%M', td.dat_id, 'unixepoch', 'localtime') AS created_time,",
+                    "    td.url AS thread_url",
                     "FROM thread_data AS td",
                     "WHERE board_id=:board_id AND dat_id IN (",
                     "    SELECT dat_id FROM thread_data WHERE board_id=:board_id",
@@ -421,12 +422,14 @@ ChaikaBoard.prototype = {
                     "    IFNULL(MAX(bs.line_count - td.line_count, 0), 0) AS unread,",
                     "    bs.line_count * 86400 / (strftime('%s','now') - bs.dat_id) AS force,",
                     "    STRFTIME('%Y/%m/%d', bs.dat_id, 'unixepoch', 'localtime') AS created_date,",
-                    "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time",
+                    "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time,",
+                    "    :thread_url_spec || bs.dat_id || '/' AS thread_url",
                     "FROM board_subject AS bs INNER JOIN thread_data AS td",
                     "ON bs.thread_id=td.thread_id",
                     "WHERE bs.board_id=:board_id;"
                 ].join("\n");
                 statement = database.createStatement(sql);
+                statement.params.thread_url_spec = threadUrlSpec;
                 statement.params.board_id = boardID;
                 break;
             case this.FILTER_LIMIT_UNREAD:
@@ -442,12 +445,14 @@ ChaikaBoard.prototype = {
                     "    IFNULL(MAX(bs.line_count - td.line_count, 0), 0) AS unread,",
                     "    bs.line_count * 86400 / (strftime('%s','now') - bs.dat_id) AS force,",
                     "    STRFTIME('%Y/%m/%d', bs.dat_id, 'unixepoch', 'localtime') AS created_date,",
-                    "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time",
+                    "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time,",
+                    "    :thread_url_spec || bs.dat_id || '/' AS thread_url",
                     "FROM board_subject AS bs INNER JOIN thread_data AS td",
                     "ON bs.thread_id=td.thread_id AND bs.line_count > td.line_count",
                     "WHERE bs.board_id=:board_id;"
                 ].join("\n");
                 statement = database.createStatement(sql);
+                statement.params.thread_url_spec = threadUrlSpec;
                 statement.params.board_id = boardID;
                 break;
             case this.FILTER_LIMIT_SEARCH:
@@ -463,7 +468,8 @@ ChaikaBoard.prototype = {
                     "    IFNULL(MAX(bs.line_count - td.line_count, 0), 0) AS unread,",
                     "    bs.line_count * 86400 / (strftime('%s','now') - bs.dat_id) AS force,",
                     "    STRFTIME('%Y/%m/%d', bs.dat_id, 'unixepoch', 'localtime') AS created_date,",
-                    "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time",
+                    "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time,",
+                    "    :thread_url_spec || bs.dat_id || '/' AS thread_url",
                     "FROM board_subject AS bs LEFT OUTER JOIN thread_data AS td",
                     "ON bs.thread_id=td.thread_id",
                     "WHERE bs.board_id=:board_id",
@@ -480,7 +486,8 @@ ChaikaBoard.prototype = {
                     "    0 AS unread,",
                     "    0 AS force,",
                     "    STRFTIME('%Y/%m/%d', td.dat_id, 'unixepoch', 'localtime') AS created_date,",
-                    "    STRFTIME('%H:%M', td.dat_id, 'unixepoch', 'localtime') AS created_time",
+                    "    STRFTIME('%H:%M', td.dat_id, 'unixepoch', 'localtime') AS created_time,",
+                    "    td.url AS thread_url",
                     "FROM thread_data AS td",
                     "WHERE board_id=:board_id AND dat_id IN (",
                     "    SELECT dat_id FROM thread_data WHERE board_id=:board_id",
@@ -489,6 +496,7 @@ ChaikaBoard.prototype = {
                     ") AND x_normalize(x_plaintext(td.title)) LIKE x_normalize(:search_str);"
                 ].join("\n");
                 statement = database.createStatement(sql);
+                statement.params.thread_url_spec = threadUrlSpec;
                 statement.params.board_id = boardID;
                 statement.params.search_str = aSearchStr;
                 break;
@@ -505,7 +513,8 @@ ChaikaBoard.prototype = {
                     "    IFNULL(MAX(bs.line_count - td.line_count, 0), 0) AS unread,",
                     "    bs.line_count * 86400 / (strftime('%s','now') - bs.dat_id) AS force,",
                     "    STRFTIME('%Y/%m/%d', bs.dat_id, 'unixepoch', 'localtime') AS created_date,",
-                    "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time",
+                    "    STRFTIME('%H:%M', bs.dat_id, 'unixepoch', 'localtime') AS created_time,",
+                    "    :thread_url_spec || bs.dat_id || '/' AS thread_url",
                     "FROM board_subject AS bs LEFT OUTER JOIN thread_data AS td",
                     "ON bs.thread_id=td.thread_id",
                     "WHERE bs.board_id=:board_id",
@@ -513,6 +522,7 @@ ChaikaBoard.prototype = {
                     "LIMIT :filter_limit;"
                 ].join("\n");
                 statement = database.createStatement(sql);
+                statement.params.thread_url_spec = threadUrlSpec;
                 statement.params.board_id = boardID;
                 statement.params.filter_limit = (aFilterLimit > 0) ? aFilterLimit : 10000;
                 break;
@@ -532,7 +542,7 @@ ChaikaBoard.prototype = {
                 var force    = statement.getInt32(8);
                 var createdDate  = statement.getString(9);
                 var createdTime  = statement.getString(10);
-                var url      = threadUrlSpec + datID + "/";
+                var url      = statement.getString(11).replace(/[^\/]+$/, "");
 
                 var sortPlace = 2000000;
                 var sortPlaceR = 1000000;
