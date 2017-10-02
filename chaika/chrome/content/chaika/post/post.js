@@ -99,7 +99,7 @@ Post.prototype = {
         }
 
         //be警告
-        if(!/\.2ch\.net\/(?:be|nandemo|argue)\//.test(this._board.url.spec) &&
+        if(!/\.[25]ch\.net\/(?:be|nandemo|argue)\//.test(this._board.url.spec) &&
            ChaikaCore.pref.getBool('post.warn_be') && ChaikaBeLogin.isLoggedIn()){
             result.push('Beが有効になっています');
         }
@@ -792,7 +792,8 @@ HttpRequest.prototype = {
     observe: function HttpRequest_observe(aSubject, aTopic, aData){
         if(aTopic != "http-on-modify-request" || aSubject != this._channel) return;
 
-        if(!this.url.host.endsWith(".2ch.net") && !this.url.host.endsWith(".bbspink.com")) return;
+        if(!this.url.host.endsWith(".2ch.net") && !this.url.host.endsWith(".5ch.net") &&
+           !this.url.host.endsWith(".bbspink.com")) return;
 
         var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
         var cookieStr;

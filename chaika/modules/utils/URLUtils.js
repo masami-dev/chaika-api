@@ -31,7 +31,7 @@ let includes = {
         // in the future on any websites because Mozilla and other browser vendors are now
         // promoting deprecation of Non-Secure HTTP.
         //  cf.) http://t-webber.hatenablog.com/entry/2015/05/01/231948
-        /^https?:\/\/\w+\.2ch\.net\/\w+\/$/,
+        /^https?:\/\/\w+\.[25]ch\.net\/\w+\/$/,             // 2ch.net & 5ch.net
         /^https?:\/\/\w+\.bbspink\.com\/\w+\/$/,
         /^https?:\/\/machi\.to\/\w+\/$/,
         /^https?:\/\/\w+\.machi\.to\/\w+\/$/,
@@ -76,32 +76,32 @@ let includes = {
 
 let excludes = {
     board: [
-        /* 2ch.net */
-        /^https?:\/\/www\.2ch\.net\//,          // Top Page
-        /^https?:\/\/find\.2ch\.net\//,         // 2ch Search
-        /^https?:\/\/dig\.2ch\.net\//,          // 2ch Thread Search
-        /^https?:\/\/search\.2ch\.net\//,       // 2ch Search
-        /^https?:\/\/info\.2ch\.net\//,         // 2ch Wiki
-        /^https?:\/\/wiki\.2ch\.net\//,         // 2ch Wiki
-        /^https?:\/\/developer\.2ch\.net\//,    // Notice of new specs for 2ch dedicated browser developers
-        /^https?:\/\/notice\.2ch\.net\//,       // Notice of new features for 2ch users and developers
-        /^https?:\/\/headline\.2ch\.net\//,     // Headline on 2ch.net
-        /^https?:\/\/newsnavi\.2ch\.net\//,     // 2channel News Navigator (2NN)
-        /^https?:\/\/api\.2ch\.net\//,          // 2ch API entry point
-        /^https?:\/\/be\.2ch\.net\//,           // 2ch Be 2.0
-        /^https?:\/\/stats\.2ch\.net\//,        // 2ch Hot Threads
-        /^https?:\/\/stat\.2ch\.net\//,         // 2ch Hot Threads
-        /^https?:\/\/c\.2ch\.net\//,            // Mobile-version 2ch.net
-        /^https?:\/\/itest\.2ch\.net\//,        // Smartphone-version 2ch.net
-        /^https?:\/\/i\.2ch\.net\//,            // Smartphone-version 2ch.net
-        /^https?:\/\/menu\.2ch\.net\//,         // BBSMENU
-        /^https?:\/\/p2\.2ch\.net\//,           // Ads of Ronin
-        /^https?:\/\/conbini\.2ch\.net\//,      // Ads of Ronin
-        /^https?:\/\/premium\.2ch\.net\//,      // Ads of Ronin
-        /^https?:\/\/irc\.2ch\.net\//,          // IRC
-        /^https?:\/\/ken\.2ch\.net\//,          // Prefecture Name Server
-        /^https?:\/\/\w+\.2ch\.net\/_403\//,    // BBON House
-        /^https?:\/\/\w+\.2ch\.net\/_service\//, // Server Log
+        /* 2ch.net & 5ch.net */
+        /^https?:\/\/www\.[25]ch\.net\//,       // Top Page
+        /^https?:\/\/find\.[25]ch\.net\//,      // 2ch Search
+        /^https?:\/\/dig\.[25]ch\.net\//,       // 2ch Thread Search
+        /^https?:\/\/search\.[25]ch\.net\//,    // 2ch Search
+        /^https?:\/\/info\.[25]ch\.net\//,      // 2ch Wiki
+        /^https?:\/\/wiki\.[25]ch\.net\//,      // 2ch Wiki
+        /^https?:\/\/developer\.[25]ch\.net\//, // Notice of new specs for 2ch dedicated browser developers
+        /^https?:\/\/notice\.[25]ch\.net\//,    // Notice of new features for 2ch users and developers
+        /^https?:\/\/headline\.[25]ch\.net\//,  // Headline on 2ch.net
+        /^https?:\/\/newsnavi\.[25]ch\.net\//,  // 2channel News Navigator (2NN)
+        /^https?:\/\/api\.[25]ch\.net\//,       // 2ch API entry point
+        /^https?:\/\/be\.[25]ch\.net\//,        // 2ch Be 2.0
+        /^https?:\/\/stats\.[25]ch\.net\//,     // 2ch Hot Threads
+        /^https?:\/\/stat\.[25]ch\.net\//,      // 2ch Hot Threads
+        /^https?:\/\/c\.[25]ch\.net\//,         // Mobile-version 2ch.net
+        /^https?:\/\/itest\.[25]ch\.net\//,     // Smartphone-version 2ch.net
+        /^https?:\/\/i\.[25]ch\.net\//,         // Smartphone-version 2ch.net
+        /^https?:\/\/menu\.[25]ch\.net\//,      // BBSMENU
+        /^https?:\/\/p2\.[25]ch\.net\//,        // Ads of Ronin
+        /^https?:\/\/conbini\.[25]ch\.net\//,   // Ads of Ronin
+        /^https?:\/\/premium\.[25]ch\.net\//,   // Ads of Ronin
+        /^https?:\/\/irc\.[25]ch\.net\//,       // IRC
+        /^https?:\/\/ken\.[25]ch\.net\//,       // Prefecture Name Server
+        /^https?:\/\/\w+\.[25]ch\.net\/_403\//, // BBON House
+        /^https?:\/\/\w+\.[25]ch\.net\/_service\//, // Server Log
 
         /* 2ch.sc */
         /^https?:\/\/find\.2ch\.sc\//,          // 2ch Search
