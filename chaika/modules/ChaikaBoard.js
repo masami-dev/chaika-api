@@ -39,6 +39,11 @@ const EX_HOSTS = [
 ];
 
 
+// boardSubjectUpdate で情報が更新される前の古いスレッド情報で
+// 最も新しかった datID を保持する（新着スレッドの判定基準）
+var gPreviousLatestDatID = {};
+
+
 /**
  * 板情報(スレッド一覧)を扱うオブジェクト
  * @class
@@ -458,7 +463,9 @@ ChaikaBoard.prototype = {
             case this.FILTER_LIMIT_SEARCH:
                 sql = [
                     "SELECT",
-                    "    IFNULL((td.line_count != 0) + (bs.line_count > td.line_count), 0) AS status,",
+                    "    IFNULL((td.line_count != 0) + (bs.line_count > td.line_count),",
+                    "           (CAST(bs.dat_id AS INTEGER) > :previous_latest AND",
+                    "            CAST(bs.dat_id AS INTEGER) < 9240000000) * 3) AS status,",
                     "    bs.ordinal AS number,",
                     "    bs.thread_id AS thread_id,",
                     "    CAST(bs.dat_id AS TEXT) AS dat_id,",
@@ -496,6 +503,7 @@ ChaikaBoard.prototype = {
                     ") AND x_normalize(x_plaintext(td.title)) LIKE x_normalize(:search_str);"
                 ].join("\n");
                 statement = database.createStatement(sql);
+                statement.params.previous_latest = gPreviousLatestDatID[boardID] || 9240000000;
                 statement.params.thread_url_spec = threadUrlSpec;
                 statement.params.board_id = boardID;
                 statement.params.search_str = aSearchStr;
@@ -503,7 +511,9 @@ ChaikaBoard.prototype = {
             default:
                 sql = [
                     "SELECT",
-                    "    IFNULL((td.line_count != 0) + (bs.line_count > td.line_count), 0) AS status,",
+                    "    IFNULL((td.line_count != 0) + (bs.line_count > td.line_count),",
+                    "           (CAST(bs.dat_id AS INTEGER) > :previous_latest AND",
+                    "            CAST(bs.dat_id AS INTEGER) < 9240000000) * 3) AS status,",
                     "    bs.ordinal AS number,",
                     "    bs.thread_id AS thread_id,",
                     "    CAST(bs.dat_id AS TEXT) AS dat_id,",
@@ -522,6 +532,7 @@ ChaikaBoard.prototype = {
                     "LIMIT :filter_limit;"
                 ].join("\n");
                 statement = database.createStatement(sql);
+                statement.params.previous_latest = gPreviousLatestDatID[boardID] || 9240000000;
                 statement.params.thread_url_spec = threadUrlSpec;
                 statement.params.board_id = boardID;
                 statement.params.filter_limit = (aFilterLimit > 0) ? aFilterLimit : 10000;
@@ -648,16 +659,30 @@ ChaikaBoard.prototype = {
         var fileStream = ChaikaCore.io.getFileInputStream(this.subjectFile, charset)
                                       .QueryInterface(Ci.nsIUnicharLineInputStream);
         var database = ChaikaCore.storage;
-        var statement = database.createStatement(
-                "REPLACE INTO board_subject(thread_id, board_id, dat_id, title, title_n, line_count, ordinal) " +
-                "VALUES(?1,?2,?3,?4,?5,?6,?7);");
+        var statement;
         var boardID = this.id;
 
         database.beginTransaction();
 
         try{
+            gPreviousLatestDatID[boardID] = null;
+
+            if(ChaikaCore.pref.getBool("board.mark_new_threads")){
+                statement = database.createStatement("SELECT MAX(CAST(dat_id AS INTEGER)) FROM board_subject " +
+                    "WHERE board_id=?1 AND CAST(dat_id AS INTEGER) < 9240000000;");
+                statement.params[0] = boardID;
+                if(statement.executeStep()){
+                    gPreviousLatestDatID[boardID] = statement.getInt64(0);
+                }
+                statement.reset();
+                statement.finalize();
+            }
 
             database.executeSimpleSQL("DELETE FROM board_subject WHERE board_id='" + boardID + "';");
+
+            statement = database.createStatement(
+                "REPLACE INTO board_subject(thread_id, board_id, dat_id, title, title_n, line_count, ordinal) " +
+                "VALUES(?1,?2,?3,?4,?5,?6,?7);");
 
             let line = {};
             let ordinal = 1;

@@ -26,11 +26,10 @@
 
 
 <hbox id="toolbar" align="center">
-    <label id="lblTitle" crop="end" value="" />
-
-    <label id="lblStatus" crop="end" value="" />
-
-    <spacer flex="1" />
+    <hbox id="statusBox" align="center" flex="1">
+        <label id="lblTitle" crop="end" value="" />
+        <label id="lblStatus" crop="end" value="" />
+    </hbox>
 
     <textbox id="searchTextBox" value="" emptytext="フィルタ" type="search"
              timeout="500" oncommand="BoardTree.initTree(true)"/>

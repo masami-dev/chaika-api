@@ -68,6 +68,7 @@
                             <xul:menuitem label="12 時間後" value="43200000" />
                             <xul:menuitem label="今日いっぱい" value="today" />
                             <xul:menuitem label="明日いっぱい" value="tomorrow" />
+                            <xul:menuitem label="次の木曜日" value="thursday" />
                             <xul:menuitem label="1 週間後" value="1week" />
                             <xul:menuitem label="1 ヶ月後" value="1month" />
                         </xul:menupopup>
@@ -325,6 +326,11 @@
 
                         case '1month':
                             expire = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+                            break;
+
+                        case 'thursday':
+                            expire = new Date(now.getFullYear(), now.getMonth(),
+                                              now.getDate() + 7 - (now.getDay() + 3) % 7);
                             break;
                     }
 
