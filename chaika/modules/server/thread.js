@@ -459,8 +459,9 @@ Thread2ch.prototype = {
 		//BeIDのリンク処理
 		if(resBeID){
 			var regBeID = /^(\d+)/;
+			var beHost = this.thread.url.host.replace(/^\w+/, "be");
 			if(resBeID.match(regBeID)){
-				var idInfoUrl = "http://be.2ch.net/test/p.php?i=" + RegExp.$1 +
+				var idInfoUrl = "http://" + beHost + "/test/p.php?i=" + RegExp.$1 +
 						"&u=d:" + this.thread.url.resolve("./") + aNumber;
 				resBeID = resBeID.replace(regBeID, String("$1").link(idInfoUrl));
 			}
@@ -586,9 +587,9 @@ Thread2ch.prototype = {
 
 		// Beアイコン処理
 		if(this._showBeIcon && resMes.indexOf("sssp://")!=-1){
-			var regUrlLink = /sssp:\/\/img\.2ch\.net\/ico\/(\S+\.gif)/g;
+			var regUrlLink = /sssp:\/\/(img\.[25]ch\.net\/ico\/\S+\.gif)/g;
 			resMes = resMes.replace(regUrlLink,
-						'<img src="http://img.2ch.net/ico/$1" class="beIcon" alt="">');
+						'<img src="http://$1" class="beIcon" alt="">');
 		}
 
 		// レス本文中のIDを抽出
