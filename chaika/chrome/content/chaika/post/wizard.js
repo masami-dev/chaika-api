@@ -340,7 +340,7 @@ var FormPage = {
 
 		//Be自動ログイン
 		if(ChaikaCore.pref.getBool('post.auto_be_enable') && !this._beCheck.checked &&
-		   /\.2ch\.net\/(?:be|nandemo|argue)\//.test(gBoard.url.spec)){
+		   /\.[25]ch\.net\/(?:be|nandemo|argue)\//.test(gBoard.url.spec)){
 			ChaikaBeLogin.login();
 		}
 
@@ -362,7 +362,8 @@ var FormPage = {
 		}
 
 		//cookieチェック
-		if(gBoard.url.host.indexOf(".2ch.net")!=-1  && !this._cookieEnabled()){
+		if((gBoard.url.host.indexOf(".2ch.net")!=-1 || gBoard.url.host.indexOf(".5ch.net")!=-1) &&
+		   !this._cookieEnabled()){
 			Notification.warning(gBoard.url.host +" への Cookie アクセスを許可してください");
 		}
 
