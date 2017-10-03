@@ -498,7 +498,8 @@ Thread2ch.prototype = {
                 resBeID = resBeID[0];
 
                 //BeIDのリンク処理
-                resBeLink = "<a href='http://be.2ch.net/test/p.php?i=" + resBeID + "'>" + resBeLink + '</a>';
+                resBeLink = "<a href='http://" + this.thread.plainURL.host.replace(/^\w+/, "be") +
+                            "/test/p.php?i=" + resBeID + "'>" + resBeLink + '</a>';
 
                 // Be基礎番号を取得
                 // refs http://qb5.2ch.net/test/read.cgi/operate/1296265910/569
@@ -766,8 +767,8 @@ Thread2ch.prototype = {
 
         // Beアイコン, Emoticons 処理
         if(this._showBeIcon){
-            resMes = resMes.replace(/sssp:\/\/img\.2ch\.net\/(\S+\.(?:gif|png))/g,
-                                    '<img src="http://img.2ch.net/$1" class="beIcon" alt="">');
+            resMes = resMes.replace(/sssp:\/\/(img\.[25]ch\.net\/\S+\.(?:gif|png))/g,
+                                    '<img src="http://$1" class="beIcon" alt="">');
         }
 
         // レス本文中のIDを抽出
