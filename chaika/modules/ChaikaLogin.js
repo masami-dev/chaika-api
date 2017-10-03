@@ -418,8 +418,8 @@ var ChaikaBeLogin = {
             return account;
         }
 
-
-        var logins = lm.findLogins({}, 'http://be.2ch.net', 'http://be.2ch.net', null);
+        var loginHost = this._getLoginURI().prePath;
+        var logins = lm.findLogins({}, loginHost, loginHost, null);
 
         logins.some(function(login){
             if(login.username === account.id){
@@ -449,8 +449,8 @@ var ChaikaBeLogin = {
         var loginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1",
                                                         Ci.nsILoginInfo, "init");
 
-        var login = new loginInfo('http://be.2ch.net', 'http://be.2ch.net', null,
-                        id, password, 'm', 'p');
+        var loginHost = this._getLoginURI().prePath;
+        var login = new loginInfo(loginHost, loginHost, null, id, password, 'm', 'p');
 
         try{
             var oldLogin = this.getLoginInfo();
@@ -458,7 +458,7 @@ var ChaikaBeLogin = {
             if(oldLogin.id == id && oldLogin.password == password) return;
 
             if(oldLogin.id && oldLogin.id == id){
-                var oldLoginInfo = new loginInfo('http://be.2ch.net', 'http://be.2ch.net', null,
+                var oldLoginInfo = new loginInfo(loginHost, loginHost, null,
                                         oldLogin.id, oldLogin.password, 'm', 'p');
                 lm.modifyLogin(oldLoginInfo, login);
             }else{
@@ -516,6 +516,8 @@ var ChaikaBeLogin = {
         // Firefox 47+ requires originAttributes
         this.cookieManager.remove(".2ch.net", 'MDMD', '/', false, this._originAttributes);
         this.cookieManager.remove(".2ch.net", 'DMDM', '/', false, this._originAttributes);
+        this.cookieManager.remove(".5ch.net", 'MDMD', '/', false, this._originAttributes);
+        this.cookieManager.remove(".5ch.net", 'DMDM', '/', false, this._originAttributes);
         this.cookieManager.remove('.bbspink.com', 'MDMD', '/', false, this._originAttributes);
         this.cookieManager.remove('.bbspink.com', 'DMDM', '/', false, this._originAttributes);
 
@@ -542,7 +544,20 @@ var ChaikaBeLogin = {
             if(cookie.options.value !== 'deleted' && cookie.options.domain){
                 //for 2ch.net
                 this.cookieManager.add(
-                    cookie.options.domain,
+                    '.2ch.net',
+                    cookie.options.path,
+                    cookie.name,
+                    cookie.value,
+                    false, false, false,
+                    cookie.options.expires ?
+                        cookie.options.expires.getTime() / 1000 :
+                        ( Date.now() / 1000 ) + ( 7 * 24 * 60 * 60 ),
+                    this._originAttributes      // Firefox 49+
+                );
+
+                //for 5ch.net
+                this.cookieManager.add(
+                    '.5ch.net',
                     cookie.options.path,
                     cookie.name,
                     cookie.value,
