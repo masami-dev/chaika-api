@@ -99,7 +99,7 @@ Post.prototype = {
         }
 
         //be警告
-        if(!/\.2ch\.net\/(?:be|nandemo|argue)\//.test(this._board.url.spec) &&
+        if(!/\.[25]ch\.net\/(?:be|nandemo|argue)\//.test(this._board.url.spec) &&
            ChaikaCore.pref.getBool('post.warn_be') && ChaikaBeLogin.isLoggedIn()){
             result.push('Beが有効になっています');
         }

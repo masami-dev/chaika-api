@@ -396,7 +396,7 @@ var BbsmenuUpdater = {
 
 
     onStop: function BbsmenuUpdater_onStop(aDownloader, aResponse, aHttpStatus){
-        if(aResponse && aResponse.indexOf(".2ch.net/") != -1){
+        if(aResponse && (aResponse.indexOf(".2ch.net/") != -1 || aResponse.indexOf(".5ch.net/") != -1)){
             Bbsmenu.update(aResponse, this._bbsmenuHtmlURL);
             Bbsmenu.initTree()
             Notification.info("更新しました", 1200);

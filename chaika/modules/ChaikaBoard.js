@@ -20,6 +20,10 @@ function makeException(aResult){
 
 // getBoardType で利用する例外的な URL のリスト (2ch だけど板じゃない URL)
 const EX_HOSTS = [
+        "find.5ch.net",
+        "info.5ch.net",
+        "headline.5ch.net",
+        "newsnavi.5ch.net",
         "find.2ch.net",
         "info.2ch.net",
         "epg.2ch.net",
@@ -821,7 +825,7 @@ ChaikaBoard.getBoardID = function ChaikaBoard_getBoardID(aBoardURL){
     }
 
     var boardID = "/";
-    if(aBoardURL.host.indexOf(".2ch.net")!=-1){
+    if(aBoardURL.host.indexOf(".2ch.net")!=-1 || aBoardURL.host.indexOf(".5ch.net")!=-1){
         boardID += "2ch" + aBoardURL.path;
     }else if(aBoardURL.host == "machi.to" || aBoardURL.host.indexOf(".machi.to")!=-1){
         boardID += "machi" + aBoardURL.path;
@@ -895,8 +899,10 @@ ChaikaBoard.getBoardType = function ChaikaBoard_getBoardType(aURL){
 
         // Be@2ch.net
     if(aURL.host == "be.2ch.net") return ChaikaBoard.BOARD_TYPE_BE2CH;
+    if(aURL.host == "be.5ch.net") return ChaikaBoard.BOARD_TYPE_BE2CH;
         // 2ch.net
     if(aURL.host.indexOf(".2ch.net") != -1) return ChaikaBoard.BOARD_TYPE_2CH;
+    if(aURL.host.indexOf(".5ch.net") != -1) return ChaikaBoard.BOARD_TYPE_2CH;
         // bbspink.com
     if(aURL.host.indexOf(".bbspink.com") != -1) return ChaikaBoard.BOARD_TYPE_2CH;
         // まちBBS

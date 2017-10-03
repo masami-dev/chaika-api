@@ -52,6 +52,7 @@ chRedirector.prototype = {
 
         var host = aContentLocation.host;
         if(host.indexOf(".2ch.net") == -1 &&
+           host.indexOf(".5ch.net") == -1 &&
            host.indexOf(".bbspink.com") == -1 &&
            host.indexOf(".machi.to") == -1 &&
            host != "machi.to" &&
