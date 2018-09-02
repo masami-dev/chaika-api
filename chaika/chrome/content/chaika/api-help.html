@@ -89,7 +89,7 @@
 <ul>
 <li>
 <p><strong>「2ch API を使用する」</strong></p>
-<p>この 2ch API 機能を有効にし、2ch.net BBS のdatファイル（ログ）を 2ch API 経由で取得します。<br>
+<p>この 2ch API 機能を有効にし、2ch.net (5ch.net) BBS のdatファイル（ログ）を 2ch API 経由で取得します。<br>
 この項目がOFFの場合は、2ch API 機能は無効になり、すべて従来どおりのdat直接アクセスになります。以下の設定欄も無効化され、設定値を入れることもできなくなります。</p>
 </li>
 <li>
@@ -177,15 +177,15 @@ datAPIサーバーへアクセスした（スレッドの内容を読み込ん�
 </ul>
 <h3>
 <a id="詳細タブ" class="anchor" href="#%E8%A9%B3%E7%B4%B0%E3%82%BF%E3%83%96"><svg class="octicon octicon-link" height="16" width="16"><use xlink:href="#octicon"/></svg></a>「詳細」タブ</h3>
-<p>この「詳細」タブにある設定項目は、将来の 2ch.net の仕様変更に備える目的で変更可能にしてあるものです。現時点では初期値から変更する必要はありませんし、不用意に変更すると正常に動作しなくなる場合もありますので注意してください。</p>
+<p>この「詳細」タブにある設定項目は、将来の 2ch.net (5ch.net) の仕様変更に備える目的で変更可能にしてあるものです。現時点では初期値から変更する必要はありませんし、不用意に変更すると正常に動作しなくなる場合もありますので注意してください。</p>
 <ul>
 <li>
 <p><strong>「API URL」／「認証URL」</strong></p>
-<p>「API URL」はdat取得APIサーバーURLを、「認証URL」は認証APIサーバーURLを、それぞれ指定します。初期値は、API URL が <code>https://api.2ch.net/v1/</code> 、認証URL が <code>https://api.2ch.net/v1/auth/</code> です。</p>
+<p>「API URL」はdat取得APIサーバーURLを、「認証URL」は認証APIサーバーURLを、それぞれ指定します。初期値は、API URL が <code>https://api.5ch.net/v1/</code> 、認証URL が <code>https://api.5ch.net/v1/auth/</code> です。</p>
 </li>
 <li>
 <p><strong>「APIドメイン」</strong></p>
-<p>2ch API の動作対象となるドメインを指定します。複数を指定する場合は半角空白で区切ります。初期値は <code>2ch.net bbspink.com</code> です。2ch.net の掲示板ドメインが追加・変更された場合にはここを変更してください。</p>
+<p>2ch API の動作対象となるドメインを指定します。複数を指定する場合は半角空白で区切ります。初期値は <code>2ch.net 5ch.net bbspink.com</code> です。2ch.net (5ch.net) の掲示板ドメインが追加・変更された場合にはここを変更してください。</p>
 </li>
 </ul>
 <h3>
@@ -207,7 +207,7 @@ datAPIサーバーへアクセスした（スレッドの内容を読み込ん�
 <p><strong>「前回の認証」</strong></p>
 <p>前回行われた認証の結果（未認証/成功/失敗）と、認証が行われた日時、そして失敗の場合は、何回連続で失敗しているかということと、失敗の原因の特定に役立つかもしれない各種ステータスメッセージを表示します。成功の場合は、この認証日時は上のセッションID取得日時と同じになります。失敗のステータスメッセージの典型例には以下のようなものがあります。</p>
 <ul>
-<li>「接続できません : https://api.2ch.net/v1/auth/ 」<br>
+<li>「接続できません : https://api.5ch.net/v1/auth/ 」<br>
 2chの認証サーバーに接続できない。ネットワークの接続状態に問題があるか、認証サーバーがダウンしているか、認証URLのホスト名部分に誤りがある可能性がある。</li>
 <li>「HTTPステータス : 404 Not Found」<br>
 2chの認証サーバーに何らかの問題が発生しているか、認証URLのパス名部分に誤りがある可能性がある。</li>
