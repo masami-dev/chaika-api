@@ -471,13 +471,13 @@ this.ChaikaBeLogin = {
 
     isLoggedIn: function ChaikaBeLogin_isLoggedIn(){
         var mdmdExists = this.cookieManager.cookieExists({
-            host: ".2ch.net",
+            host: ".5ch.net",
             path: '/',
             name: 'MDMD'
         }, this._originAttributes);     // Firefox 52+
 
         var dmdmExists = this.cookieManager.cookieExists({
-            host: ".2ch.net",
+            host: ".5ch.net",
             path: '/',
             name: 'DMDM'
         }, this._originAttributes);

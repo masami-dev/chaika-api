@@ -89,7 +89,7 @@ pref("extensions.chaika.login.ronin.id", "");
 pref("extensions.chaika.login.ronin.password", "");
 
 // account: be
-pref("extensions.chaika.login.be.login_url", "http://be.2ch.net/test/login.php");
+pref("extensions.chaika.login.be.login_url", "http://be.5ch.net/test/login.php");
 pref("extensions.chaika.login.be.id", "");
 pref("extensions.chaika.login.be.password", "");
 
