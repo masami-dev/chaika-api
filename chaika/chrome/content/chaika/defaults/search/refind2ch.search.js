@@ -11,15 +11,15 @@ var Refind2ch = {
 
     name: 'スレッド検索 (refind2ch.org)',
 
-    version: '1.0.1',
+    version: '1.0.2',
 
     charset: 'utf-8',
 
-    url: 'http://refind2ch.org/search?q=%%TERM%%',
+    url: 'https://refind2ch.org/search?q=%%TERM%%',
 
     search: function(query){
         return new Promise((resolve, reject) => {
-            const url = 'http://refind2ch.org/search?q=' +
+            const url = 'https://refind2ch.org/search?q=' +
                         encodeURIComponent(ChaikaCore.io.unescapeHTML(query));
             const XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1");
             let req = XMLHttpRequest();

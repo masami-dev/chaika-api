@@ -7,17 +7,17 @@ var Dig2ch = {
 
     id: '00.dig.2ch.net',
 
-    name: '2ch検索 (dig.2ch.net)',
+    name: '5ch検索 (dig.5ch.net)',
 
-    version: '2.0.1',
+    version: '2.0.2',
 
     charset: 'utf-8',
 
-    url: 'http://dig.2ch.net/?keywords=%%TERM%%',
+    url: 'https://dig.5ch.net/?keywords=%%TERM%%',
 
     search: function(query){
         return new Promise((resolve, reject) => {
-            const url = 'http://dig.2ch.net/?json=1&keywords=' +
+            const url = 'https://dig.5ch.net/?json=1&keywords=' +
                         encodeURIComponent(ChaikaCore.io.unescapeHTML(query));
             const XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1");
             let req = XMLHttpRequest();

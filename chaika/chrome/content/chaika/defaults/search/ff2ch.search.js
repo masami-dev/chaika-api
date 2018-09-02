@@ -7,17 +7,17 @@ var Ff2ch = {
 
     id: '01.ff2ch.syoboi.jp',
 
-    name: '2ch検索 (ff2ch.syoboi.jp)',
+    name: '5ch検索 (ff5ch.syoboi.jp)',
 
-    version: '1.0.2',
+    version: '1.0.3',
 
     charset: 'utf-8',
 
-    url: 'http://ff2ch.syoboi.jp/?q=%%TERM%%',
+    url: 'https://ff5ch.syoboi.jp/?q=%%TERM%%',
 
     search: function(query){
         return new Promise((resolve, reject) => {
-            const url = 'http://ff2ch.syoboi.jp/?alt=rss&q=' +
+            const url = 'https://ff5ch.syoboi.jp/?alt=rss&q=' +
                         encodeURIComponent(ChaikaCore.io.unescapeHTML(query));
             const XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1");
             let req = XMLHttpRequest();
