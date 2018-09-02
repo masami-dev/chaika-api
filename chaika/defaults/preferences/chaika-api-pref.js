@@ -14,12 +14,12 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2017/10/03 15:35:00
+ * Last Modified : 2018/09/02 14:06:00
  */
 
 pref("extensions.chaika.2chapi.enabled", false);
-pref("extensions.chaika.2chapi.auth_url", "https://api.2ch.net/v1/auth/");
-pref("extensions.chaika.2chapi.api_url", "https://api.2ch.net/v1/");
+pref("extensions.chaika.2chapi.auth_url", "https://api.5ch.net/v1/auth/");
+pref("extensions.chaika.2chapi.api_url", "https://api.5ch.net/v1/");
 pref("extensions.chaika.2chapi.domains", "2ch.net 5ch.net bbspink.com");
 pref("extensions.chaika.2chapi.hmkey", "");
 pref("extensions.chaika.2chapi.appkey", "");
