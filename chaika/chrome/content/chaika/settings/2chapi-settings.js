@@ -15,7 +15,7 @@
  *     オリジナルの bbs2chreader/chaika の作成者・開発者・寄付者/貢献者などは、
  *     この 2ch API extension for chaika の開発には一切関与しておりません。
  *
- * Last Modified : 2017/04/21 23:40:00
+ * Last Modified : 2018/09/02 16:12:00
  */
 
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
@@ -146,18 +146,34 @@ var g2chApiPane = {
         }
 
         // User-Agent の入力チェック
+        var datUA  = getPrefValue("useragent");
+        var authUA = getPrefValue("auth_ua");
         var postUA = getPrefValue("post_ua");
         if(postUA == null || !postUA.trim()){
             this.selectContainingTab("post_ua");
-            var datUA = getPrefValue("useragent");
             var msg = "投稿時UA(postUA) の設定値が空白です。\n" +
-                      "この状態では 2ch への書き込みができません。\n\n" +
+                      "この状態では書き込みができません。\n\n" +
                       "もしこの postUA に入れるべき設定値が不明なら、\n" +
                       "通常時UA(datUA) と同じものを入れてください。\n\n" +
                      ((datUA != null && datUA.trim()) ? "" :
                       "User-Agent の推奨設定値は使用する鍵(AppKey/HMKey)によって異なり、\n" +
                       "鍵と一緒に User-Agent の推奨設定値も提示されているはずですので、\n" +
                       "後々のトラブル防止のため、それに従って入力してください。\n\n") +
+                      "このままこの設定ウィンドウを閉じますか？";
+            var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+                          .getService(Ci.nsIPromptService);
+            return prompts.confirm(window, "2ch API の設定", msg);
+        }
+
+        var ngrx = /^\s*Mozilla\/[0-3][.\w]*/;
+        var ngua = ngrx.exec(datUA) || ngrx.exec(authUA) || ngrx.exec(postUA);
+        if(ngua != null){
+            this.selectContainingTab("useragent");
+            var msg = "User-Agent の設定値に " + ngua[0] + " など\n" +
+                      "（Mozilla/3.0 以下）が含まれていると、\n" +
+                      "すべてのアクセスが拒否されます。\n\n" +
+                      "この場合、該当箇所を Mozilla/5.0 等に\n" +
+                      "変更するなどの回避策をとってください。\n\n" +
                       "このままこの設定ウィンドウを閉じますか？";
             var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Ci.nsIPromptService);

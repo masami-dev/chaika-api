@@ -22,7 +22,7 @@ chaika-api
 
 #### 主な機能追加・機能強化
 
-* 2ch API サポートの追加 (2ch API extension v0.13)
+* 2ch API サポートの追加 (2ch API extension v0.14)
 * 設定ファイルから追加のBBS定義リストを読み込む機能を追加
 * ログマネージャにデータベース修復（DATインポート）機能を追加
 * 5ch.net ドメインを 2ch.net の別名として認識させるようにした
