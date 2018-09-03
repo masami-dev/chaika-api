@@ -24,7 +24,7 @@ chaika-api
 
 末尾の (XXX.zip) という表記は、[公式アップローダー](http://bbs2ch.osdn.jp/uploader/upload.php) に上げられているパッチが元になっていることを意味します。
 
-* 2ch API サポートの追加 (2ch API extension v0.13)
+* 2ch API サポートの追加 (2ch API extension v0.14)
 * 外部板に対する動作を2chと同等にできる機能を追加 ([844.zip](http://bbs2ch.osdn.jp/uploader/img/844.zip))
 * 5ch.net ドメインを 2ch.net の別名として認識させるようにした
 * https: で始まるスレッドURL・板URLを認識できるようにした
