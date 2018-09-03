@@ -522,7 +522,7 @@ function getThreadURL(aThreadID){
         }else if(boardID.startsWith("/outside/")){
             board.url = "http://" + boardPath;
         }else{
-            return null;
+            throw new Error(aThreadID + ".dat - スレッド URL の取得に失敗しました");
         }
     }
 
@@ -540,13 +540,15 @@ function getThreadURL(aThreadID){
 
 
 function getThreadDataFromDAT(aThread){
-    if(!aThread.datFile.exists()){
-        throw new Error(aThread.datFile.leafName + " ファイルが存在しません");
-    }
+    let datLines;
 
-    let encode = (aThread.type === ChaikaBoard.BOARD_TYPE_JBBS) ? "EUC-JP" : "Shift_JIS";
-    let datLines = ChaikaCore.io.readString(aThread.datFile, encode).split("\n");
-    datLines.pop();
+    try{
+        let encode = (aThread.type === ChaikaBoard.BOARD_TYPE_JBBS) ? "EUC-JP" : "Shift_JIS";
+        datLines = ChaikaCore.io.readString(aThread.datFile, encode).split("\n");
+        datLines.pop();
+    }catch(ex){
+        throw new Error(aThread.threadID + ".dat - ファイルを読み込めません");
+    }
 
     let threadTitle = "";
     let col = (aThread.type === ChaikaBoard.BOARD_TYPE_JBBS ||
@@ -568,13 +570,25 @@ function getThreadDataFromDAT(aThread){
 
 
 function importDAT(aThreadID){
-    return new Promise((resolve, reject) => {
+    try{
         let url = getThreadURL(aThreadID);
-        if(!url){
-            throw new Error(aThreadID + ".dat からスレッド URL の取得に失敗しました");
+        let thread = new ChaikaThread(url);
+
+        // /outside/ 以下のフォルダに 2ch.net などのログが存在する場合、
+        // その板の正しいログフォルダへ移動を試みる。
+        // この場合、フォルダ名に対応したスレッドURLでインポートされる。
+        // 例）/outside/anago.2ch.net/software/1424225609.dat
+        //    → http://anago.2ch.net/test/read.cgi/software/1424225609/
+
+        if(thread.threadID != aThreadID){
+            if(thread.datFile.exists()){
+                throw new Error(aThreadID + ".dat - " + thread.threadID.replace(/\d+$/, "") +
+                                " へ移動できません（同名ログ有り）");
+            }
+            let datFile = ChaikaBoard.getLogFileAtBoardID(aThreadID + ".dat");
+            datFile.moveTo(thread.datFile.parent, "");
         }
 
-        let thread = new ChaikaThread(url);
         let dat = getThreadDataFromDAT(thread);
 
         //スレッド情報が保存されていなければ DAT をインポートする or
@@ -592,17 +606,17 @@ function importDAT(aThreadID){
                                  thread.rawTitle !== recordedTitle)){
             thread.setThreadData();
 
-            resolve({
+            return {
                 operation: (recordedLines === 0) ? "import" : "fix",
-                url: url.spec,
-                datID: thread.datID,
-                title: thread.title,
-                lineCount: thread.lineCount
-            });
-        }else{
-            resolve();
+                message: thread.datID + ": " + thread.title + " (" + thread.lineCount + ")"
+            };
         }
-    });
+    }catch(ex){
+        return {
+            operation: "error",
+            message: ex.message
+        };
+    }
 }
 
 
@@ -613,12 +627,12 @@ function repair(){
 }
 
 function delayRepair(){
-    //すべての DAT ファイルを処理する
     let logDir = ChaikaCore.getLogDir();
     let dirs = [ logDir ];
-    let promises = [];
+    let results = [];
     let thread = Services.tm.currentThread;
 
+    // すべての DAT ファイルについてデータベースへの登録状態をチェックする
     while(dirs.length !== 0){
         let currentDir = dirs.shift().directoryEntries.QueryInterface(Ci.nsIDirectoryEnumerator);
         let item;
@@ -626,9 +640,10 @@ function delayRepair(){
             if(item.isDirectory()){
                 dirs.push(item);
             }else if(item.isFile() && item.leafName.match(/^\d{9,10}\.dat$/)){
-                let path = item.getRelativePath(logDir);
+                let path = item.getRelativeDescriptor(logDir);
                 let threadID = "/" + path.replace(/\.dat$/, "");
-                promises.push(importDAT(threadID));
+                let result = importDAT(threadID);
+                if(result) results.push(result);
             }
             // 作業中にブラウザウィンドウが無応答になるのを防ぐ
             // 本来は OSFile.jsm でファイルアクセスを非同期化すべきなのでしょうけど
@@ -639,30 +654,57 @@ function delayRepair(){
         currentDir.close();
     }
 
-    Promise.all(promises).then((results) => {
-        let count = [
+    // DAT ファイルの存在しないスレッドデータをデータベースから削除
+    let storage = ChaikaCore.storage;
+    storage.createFunction("x_exists", 4, {
+        // SQLite ユーザ定義関数
+        // x_exists() - 対応する DAT ファイルが存在するか調べる
+        onFunctionCall: function sqlite_x_exists(aFunctionArguments) {
+            let threadID = aFunctionArguments.getString(0);
+            let datFile = ChaikaBoard.getLogFileAtBoardID(threadID + ".dat");
+            if(!datFile.exists()){
+                let datID = aFunctionArguments.getString(1);
+                let title = aFunctionArguments.getString(2);
+                let lineCount = aFunctionArguments.getInt32(3);
+                results.push({
+                    operation: "delete",
+                    message: datID + ": " + title + " (" + lineCount + ")"
+                });
+                return false;
+            }
+            return true;
+        }
+    });
+    storage.beginTransaction();
+    try{
+        storage.executeSimpleSQL("DELETE FROM thread_data " +
+                "WHERE NOT x_exists(thread_id, dat_id, title, line_count);");
+    }catch(ex){
+        ChaikaCore.logger.error(ex);
+    }finally{
+        storage.commitTransaction();
+        storage.removeFunction("x_exists");
+    }
+
+    // 処理結果の表示
+    if(results.length > 0){
+        [
             { title: "DAT ファイルのインポート", operation: "import" },
             { title: "スレッド情報の修復", operation: "fix" },
-        ].reduce((count, notify) => {
+            { title: "スレッド情報の削除", operation: "delete" },
+            { title: "失敗", operation: "error" },
+        ].forEach((notify) => {
             let log = results.filter((result) => (result && result.operation === notify.operation));
-            if(log.length){
-                let msg = notify.title + ": " + log.length + " 個成功\n\n";
-                log.forEach((result) => {
-                    msg += result.datID + ": " + result.title + " (" + result.lineCount + ")\n";
-                });
+            if(log.length > 0){
+                let msg = notify.title + ": " + log.length + " 件\n\n";
+                log.forEach((result) => void(msg += result.message + "\n"));
                 alert(msg);
             }
-            return log.length + count;
-        }, 0);
-        if(count === 0){
-            alert("データベースは正常です。何も変更はありません");
-        }
-    }).then(() => {
+        });
         BoardTree.initTree();
         ThreadTree.refreshTree();
-    }).catch((ex) => {
-        alert(ex);
-    }).then(() => {
-        document.getElementById("repairButton").disabled = false;
-    });
+    }else{
+        alert("データベースは正常です。何も変更はありません");
+    }
+    document.getElementById("repairButton").disabled = false;
 }
