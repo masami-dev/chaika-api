@@ -27,6 +27,7 @@ chaika-api
 * 2ch API サポートの追加 (2ch API extension v0.14)
 * 外部板に対する動作を2chと同等にできる機能を追加 ([844.zip](http://bbs2ch.osdn.jp/uploader/img/844.zip))
 * 5ch.net ドメインを 2ch.net の別名として認識させるようにした
+* そのほか、5ch.net ドメイン対応に関する様々な修正
 * https: で始まるスレッドURL・板URLを認識できるようにした
 * https: の板URL・スレッドURLを http: に修正して開くオプションを追加
 * chaika履歴の保存期間をデフォルトで60日に制限するようにした
