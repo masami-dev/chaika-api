@@ -523,7 +523,7 @@ ChaikaBrowserOverlay.contextMenu = {
 
 
 	/**
-	 * find.2ch.net での検索結果を開く
+	 * find.5ch.net での検索結果を開く
 	 * @param {Boolean} aAddTab 新しいタブで開くかどうか
 	 */
 	searchFind2ch: function contextMenu_searchFind2ch(aAddTab){
@@ -531,10 +531,10 @@ ChaikaBrowserOverlay.contextMenu = {
 		var searchStr = gContextMenu.isTextSelected ? content.getSelection().toString() : this._getCursorPositionText();
 
 		if(!sidebarMode){
-			const QUERY_URL = 'http://find.2ch.net/?COUNT=50&BBS=ALL&TYPE=TITLE&STR=';
+			const QUERY_URL = 'https://find.5ch.net/search?q=';
 
 			var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].getService(Ci.nsIScriptableUnicodeConverter);
-			converter.charset = 'EUC-JP';
+			converter.charset = 'utf-8';
 			searchStr = escape(converter.ConvertFromUnicode(searchStr));
 
 			var searchURI = Services.io.newURI(QUERY_URL + searchStr, null, null);
@@ -556,7 +556,7 @@ ChaikaBrowserOverlay.contextMenu = {
 					sideWin.SearchBox.search(searchStr);
 
 					sidebar.removeEventListener('DOMContentLoaded', _search, false);
-				}, 0);
+				}, 50);	// timeout が 0 だと Page.startup() が実行される前になってしまう場合がある
 			}
 
 			if(sidebarBox.hidden || sidebar.getAttribute('src') !== SIDEBAR_URL){

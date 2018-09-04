@@ -66,7 +66,7 @@
 
 				<menu label="検索" id="context-chaika-search">
 					<menupopup>
-						<menuitem label="find.2ch.net で検索" id="context-chaika-search-find-2ch" />
+						<menuitem label="find.5ch.net で検索" id="context-chaika-search-find-2ch" />
 						<menuitem label="板で検索" id="context-chaika-search-in-board" />
 						<menuitem label="スレッド内を検索" id="context-chaika-search-in-thread" />
 					</menupopup>

@@ -114,7 +114,7 @@
                     preference="extensions.chaika.browser_contextmenu_confirm_add_abone" />
             <checkbox label="chaika 上でスキンを変更した時に自動で再読み込みする"
                     preference="extensions.chaika.browser_contextmenu_reload_when_skin_changed" />
-            <checkbox label="find.2ch.net での検索をサイドバーで行う"
+            <checkbox label="find.5ch.net での検索をサイドバーで行う"
                     preference="extensions.chaika.browser_contextmenu_find_2ch_in_sidebar" />
         </groupbox>
     </vbox>

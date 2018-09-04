@@ -252,10 +252,10 @@ var SearchBox = {
 
 		switch(this.getSearchMode()){
 			case "find2ch":
-				this._textbox.emptyText = "2ch 検索";
+				this._textbox.emptyText = "5ch 検索";
 				break;
 			case "ff2ch":
-				this._textbox.emptyText = "2ch 検索 (ff2ch.syoboi.jp)";
+				this._textbox.emptyText = "5ch 検索 (ff5ch.syoboi.jp)";
 				break;
 			case "boardFilter":
 				this._textbox.emptyText = "フィルタ";
@@ -591,8 +591,8 @@ var Find2ch = {
 
 	search: function Find2ch_search(aSearchStr){
 		const isHTML = this.isHTMLMode;
-		const QUERY_URL = isHTML ? "http://find.2ch.net/?COUNT=50&BBS=ALL&TYPE=TITLE&STR=" : 'http://find.2ch.net/rss.php/';
-		const ENCODE = isHTML ? 'euc-jp' : 'utf-8';
+		const QUERY_URL = isHTML ? "https://find.5ch.net/search?q=" : 'http://find.2ch.net/rss.php/';
+		const ENCODE = isHTML ? 'utf-8' : 'utf-8';
 		const QUERY = isHTML ? escape(this._convertEncode(aSearchStr, ENCODE)) :
 								encodeURIComponent(ChaikaCore.io.escapeHTML(aSearchStr));
 
@@ -668,15 +668,16 @@ var Find2ch = {
 
 		var resultObj = {};  //key: board name, value: an array of threads
 
-		//最後のdtは広告
-		Array.prototype.forEach.call(findDoc.querySelectorAll('.content_pane dt:not(:last-child)'), function(item){
+		Array.prototype.forEach.call(findDoc.querySelectorAll('.list_line'), function(item){
 			var links = item.getElementsByTagName('a');
 
 			var thread = links[0];
 			var threadURI = thread.getAttribute('href').replace(/\d+-\d+$/, '');
-			var threadTitle = ChaikaCore.io.unescapeHTML(thread.textContent);
+			var linkText = ChaikaCore.io.unescapeHTML(thread.textContent)
+					.match(/^\s*(.*?)(?:\s*\((\d+)\))?\s*$/);
+			var threadTitle = linkText[1];
+			var post = linkText[2] || '0';
 
-			var post = thread.nextSibling.nodeValue.replace(/\D/g, '') || '0';
 			var boardTitle = links[1].textContent;
 
 			var threadItem = document.createElement('thread');
@@ -729,7 +730,7 @@ var Ff2ch = {
 	_infoNode: null,
 
 	search: function Ff2ch_search(aSearchStr){
-		const QUERY_URL = 'http://ff2ch.syoboi.jp/?alt=rss&q=';
+		const QUERY_URL = 'https://ff5ch.syoboi.jp/?alt=rss&q=';
 		const ENCODE = 'UTF-8';
 		const QUERY = escape(this._convertEncode(aSearchStr, ENCODE));
 
