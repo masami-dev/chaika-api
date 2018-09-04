@@ -48,8 +48,8 @@ pref("extensions.chaika.logger.level", 2);
 pref("extensions.chaika.history_expire_days", 60);
 
 pref("extensions.chaika.2chapi.enabled", false);
-pref("extensions.chaika.2chapi.auth_url", "https://api.2ch.net/v1/auth/");
-pref("extensions.chaika.2chapi.api_url", "https://api.2ch.net/v1/");
+pref("extensions.chaika.2chapi.auth_url", "https://api.5ch.net/v1/auth/");
+pref("extensions.chaika.2chapi.api_url", "https://api.5ch.net/v1/");
 pref("extensions.chaika.2chapi.domains", "2ch.net 5ch.net bbspink.com");
 pref("extensions.chaika.2chapi.hmkey", "");
 pref("extensions.chaika.2chapi.appkey", "");
