@@ -75,7 +75,7 @@ pref("extensions.chaika.maru_id", "");
 pref("extensions.chaika.maru_password", "");
 pref("extensions.chaika.maru_session_id", "");
 
-pref("extensions.chaika.login.be.login_url", "http://be.2ch.net/test/login.php");
+pref("extensions.chaika.login.be.login_url", "http://be.5ch.net/test/login.php");
 pref("extensions.chaika.login.be.id", "");
 pref("extensions.chaika.login.be.password", "");
 
