@@ -661,7 +661,7 @@
                             sideWin.Page.search(aTerm, aID);
 
                             sidebar.removeEventListener('DOMContentLoaded', _doSearch, false);
-                        }, 0);
+                        }, 50); // timeout が 0 だと Page.startup() が実行される前になってしまう場合がある
                     }
 
                     if(sidebarBox.hidden || sidebar.getAttribute('src') !== SIDEBAR_URL){
