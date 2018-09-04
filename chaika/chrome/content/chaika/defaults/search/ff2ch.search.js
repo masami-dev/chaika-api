@@ -15,15 +15,15 @@ var Ff2ch = {
 
     id: '01.ff2ch.syoboi.jp',
 
-    name: '2ch検索 (ff2ch.syoboi.jp)',
+    name: '5ch検索 (ff5ch.syoboi.jp)',
 
-    version: '1.0.0',
+    version: '1.0.1',
 
     updateURL: '%%ChaikaDefaultsDir%%/search/ff2ch.search.js',
 
     charset: 'utf-8',
 
-    url: 'http://ff2ch.syoboi.jp/?q=%%TERM%%',
+    url: 'https://ff5ch.syoboi.jp/?q=%%TERM%%',
 
     search: function(term){
         this._defer = Promise.defer();
@@ -34,7 +34,7 @@ var Ff2ch = {
         this._req = XMLHttpRequest();
         this._req.addEventListener('error', this._onError.bind(this), false);
         this._req.addEventListener('load', this._onSuccess.bind(this), false);
-        this._req.open("GET", 'http://ff2ch.syoboi.jp/?alt=rss&q=' + TERM, true);
+        this._req.open("GET", 'https://ff5ch.syoboi.jp/?alt=rss&q=' + TERM, true);
         this._req.overrideMimeType('application/rss+xml; charset=utf-8');
         this._req.send(null);
 

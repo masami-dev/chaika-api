@@ -4,15 +4,15 @@ var Dig2ch = {
 
     id: '00.dig.2ch.net',
 
-    name: '2ch検索 (dig.2ch.net)',
+    name: '5ch検索 (dig.5ch.net)',
 
-    version: '1.0.0',
+    version: '1.0.1',
 
     updateURL: '%%ChaikaDefaultsDir%%/search/dig2ch.search.js',
 
     charset: 'utf-8',
 
-    url: 'http://dig.2ch.net/?keywords=%%TERM%%',
+    url: 'https://dig.5ch.net/?keywords=%%TERM%%',
 
     // json で結果を取得することは可能だが,
     // 利用するためには <script> タグを含む広告を表示しなければならない.

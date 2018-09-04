@@ -1,9 +1,6 @@
 /* See license.txt for terms of usage */
 
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://chaika-modules/ChaikaCore.js");
-Components.utils.import("resource://chaika-modules/ChaikaBoard.js");
 
 try{
     //Firefox 25+
@@ -18,15 +15,15 @@ var Search2ch = {
 
     id: '00.search.2ch.net',
 
-    name: '2ch検索 (search.2ch.net)',
+    name: '5ch検索 (search.5ch.net)',
 
-    version: '1.0.0',
+    version: '1.1.0',
 
     updateURL: '%%ChaikaDefaultsDir%%/search/search2ch.search.js',
 
     charset: 'utf-8',
 
-    url: 'http://search.2ch.net/search?match=full&q=%%TERM%%',
+    url: 'https://search.5ch.net/search?q=%%TERM%%',
 
     search: function(term){
         this._defer = Promise.defer();
@@ -37,8 +34,9 @@ var Search2ch = {
         this._req = XMLHttpRequest();
         this._req.addEventListener('error', this._onError.bind(this), false);
         this._req.addEventListener('load', this._onSuccess.bind(this), false);
-        this._req.open("GET", 'http://search.2ch.net/search.json?site=all&match=full&size=30&q=' + TERM, true);
-        this._req.overrideMimeType('application/json; charset=utf-8');
+        this._req.open("GET", 'https://search.5ch.net/search?q=' + TERM, true);
+        this._req.overrideMimeType('text/html; charset=utf-8');
+        this._req.responseType = 'document';    // enable HTML parsing
         this._req.send(null);
 
         return this._defer.promise;
@@ -49,31 +47,32 @@ var Search2ch = {
     },
 
     _onSuccess: function(){
-        if(this._req.status !== 200 || !this._req.responseText){
-            return this._defer.reject('Unable to connect. Status:',
-                                      this._req.status, 'Response', this._req.responseText);
+        if(this._req.status !== 200){
+            return this._defer.reject('Unable to connect. Status:', this._req.status);
         }
 
-        let json = JSON.parse(this._req.responseText);
-
-        if(!json.success){
-            return this._defer.reject('Failed due to server error.', this._req.responseText);
+        if(!this._req.responseXML){
+            return this._defer.reject('The response doesn\'t seem to be XML/HTML.');
         }
 
+        let doc = this._req.responseXML;
         let boards = [];
 
-        json.results.forEach(result => {
-            let thread = result.source;
-            let board = boards.find(board => board.id === thread.board);
+        let threads = doc.querySelectorAll('.list_line');
+
+        Array.prototype.forEach.call(threads, thread => {
+            let links = thread.getElementsByTagName('a');
+            let threadURL = links[0].getAttribute('href').replace(/\d+-\d+$/, '');
+            let linkText = links[0].textContent.match(/^\s*(.*?)(?:\s*\((\d+)\))?\s*$/);
+            let threadTitle = linkText[1];
+            let threadPosts = linkText[2] || '0';
+            let boardTitle = links[1].textContent;
+
+            let board = boards.find(board => board.title === boardTitle);
 
             if(!board){
-                let boardURI = Services.io.newURI('http://' + thread.server + '.' +
-                                                  thread.host + '/' + thread.board + '/', null, null);
-                let boardObj = new ChaikaBoard(boardURI);
-
                 board = {
-                    id: thread.board,  //news, morningcoffee など
-                    title: boardObj.getTitle(),  //ニュース速報, ソフトウェア など
+                    title: boardTitle,
                     threads: []
                 };
 
@@ -81,10 +80,9 @@ var Search2ch = {
             }
 
             board.threads.push({
-                url: 'http://' + thread.server + '.' + thread.host + '/test/read.cgi/' +
-                        thread.board + '/' + thread.thread_id + '/',
-                title: thread.title,
-                post: thread.comment_count,
+                url: threadURL,
+                title: threadTitle,
+                post: threadPosts,
             });
         });
 
