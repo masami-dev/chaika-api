@@ -31,6 +31,7 @@ chaika-api
 * スレタイの [転載禁止] ©2ch.net などを消去して表示できる機能を追加 ([833.zip](http://bbs2ch.osdn.jp/uploader/img/833.zip))
 * defaultmail.txt/defaultname.txt で適用対象を指定できるようにした ([833.zip](http://bbs2ch.osdn.jp/uploader/img/833.zip))
 * 5ch.net ドメインを 2ch.net の別名として認識させるようにした
+* そのほか、5ch.net ドメイン対応に関する様々な修正
 * https: で始まるスレッドURL・板URLを認識できるようにした
 * https: の板URL・スレッドURLを http: に修正して開くオプションを追加
 * chaika履歴の保存期間をデフォルトで60日に制限するようにした
