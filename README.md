@@ -24,7 +24,7 @@ chaika-api
 
 末尾の (XXX.zip) という表記は、[公式アップローダー](http://bbs2ch.osdn.jp/uploader/upload.php) に上げられているパッチが元になっていることを意味します。
 
-* 2ch API サポートの追加 (2ch API extension v0.13)
+* 2ch API サポートの追加 (2ch API extension v0.14)
 * サイドバーのスレッド検索に ff2ch.syoboi.jp を追加 ([767.zip](http://bbs2ch.osdn.jp/uploader/img/767.zip))
 * 2ch.net と bbspink.com ドメインの BE 2.0 ログインに対応 ([818.zip](http://bbs2ch.osdn.jp/uploader/img/818.zip))
 * 外部板に対する動作を2chと同等にできる機能を追加 ([819.zip](http://bbs2ch.osdn.jp/uploader/img/819.zip))
